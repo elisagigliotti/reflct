@@ -1,0 +1,323 @@
+--- PAGE 1 ---
+Reflct
+Virtual Try-On Platform
+Concept Document v4.0 | Design System | Architettura | Roadmap
+2025 — Documento riservato
+--- PAGE 2 ---
+1. Executive Summary
+Reflct e una web app AI-powered per il virtual try-on di abbigliamento in tempo reale, pensata
+come app mobile-first pubblicabile su iOS e Android (tramite PWA o wrapper nativo). L'utente
+punta la fotocamera su se stesso e vede qualsiasi capo da qualsiasi e-commerce sovrapposto al
+proprio corpo mentre si muove — fronte e retro.
+Il prodotto si distingue per tre pilastri: tecnologia AR avanzata (OOTDiffusion + MediaPipe), un
+sistema di guardaroba digitale persistente ispirato a Pinterest, e un social layer virale (Outfit
+Battle, Rate My Outfit, AI Stylist). Il design visivo adotta un'estetica scrapbook/collage Y2K —
+sfondo crema, font misti, elementi con bordi solidi e ombre inkstyle — distinto da qualsiasi altra
+app di moda sul mercato.
+Nome Reflct
+Dominio reflct.app (disponibile)
+Tipologia Web App PWA + App mobile (iOS/Android) — SaaS B2C con
+evoluzione B2B
+Design system Scrapbook / Collage / Y2K — sfondo crema, font misti, bordi inkstyle
+Core feature AR try-on real-time (fronte/retro), scraping e-commerce, body scan,
+size advisor, guardaroba, social, price tracker
+Stack frontend Angular 17 (PWA) + Capacitor per iOS/Android
+Stack backend Spring Boot 3 (Java 21) + Python FastAPI (AI) + Playwright (scraping)
+Database / Storage PostgreSQL 16 + Redis + MinIO (S3-compatible)
+Pagamenti Stripe + PayPal + Apple Pay + Google Pay
+Modello business B2C free+premium (7,99/14,99 euro/mese) > API/Shopify > B2B
+embed > Affiliate
+Fase attuale Concept v4.0 — avvio sviluppo webapp
+--- PAGE 3 ---
+2. Design System — Estetica Scrapbook
+2.1 Direzione Visiva
+L'estetica di Reflct e ispirata alle immagini di riferimento fornite: francobolli vintage internazionali,
+lettere ritagliate da riviste (ransom note / Y2K), stelle patch ricamate, fotocamere analogiche,
+collage su carta crema. L'obiettivo e un'app che sembra un mood board fisico — calda, giocosa,
+personale — contro la freddezza delle app di moda convenzionali.
+Il principio guida e il contrasto intenzionale tra il contenuto tech (AR, AI, scraping) e la forma
+visiva analogica. Questo crea memorabilita e differenziazione immediata.
+2.2 Palette Colori
+Ruolo Nome Hex Utilizzo
+Background primario Cream #F5F0E4 Sfondo app, schermate principali
+Background Cream 2 #EDE8D8 Sidebar, card secondarie, filtri
+secondario
+Background card Paper #FAF7EF Card, bottom sheet, modal
+Testo primario Ink #2A2420 Titoli, testo principale, bordi
+Testo secondario Ink 2 #4A3F38 Sottotitoli, descrizioni
+Testo muted Ink 3 #7A6E64 Label, placeholder, hint
+Accento principale Red #D94F3D CTA, badge attivi, like, accenti
+chiave
+Accento rosa Pink #E8A0B4 Avatar, card onboarding,
+garment overlay AR
+Accento blu Blue #4A7AB5 Link, outline alert, social share
+Accento teal Teal #3A9A8A Price drop, fit ottimo, badge
+successo
+Accento giallo Yellow #F0C842 Post-it, tape, banner body scan,
+opzione attiva share
+Accento verde Green #6AAA6A Fit ottimo, size advisor positivo,
+minimo storico
+2.3 Tipografia
+L'identita tipografica e il cuore dell'estetica scrapbook. Ogni livello usa un font diverso, come se
+fosse ritagliato da una pubblicazione diversa:
+Ruolo Font (Google Fonts) Utilizzo
+Logo / Titoli hero Permanent Marker Nome app, titoli di schermata, numeri stats profilo
+Headline onboarding Pacifico Solo headline principale dell'onboarding
+Label scritte a mano Caveat (700) Tab, filtri, nomi utente, sec-label, bottom nav
+--- PAGE 4 ---
+Timbri / badge Special Elite Badge taglia, stamp categoria, URL bar, tempo
+Prezzi / CTA button Fredoka One Prezzi, testo bottoni principali, numeri grandi
+Body text Patrick Hand Descrizioni, sotto-label, note, testo lungo
+2.4 Regole Bordi e Ombre
+• Bordi: sempre 2px solid #2A2420 (ink) su tutti gli elementi interattivi e card
+• Ombra inkstyle: box-shadow: 3px 3px 0 #2A2420 — nessuna ombra sfumata, solo offset
+solido
+• Border-radius: 12px per card standard, 100px per pill/badge/CTA, 4-8px per elementi
+piccoli
+• Rotazione leggera: alcune card tilted a -1deg o +1deg per effetto collage
+• Bordi tratteggiati (dashed): per elementi ghost, divider, pannelli secondari
+• Tape: striscia rgba(240,200,100,0.45) in cima a card e sidebar — effetto scotch
+2.5 Comportamento Hover / Interazione
+• Card: hover => transform translate(-1px,-2px) + box-shadow 4px 4px 0 ink
+• Bottone principale: hover => translate(-1px,-1px) + shadow piu grande
+• Social buttons: hover => rotate(-3deg) scale(1.05) — comportamento sticker
+• Wardrobe card: hover => rotate(1deg) scale(1.02)
+• Navbar icon: hover => rotate(0deg) scale(1.1) da -5deg di default
+--- PAGE 5 ---
+3. Schermate dell'App — 9 Screen
+Il mockup completo e stato realizzato come prototipo HTML interattivo con navigazione tra tutte
+le schermate. Di seguito la descrizione dettagliata di ciascuna.
+# Schermata Descrizione e elementi chiave
+1 Onboarding Griglia 3x3 di outfit come francobolli su sfondo crema. Gradient fade dal
+basso. Logo con stelle rotanti (Permanent Marker). Headline in Pacifico.
+Sticker pill AR/Import/Size. CTA rossa Fredoka. Note ghost tratteggiata.
+Nessuna carta richiesta.
+2 Home / Feed Saluto Caveat + nome Permanent Marker. Banner post-it giallo (body scan).
+Washi tape divider orizzontale. Masonry 2 colonne con card inkstyle. Badge
+taglia Special Elite. Price drop teal. Feed pubblica con voti emoji.
+3 Try-On AR Camera view con sfondo carta millimetrata. Corner marker rossi angolari.
+Scan line rossa animata. Badge LIVE bordo rosso. Overlay capo in rosa
+pastello. Bottom sheet drag handle. Size pills, taglia selezionata in rosso.
+CTA salva + acquista.
+4 Import Link URL bar border solid + box-shadow. Preview card inclinata -0.5deg. Size
+pills con taglia consigliata in rosso. Fit box verde post-it. CTA rossa. Lista
+shop popolari come bigliettini.
+5 Guardaroba Filtri pill Caveat. Masonry column-count:2 altezze variabili. Card con hover
+rotate. Badge categoria Special Elite. Cuore preferiti. Price drop teal Caveat.
+6 Battle/Social Tab pill rossi. Battle card inclinate alternate. VS in Permanent Marker.
+Countdown in pill rosso. Barra rossa. Pulsante voted solido rosso.
+7 Condivisione Share card inclinata. Opzioni link come bigliettini. Opzione attiva in giallo
+post-it. URL in Special Elite. Copia in rosso. Grid social con hover rotate.
+Export 9:16.
+8 Price Tracker Thumbnail capo inclinato -4deg. Prezzo Fredoka rosso. Barrato Patrick
+Hand. Sparkline 8 colonne colorate. Badge minimo verde. Alert outline blue.
+9 Profilo Avatar rotate -4deg + ombra. Badge Premium giallo. Stats Permanent
+Marker rosso. Body scan card inclinata +0.4deg. 6 misure griglia. Toggle
+rosso. Settings border dashed.
+--- PAGE 6 ---
+4. Architettura Tecnica
+4.1 App Mobile-First — Angular + Capacitor
+Reflct nasce come Angular 17 PWA (Progressive Web App) utilizzabile da browser mobile. Per la
+pubblicazione su App Store e Google Play si usa Capacitor, che wrappa la webapp Angular in un
+container nativo senza dover riscrivere il codice. Questo approccio permette di sviluppare una
+volta sola e distribuire su tre piattaforme (web, iOS, Android).
+Piattaforma Approccio
+Web (browser) Angular 17 PWA — installabile da browser come app
+iOS (App Store) Capacitor wrapper — build nativa da Angular, pubblicata su App Store
+Android (Play Store) Capacitor wrapper — build nativa da Angular, pubblicata su Google Play
+4.2 Stack Completo
+Layer Tecnologie
+Frontend / App Angular 17 (PWA), TypeScript, Capacitor (iOS/Android), PrimeNG, SCSS,
+Three.js, TensorFlow.js, WebRTC, MediaRecorder API
+Backend Spring Boot 3, Java 21, Spring Security (JWT), Spring Data JPA, WebSocket
+(STOMP), REST API versionate
+AI Service Python 3.11, FastAPI, MediaPipe, OOTDiffusion, BodyMeasure Net, TFLite,
+OpenCV, rembg, GPT-4o-mini (stylist)
+Scraping Service Python 3.11, Playwright (headless Chromium), BeautifulSoup4, LLM extractor
+fallback
+Database PostgreSQL 16 (dati), Redis 7 (cache/sessioni/pub-sub), Flyway (migration)
+Storage MinIO (S3-compatible): foto utente, body scan, video try-on, immagini capi
+Pagamenti Stripe (carta/Apple Pay/Google Pay), PayPal — nessun dato carta
+memorizzato su server Reflct
+DevOps Docker Compose, GitHub Actions (CI/CD), Nginx (reverse proxy + HTTPS),
+Let's Encrypt
+4.3 Struttura Moduli Angular
+• AppModule — routing principale, lazy loading di tutti i moduli
+• AuthModule — login, registrazione, JWT interceptor, guardie di navigazione
+• OnboardingModule — schermata hello, corpo del device tour, body scan guidato
+• HomeModule — feed, masonry grid, banner promozionali
+• TryOnModule — webcam (WebRTC), TensorFlow.js pose, Three.js overlay, size picker
+• ImportModule — URL input, anteprima capo, size advisor risultato
+• WardrobeModule — masonry griglia, filtri, detail capo, outfit builder
+• SocialModule — feed battle, rate my outfit, trending, voting
+• ShareModule — opzioni link, pagina pubblica (no-auth), export 9:16
+• PriceTrackerModule — lista capi monitorati, sparkline, alert management
+--- PAGE 7 ---
+• ProfileModule — misure body scan, stats, settings, abbonamento
+• SharedModule — componenti riutilizzabili: stamp-badge, ink-card, pill-tag, tape-divider
+--- PAGE 8 ---
+5. Feature Set Completo
+5.1 AR Try-On Real-Time
+Feature Dettaglio tecnico
+Try-on live webcam (fronte) TensorFlow.js BlazePose + Three.js overlay a ~25fps lato client
+Rilevamento rotazione Angolo spalle MediaPipe: 0 gradi = fronte, 180 gradi = retro, soglia
+automatico 45 gradi
+Try-on retro in tempo reale Modello OOTDiffusion separato addestrato su viste posteriori
+Rendering AI alta qualita Frame sampling ogni 500ms verso AI Service, output 512x512 in
+circa 800ms (GPU)
+Registrazione video MP4 MediaRecorder API, export verticale 9:16 ottimizzato per Reels e
+TikTok
+Retro sintetico ControlNet genera vista posteriore se sito ha solo foto frontale
+5.2 Import E-Commerce & Scraping
+• Incolla URL di qualsiasi sito — Playwright headless estrae foto, misure, prezzo, brand
+• Parser dedicati per top 20 siti: Zara, H&M, ASOS, Zalando, Mango, Shein, Amazon
+Fashion, Farfetch
+• Fallback LLM (GPT-4o-mini) per siti non mappati
+• Estrazione retro automatica dalla gallery del prodotto
+• Snapshot prezzo al momento del salvataggio + monitoraggio periodico
+• Strategia di uscita: partnership API ufficiali Zalando, Amazon Product Advertising,
+Shopify plugin
+5.3 Body Scan & Size Advisor
+• Scansione guidata alla registrazione: foto frontale + laterale OPPURE video rotante 360
+gradi
+• Calibrazione tramite altezza inserita manualmente dall'utente
+• BodyMeasure Net stima 7 misure: busto, vita, fianchi, spalle, torso, inseam, manica
+(precisione circa 2-3 cm)
+• Size Advisor: confronto misure corpo vs. tabella taglie del capo estratta dallo scraping
+• Output: taglia consigliata evidenziata con score fit (verde/giallo/rosso) e testo esplicativo
+generativo
+• Aggiornamento misure disponibile in qualsiasi momento dal profilo
+5.4 Guardaroba & Retention
+• Tutti i capi provati salvati automaticamente con foto/video, dati capo e taglia consigliata
+• Categorizzazione automatica AI (CNN su DeepFashion): vestiti, top, pantaloni, giacche,
+scarpe, accessori
+• Correzione categoria con drag & drop + categorie personalizzate
+• Outfit Builder: combina capi del guardaroba in outfit completi
+--- PAGE 9 ---
+• Capsule wardrobe tematiche (es. look da lavoro, look estate 2025)
+• Storico prezzi con sparkline 90 giorni, badge minimo storico
+• Price Alert: soglia personalizzabile con notifica push/email al ribasso
+• Notifiche AI contestuali: cambio stagione, riscansione corpo, look virali
+5.5 Social Layer
+• Rate My Outfit: pubblica look nella feed pubblica, voti emoji (fire/meh/skip) in tempo reale
+• Outfit Battle: sfida A vs B votata dalla community in 24h, video side-by-side 9:16 per
+TikTok
+• AI Stylist: GPT-4o-mini analizza guardaroba e suggerisce outfit completi con mood e
+descrizione
+• Feed trending: look piu votati della settimana, visibile senza account
+5.6 Condivisione
+• Link permanente: pagina pubblica sempre accessibile con preview look, dati capo, link
+e-commerce
+• Link temporaneo: scadenza a scelta 24h/7gg/30gg
+• Link protetto: PIN a 4 cifre opzionale
+• Share nativo: WhatsApp, Instagram Stories, TikTok, X — export verticale 9:16 con
+overlay branded
+• Pagina pubblica senza account: CTA iscrizione, no paywall, no tracking aggressivo
+--- PAGE 10 ---
+6. Modello di Business
+6.1 B2C — Free & Premium
+Piano Prezzo Include Note
+Free 0 euro/mese Try-on illimitato, 20 capi Funnel verso Premium
+guardaroba, Rate/Battle,
+condivisione con watermark
+Premium 7,99 Guardaroba illimitato, AI Stylist, 30 giorni gratis — nessuna
+euro/mese price tracker+alert, HD no carta
+watermark, notifiche AI, beta
+access
+Pro 14,99 Tutto Premium + analisi stile Target creator e fashion
+euro/mese avanzata, priority AI rendering, influencer
+outfit builder avanzato, capsule
+illimitate, API access early
+6.2 Periodo di Prova
+• Premium: 30 giorni gratuiti — NESSUNA carta richiesta per iniziare
+• Al termine dei 30 giorni: reminder 7gg e 1gg prima della scadenza
+• Se non si inserisce carta entro la scadenza: downgrade automatico a Free (nessun
+addebito)
+• Conversione attesa da trial a paid: target 15-25% (benchmark SaaS consumer)
+6.3 Metodi di Pagamento
+• Carta di credito/debito — via Stripe
+• PayPal — via Stripe PayPal integration
+• Apple Pay — via Stripe (iOS Safari e app nativa)
+• Google Pay — via Stripe (Android Chrome e app nativa)
+• Sicurezza: dati carta MAI memorizzati sui server Reflct, tutto tokenizzato via Stripe
+6.4 Revenue Tiers (priorita)
+• Priorita 1 — B2C free/premium/pro: revenue ricorrente, scala con base utenti
+• Priorita 2 — API try-on + Shopify plugin: 0,05 euro/rendering pay-per-use, 49 euro/mese
+plugin
+• Priorita 3 — B2B widget white-label: 199/599/custom euro/mese per brand
+• Priorita 4 — Affiliate commission: 5-12% su acquisti tracciati via link UTM
+--- PAGE 11 ---
+7. Modello Dati
+Entita Attributi chiave Relazioni
+User id, email, password_hash, nome, 1:N TryOnSession, 1:1 Wardrobe, 1:N
+altezza_cm, misure_json, piano SharedLink
+(FREE/PREMIUM/PRO), created_at
+BodyScan id, user_id, foto_front_url, N:1 User
+foto_side_url, misure_json,
+video_url, created_at
+GarmentItem id, url_originale, nome, brand, N:M WardrobeItem, 1:N PriceHistory
+categoria, prezzo_attuale,
+prezzo_storico_json,
+foto_front_url, foto_back_url,
+misure_taglie_json, source_domain
+TryOnSession id, user_id, garment_id, foto_url, N:1 User, N:1 Garment
+video_url, vista,
+taglia_consigliata, fit_score,
+created_at
+WardrobeItem id, user_id, garment_id, N:1 User, N:1 GarmentItem
+session_id, categoria,
+categoria_custom, capsule_id,
+note, is_favorite
+Outfit id, user_id, nome, item_ids[], N:1 User, N:M WardrobeItem
+foto_cover_url, is_public
+PriceHistory id, garment_id, prezzo, N:1 GarmentItem
+rilevato_at
+PriceAlert id, user_id, garment_id, soglia, N:1 User, N:1 GarmentItem
+is_active, triggered_at
+SocialPost id, user_id, session_id, tipo N:1 User, N:1 TryOnSession
+(RATE/BATTLE), status, scadenza,
+voti_json
+SharedLink id, session_id, user_id, token, N:1 User, N:1 TryOnSession
+tipo, scadenza, password_hash,
+view_count
+--- PAGE 12 ---
+8. API Contract (MVP)
+Metodo Endpoint Descrizione
+POST /api/v1/auth/register Registrazione + onboarding token
+POST /api/v1/auth/login Login — restituisce JWT
+POST /api/v1/body-scan Upload foto/video → avvio stima misure (async)
+GET /api/v1/body-scan/me Misure corporee utente autenticato
+POST /api/v1/garments/import Import capo da URL e-commerce (async)
+GET /api/v1/garments/{id} Dettaglio capo con misure taglie
+POST /api/v1/tryon/start Avvia sessione try-on
+GET /api/v1/tryon/{sessionId} Stato/risultato sessione (polling o WebSocket)
+GET /api/v1/gallery Guardaroba utente (paginato, filtri categoria)
+PATCH /api/v1/gallery/{id}/categori Modifica categoria item guardaroba
+a
+POST /api/v1/social/post Pubblica look in feed (RATE o BATTLE)
+POST /api/v1/social/vote Vota un post sociale
+POST /api/v1/share Genera link condivisione
+GET /api/v1/share/{token} Dati pubblici link (no auth)
+GET /api/v1/size-advisor/{garment Suggerimento taglia per capo specifico
+Id}
+POST /api/v1/price-alerts Crea price alert per capo
+GET /api/v1/payments/plans Lista piani disponibili con prezzi
+POST /api/v1/payments/subscribe Avvia iscrizione (Stripe checkout)
+--- PAGE 13 ---
+9. Roadmap di Sviluppo
+Fase Deliverable principali Durata est.
+Fase 0Setup Docker Compose, Spring Boot base, Angular 17 + Capacitor 2 sett.
+scaffold, DB schema, MinIO, CI/CD GitHub Actions, design system
+SCSS (variabili palette + font scrapbook)
+Fase 1MVP Auth + piani, import capo da URL (scraping), try-on foto statica 8 sett.
+Core (OOTDiffusion), guardaroba base, size advisor MVP, UI scrapbook
+completa
+Fase 2AR + Try-on live webcam fronte/retro, registrazione video 9:16, Rate My 8 sett.
+Social Outfit, Outfit Battle, share nativo, link pubblico
+Fase Storico prezzi, price alert, notifiche AI, AI Stylist, outfit builder, 6 sett.
+3Retention capsule wardrobe, body scan video rotante
+Fase 4App Build iOS e Android via Capacitor, test su device reali, 4 sett.
+nativa pubblicazione App Store e Google Play
+Fase 5B2B & API pubblica documentata, Shopify plugin, WooCommerce plugin, 8 sett.
+API widget white-label, affiliate tracking
+Reflct — Concept Document v4.0 — Riservato — 2025

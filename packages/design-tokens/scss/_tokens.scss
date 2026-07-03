@@ -1,0 +1,192 @@
+// ==========================================================================
+// Reflct OS — Design tokens (SCSS)
+// Stile: retro-OS Y2K / vaporwave. Fonte di verita': packages/design-tokens/tokens.json
+// Import in ogni progetto Angular con: @use 'design-tokens/scss/tokens' as t;
+// ==========================================================================
+
+// ---------- colori ----------
+$desktop:  #9FE0CC;
+$desktop2: #7FD4BE;
+$win:      #FBDCE8;
+$win-alt:  #DCF3EC;
+$chrome:   #F49AC1;
+$chrome2:  #6FCBB6;
+
+$ink:      #2A2438;
+$ink2:     #5A4E6E;
+$muted:    #8A7FA0;
+
+$pink:     #FF5FA2;
+$cyan:     #4FD3E6;
+$mint:     #2FAF8E;
+$yellow:   #F5D14E;
+$lav:      #C6A5F2;
+$warn:     #F5A03D;
+
+// ---------- tipografia ----------
+$font-pixel:  "Press Start 2P", monospace;   // logo, username, numeri grandi
+$font-chrome: "Silkscreen", monospace;       // chrome, tab, badge, taskbar
+$font-body:   "VT323", monospace;            // corpo, prezzi, liste
+$font-title:  "Pixelify Sans", sans-serif;   // titoli capi/dialog
+
+// ---------- bordi / ombre (non derogabili: mai blur) ----------
+$border-width: 2px;
+$radius-window: 4px;
+$radius-folder: 5px;
+$radius-button: 3px;
+$radius-titlebar: 2px;
+
+$shadow-window: 3px 3px 0 $ink;
+$shadow-window-hover: 5px 5px 0 $ink;
+$shadow-button: 2px 2px 0 $ink;
+$shadow-button-hover: 4px 4px 0 $ink;
+$shadow-button-active: 0 0 0 $ink;
+
+// ---------- motion ----------
+$ease-fast: 0.12s ease;
+$ease-med: 0.16s ease;
+
+// ---------- spacing ----------
+$gap-block: 12px;
+$pad-window: 13px;
+$gap-masonry: 12px;
+$gap-folder-grid: 8px;
+
+// ---------- mixin componenti riusabili ----------
+@mixin win($mint: false) {
+  background: if($mint, $win-alt, $win);
+  border: $border-width solid $ink;
+  box-shadow: $shadow-window;
+  border-radius: $radius-window;
+  transition: transform 0.13s ease, box-shadow 0.13s ease;
+  position: relative;
+}
+
+@mixin win-pop-hover {
+  &:hover {
+    transform: translate(-1px, -2px);
+    box-shadow: $shadow-window-hover;
+  }
+}
+
+@mixin win-title($teal: false) {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: if($teal, $chrome2, $chrome);
+  border-bottom: $border-width solid $ink;
+  border-radius: $radius-titlebar $radius-titlebar 0 0;
+  padding: 3px 5px;
+  font-family: $font-chrome;
+  font-size: 8px;
+  color: $ink;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+@mixin btn-95($variant: null) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: $win;
+  color: $ink;
+  font-family: $font-chrome;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  border: $border-width solid $ink;
+  border-radius: $radius-button;
+  padding: 7px 14px;
+  min-height: 34px;
+  box-shadow: $shadow-button;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+
+  @if $variant == cta { background: $pink; color: #fff; }
+  @if $variant == cyan { background: $cyan; }
+  @if $variant == yellow { background: $yellow; }
+  @if $variant == block { width: 100%; }
+
+  &:hover { transform: translate(-1px, -1px); box-shadow: $shadow-button-hover; }
+  &:active { transform: translate(2px, 2px); box-shadow: $shadow-button-active; }
+}
+
+@mixin tab {
+  display: inline-block;
+  flex: none;
+  font-family: $font-chrome;
+  font-size: 11px;
+  color: $ink;
+  background: $win-alt;
+  border: $border-width solid $ink;
+  border-radius: $radius-button;
+  padding: 6px 12px;
+  white-space: nowrap;
+  box-shadow: $shadow-button;
+  transition: transform 0.12s ease, background 0.12s ease;
+  user-select: none;
+  cursor: pointer;
+
+  &:hover { transform: translate(-1px, -1px); }
+  &.is-active { background: $pink; color: #fff; }
+}
+
+@mixin stamp {
+  display: inline-block;
+  font-family: $font-chrome;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: currentColor;
+  border: 2px solid currentColor;
+  border-radius: $radius-button;
+  padding: 2px 5px;
+}
+
+@mixin size-pill {
+  display: inline-block;
+  font-family: $font-chrome;
+  font-size: 9px;
+  font-weight: 700;
+  background: $cyan;
+  color: $ink;
+  border: $border-width solid $ink;
+  border-radius: $radius-button;
+  padding: 2px 6px;
+  box-shadow: $shadow-button;
+}
+
+@mixin masonry-2 {
+  columns: 2;
+  column-gap: $gap-masonry;
+
+  > * {
+    break-inside: avoid;
+    margin-bottom: $gap-masonry;
+    display: block;
+  }
+}
+
+@mixin filter-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@mixin shot {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  border-bottom: $border-width solid $ink;
+  color: $ink;
+  font-family: $font-chrome;
+  font-size: 9px;
+  padding: 6px;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.55) 0 3px, transparent 3px 6px),
+    repeating-linear-gradient(-45deg, rgba(42, 36, 56, 0.1) 0 3px, transparent 3px 6px);
+}

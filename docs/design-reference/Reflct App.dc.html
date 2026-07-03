@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==================================================================
+   REFLCT OS — Design tokens & componenti riusabili
+   Stile: retro-OS Y2K / vaporwave (finestre desktop stile Win9x)
+   Pensato per traduzione 1:1 in SCSS: ogni classe = 1 componente
+   Angular; gli hex qui sotto sono le variabili di palette.
+   ================================================================== */
+:root{
+  /* superfici */
+  --desktop:#9FE0CC;      /* sfondo desktop menta          */
+  --desktop2:#7FD4BE;     /* menta piu' scuro (griglia)    */
+  --win:#FBDCE8;          /* corpo finestra rosa pastello  */
+  --win-alt:#DCF3EC;      /* corpo finestra menta chiaro   */
+  --chrome:#F49AC1;       /* title bar rosa                */
+  --chrome2:#6FCBB6;      /* title bar teal (varianti)     */
+  /* inchiostro/testo */
+  --ink:#2A2438;          /* quasi-nero viola              */
+  --ink2:#5A4E6E;         /* testo secondario              */
+  --muted:#8A7FA0;        /* testo muted                   */
+  /* accenti */
+  --pink:#FF5FA2;         /* CTA / like                    */
+  --cyan:#4FD3E6;         /* link / social                 */
+  --mint:#2FAF8E;         /* successo / price drop / fit    */
+  --yellow:#F5D14E;       /* evidenzia / start             */
+  --lav:#C6A5F2;          /* accento lavanda               */
+}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'VT323',monospace;color:var(--ink);
+  -webkit-font-smoothing:none;image-rendering:pixelated;
+  background:var(--desktop2);
+}
+*{box-sizing:border-box;}
+button{font:inherit;cursor:pointer;color:inherit;}
+img{image-rendering:auto;}
+
+/* ---------- .win : finestra base (chrome + body) ---------- */
+.win{
+  background:var(--win);
+  border:2px solid var(--ink);
+  box-shadow:3px 3px 0 var(--ink);   /* SOLO offset solido, mai blur */
+  border-radius:4px;
+  transition:transform .13s ease, box-shadow .13s ease;
+  position:relative;
+}
+.win--mint{background:var(--win-alt);}
+/* variante finestra che "salta" all'hover (card cliccabili) */
+.win--pop:hover{transform:translate(-1px,-2px);box-shadow:5px 5px 0 var(--ink);}
+
+/* ---------- .win-title : barra del titolo ---------- */
+.win-title{
+  display:flex;align-items:center;gap:6px;
+  background:var(--chrome);
+  border-bottom:2px solid var(--ink);
+  border-radius:2px 2px 0 0;
+  padding:3px 5px;
+  font-family:'Press Start 2P',monospace;font-size:8px;
+  color:var(--ink);text-transform:uppercase;letter-spacing:.02em;
+}
+.win-title--teal{background:var(--chrome2);}
+.win-title__label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* pulsanti quadratini finestra (min / max / close) */
+.win-btns{display:flex;gap:3px;flex:none;}
+.win-btns i{
+  width:13px;height:12px;display:block;
+  background:var(--win);border:2px solid var(--ink);border-radius:2px;
+  font-style:normal;font-size:8px;line-height:8px;text-align:center;color:var(--ink);
+}
+
+/* ---------- .btn-95 : bottone beveled retro ---------- */
+.btn-95{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--win);color:var(--ink);
+  font-family:'Silkscreen',monospace;font-size:11px;letter-spacing:.02em;
+  border:2px solid var(--ink);border-radius:3px;
+  padding:7px 14px;min-height:34px;
+  box-shadow:3px 3px 0 var(--ink);
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.btn-95:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink);}
+.btn-95:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink);}
+/* CTA primaria (rosa shocking) */
+.btn-95--cta{background:var(--pink);color:#fff;}
+.btn-95--cyan{background:var(--cyan);}
+.btn-95--yellow{background:var(--yellow);}
+
+/* ---------- .tab : linguetta filtro ---------- */
+.tab{
+  display:inline-block;flex:none;
+  font-family:'Silkscreen',monospace;font-size:11px;
+  color:var(--ink);background:var(--win-alt);
+  border:2px solid var(--ink);border-radius:3px;
+  padding:6px 12px;white-space:nowrap;
+  box-shadow:2px 2px 0 var(--ink);
+  transition:transform .12s ease, background .12s ease;
+  user-select:none;
+}
+.tab:hover{transform:translate(-1px,-1px);}
+.tab.is-active{background:var(--pink);color:#fff;}
+
+/* ---------- .stamp : timbro/badge pixel ---------- */
+.stamp{
+  display:inline-block;
+  font-family:'Silkscreen',monospace;font-size:9px;letter-spacing:.04em;
+  text-transform:uppercase;color:currentColor;
+  border:2px solid currentColor;border-radius:3px;padding:2px 5px;
+}
+
+/* ---------- .size-pill : badge taglia ---------- */
+.size-pill{
+  display:inline-block;
+  font-family:'Silkscreen',monospace;font-size:9px;font-weight:700;
+  background:var(--cyan);color:var(--ink);
+  border:2px solid var(--ink);border-radius:3px;
+  padding:2px 6px;box-shadow:2px 2px 0 var(--ink);
+}
+
+/* ---------- .masonry-2 : griglia masonry 2 colonne ---------- */
+.masonry-2{columns:2;column-gap:12px;}
+.masonry-2 > *{break-inside:avoid;margin-bottom:12px;display:block;}
+
+/* ---------- .filter-strip : fascia filtri scrollabile ---------- */
+.filter-strip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none;}
+.filter-strip::-webkit-scrollbar{display:none;}
+
+/* ---------- .heart-meter : barra a cuori (progress pixel) ---------- */
+.heart-meter{display:flex;gap:2px;font-size:13px;line-height:1;letter-spacing:1px;}
+
+/* ---------- taskbar nav (icone stile desktop) ---------- */
+.taskbar-item{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  background:none;border:none;padding:5px 6px;
+  min-width:52px;min-height:46px;
+  color:var(--ink2);
+  font-family:'Silkscreen',monospace;font-size:8px;
+  transition:transform .16s ease, color .16s ease;
+}
+.taskbar-item .ico{
+  width:30px;height:26px;display:flex;align-items:center;justify-content:center;
+  border:2px solid transparent;border-radius:4px;font-size:16px;line-height:1;
+  transition:transform .16s ease, background .16s ease, border-color .16s ease;
+}
+.taskbar-item:hover .ico{transform:translateY(-2px);}
+.taskbar-item.is-active{color:var(--ink);}
+.taskbar-item.is-active .ico{background:#fff;border-color:var(--ink);box-shadow:2px 2px 0 var(--ink);}
+
+/* placeholder scatto prodotto: dithering pixel + label monospace */
+.shot{
+  width:100%;display:flex;align-items:flex-end;justify-content:flex-start;
+  border-bottom:2px solid var(--ink);
+  color:var(--ink);
+  font-family:'Silkscreen',monospace;font-size:9px;
+  padding:6px;
+  background-color:var(--cyan);
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 3px, transparent 3px 6px),
+    repeating-linear-gradient(-45deg, rgba(42,36,56,.10) 0 3px, transparent 3px 6px);
+}
+.shot__tag{background:rgba(251,220,232,.9);border:1px solid var(--ink);padding:1px 4px;border-radius:2px;}
+
+/* barra dei menu OS in cima */
+.menubar{
+  display:flex;gap:14px;align-items:center;
+  background:var(--win);border-bottom:2px solid var(--ink);
+  padding:4px 8px;font-family:'Silkscreen',monospace;font-size:10px;color:var(--ink);
+}
+</style>
+</helmet>
+
+<!-- ============ DESKTOP (viewport mobile ~390px) ============ -->
+<div style="max-width:390px;margin:0 auto;min-height:100vh;position:relative;padding:10px 12px 88px;
+     background-color:#9FE0CC;
+     background-image:
+       linear-gradient(rgba(42,36,56,0.06) 1px, transparent 1px),
+       linear-gradient(90deg, rgba(42,36,56,0.06) 1px, transparent 1px),
+       linear-gradient(180deg,#C7B8F0 0%, #9FE0CC 42%);
+     background-size:20px 20px, 20px 20px, 100% 100%;
+     border-left:2px solid #2A2438;border-right:2px solid #2A2438;overflow:hidden"
+     data-screen-label="Home/Feed">
+
+  <!-- ============ MENU BAR OS ============ -->
+  <div class="win" style="border-radius:4px 4px 0 0;box-shadow:3px 3px 0 #2A2438;margin-bottom:12px">
+    <div class="menubar">
+      <span style="font-family:'Press Start 2P',monospace;font-size:9px;color:#FF5FA2">Reflct</span>
+      <span>File</span><span>Fit</span><span>View</span>
+      <span style="margin-left:auto;font-family:'VT323',monospace;font-size:15px;color:#5A4E6E">▚ 1999/05/23</span>
+    </div>
+  </div>
+
+  <!-- ============ FINESTRA SALUTO ============ -->
+  <div class="win" style="margin-bottom:12px">
+    <div class="win-title">
+      <span class="win-title__label">C:\\reflct\\home.exe</span>
+      <span class="win-btns"><i>_</i><i>□</i><i>×</i></span>
+    </div>
+    <div style="padding:12px 13px 13px">
+      <div style="font-family:'VT323',monospace;font-size:17px;color:#5A4E6E;line-height:1">&gt; bentornata,</div>
+      <h1 style="font-family:'Press Start 2P',monospace;font-size:20px;margin:6px 0 0;line-height:1.25;color:#2A2438">giulia<span style="color:#FF5FA2">_</span></h1>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap">
+        <span class="stamp" style="color:#4FD3E6">avatar: ON</span>
+        <span style="font-family:'VT323',monospace;font-size:16px;color:#8A7FA0">42 capi provati questo mese</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DIALOG: invito body scan ============ -->
+  <sc-if value="{{ showScanBanner }}" hint-placeholder-val="{{ true }}">
+    <div class="win win--pop" style="margin-bottom:14px">
+      <div class="win-title win-title--teal">
+        <span class="win-title__label">system message</span>
+        <span class="win-btns"><i onClick="{{ dismissBanner }}" style="cursor:pointer">×</i></span>
+      </div>
+      <div style="padding:13px;display:flex;gap:12px;align-items:flex-start">
+        <div style="width:46px;height:46px;flex:none;border:2px solid #2A2438;border-radius:4px;background:#FF5FA2;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 0 #2A2438" aria-hidden="true"><span style="font-size:22px">♥</span></div>
+        <div style="flex:1">
+          <div style="font-family:'Pixelify Sans',sans-serif;font-weight:700;font-size:18px;line-height:1.15;color:#2A2438">Crea il tuo avatar 3D</div>
+          <p style="font-family:'VT323',monospace;font-size:16px;margin:3px 0 0;color:#5A4E6E;line-height:1.15">Fai il body-scan e prova i capi su di te. Ci vogliono 60 secondi.</p>
+          <!-- barra a cuori (loading vaporwave) -->
+          <div class="heart-meter" style="margin-top:8px">
+            <span style="color:#FF5FA2">♥</span><span style="color:#FF5FA2">♥</span><span style="color:#4FD3E6">♥</span><span style="color:#2FAF8E">♥</span><span style="color:#C6A5F2">♡</span><span style="color:#8A7FA0">♡</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:9px;padding:0 13px 13px">
+        <button class="btn-95 btn-95--cta">SCAN NOW</button>
+        <button class="btn-95" onClick="{{ dismissBanner }}">Later</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ FINESTRA GUARDAROBA / FEED ============ -->
+  <div class="win win--mint" style="padding-bottom:4px">
+    <div class="win-title win-title--teal">
+      <span style="font-size:8px">✦</span>
+      <span class="win-title__label">wardrobe.exe — sfoglia</span>
+      <span class="win-btns"><i>_</i><i>□</i><i>×</i></span>
+    </div>
+
+    <!-- FILTER STRIP -->
+    <div style="padding:8px 8px 0">
+      <nav class="filter-strip" aria-label="Filtri">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+          <button class="tab {{ f.cls }}" onClick="{{ f.onPick }}">{{ f.label }}</button>
+        </sc-for>
+      </nav>
+    </div>
+
+    <!-- MASONRY 2 COLONNE -->
+    <div class="masonry-2" style="padding:4px 8px 10px">
+      <sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
+        <article class="win win--pop" style="border-radius:4px;overflow:hidden;--rot:{{ it.rot }}deg;transform:rotate(var(--rot,0deg))" style-hover="transform:rotate(var(--rot,0deg)) translate(-1px,-2px)">
+          <!-- mini title bar della card -->
+          <div class="win-title" style="font-size:7px;padding:2px 4px">
+            <span class="win-title__label">{{ it.file }}</span>
+            <span class="win-btns"><i style="width:11px;height:10px;font-size:7px;line-height:6px">×</i></span>
+          </div>
+
+          <!-- scatto prodotto (placeholder dithered) -->
+          <div class="shot" style="height:{{ it.h }}px;background-color:{{ it.shotColor }}">
+            <span class="shot__tag">{{ it.shotLabel }}</span>
+          </div>
+
+          <!-- badge taglia + like sovrapposti -->
+          <span class="size-pill" style="position:absolute;top:24px;right:7px">{{ it.size }}</span>
+          <button onClick="{{ it.onLike }}" aria-label="Salva nel guardaroba"
+            style="position:absolute;top:24px;left:7px;width:30px;height:28px;border:2px solid #2A2438;border-radius:4px;background:#FBDCE8;box-shadow:2px 2px 0 #2A2438;display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;color:{{ it.likeColor }};transition:transform .12s ease"
+            style-hover="transform:rotate(-4deg) scale(1.08)">{{ it.likeGlyph }}</button>
+
+          <!-- info capo -->
+          <div style="padding:8px 9px 10px;background:#FBDCE8">
+            <div style="font-family:'Pixelify Sans',sans-serif;font-weight:600;font-size:15px;line-height:1.05;color:#2A2438">{{ it.name }}</div>
+            <div style="font-family:'Silkscreen',monospace;font-size:8px;color:#8A7FA0;margin-top:3px;letter-spacing:.03em">{{ it.brand }}</div>
+
+            <div style="display:flex;align-items:baseline;gap:7px;margin-top:7px;flex-wrap:wrap">
+              <span style="font-family:'VT323',monospace;font-size:22px;line-height:.8;color:{{ it.priceColor }}">{{ it.price }}</span>
+              <sc-if value="{{ it.old }}" hint-placeholder-val="{{ false }}">
+                <span style="font-family:'VT323',monospace;font-size:16px;color:#8A7FA0;text-decoration:line-through">{{ it.old }}</span>
+              </sc-if>
+            </div>
+            <sc-if value="{{ it.old }}" hint-placeholder-val="{{ false }}">
+              <span class="stamp" style="color:#2FAF8E;margin-top:6px;font-size:8px">▼ price drop</span>
+            </sc-if>
+            <sc-if value="{{ it.fit }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'VT323',monospace;font-size:16px;color:#2FAF8E;margin-top:5px;line-height:1">✓ {{ it.fit }}</div>
+            </sc-if>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ============ TASKBAR / BOTTOM NAV ============ -->
+  <nav style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;max-width:100%;
+       background:#FBDCE8;border-top:2px solid #2A2438;
+       display:flex;align-items:center;gap:6px;padding:6px 8px;z-index:20" aria-label="Navigazione">
+    <!-- START -->
+    <button class="btn-95 btn-95--yellow" style="padding:6px 11px;min-height:38px;box-shadow:2px 2px 0 #2A2438">
+      <span style="font-size:12px">◈</span> START
+    </button>
+    <div style="flex:1;display:flex;justify-content:space-around">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4">
+        <button class="taskbar-item {{ n.cls }}" onClick="{{ n.onPick }}">
+          <span class="ico" aria-hidden="true">{{ n.icon }}</span>
+          <span>{{ n.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <!-- clock -->
+    <div style="flex:none;border:2px solid #2A2438;border-radius:3px;background:#DCF3EC;padding:3px 6px;font-family:'VT323',monospace;font-size:15px;color:#2A2438;line-height:1;text-align:center;box-shadow:2px 2px 0 #2A2438">23:59</div>
+  </nav>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:860},&quot;showScanBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Home&quot;},&quot;priceDrops&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Home&quot;}}">
+class Component extends DCLogic {
+  state = {
+    banner: true,
+    filter: 'Per te',
+    tab: 'Feed',
+    liked: { 2: true },
+  };
+
+  // --- feed mock (in Angular: FeedItem[] da un service).
+  //     shotColor/shotLabel guidano il placeholder dithered dello scatto. ---
+  static FEED = [
+    { id: 1, name: 'Giacca denim oversize', brand: 'ATELIER_9', size: 'M',  price: '€79',  old: '€110', h: 132, rot: -1.2, fit: 'fit ottimo', shotColor: '#4FD3E6', shotLabel: 'DENIM_01.BMP' },
+    { id: 2, name: 'Slip dress raso',       brand: 'MOTH&CO',  size: 'S',  price: '€54',  old: null,   h: 190, rot: 1.4,  fit: null,       shotColor: '#FF5FA2', shotLabel: 'DRESS_02.BMP' },
+    { id: 3, name: 'Cargo pants Y2K',       brand: 'RIP//STOP',size: 'L',  price: '€65',  old: '€89',  h: 168, rot: 0,    fit: null,       shotColor: '#C6A5F2', shotLabel: 'CARGO_03.BMP' },
+    { id: 4, name: 'Baby tee stampata',     brand: 'CUTOUT',   size: 'XS', price: '€28',  old: null,   h: 118, rot: -1.4, fit: 'fit ottimo', shotColor: '#F5D14E', shotLabel: 'TEE_04.BMP' },
+    { id: 5, name: 'Maxi cardigan mohair',  brand: 'NONNA_CLB',size: 'M',  price: '€92',  old: null,   h: 176, rot: 1.1,  fit: null,       shotColor: '#2FAF8E', shotLabel: 'KNIT_05.BMP' },
+    { id: 6, name: 'Gonna cargo midi',      brand: 'RIP//STOP',size: 'S',  price: '€48',  old: '€60',  h: 150, rot: 0,    fit: null,       shotColor: '#FF9EC7', shotLabel: 'SKIRT_06.BMP' },
+  ];
+
+  static FILTERS = ['Per te', 'Nuovi', 'Saldi', 'Denim', 'Vestiti', 'Vintage'];
+
+  static NAV = [
+    { key: 'Feed',       icon: '🖥', label: 'FEED' },
+    { key: 'Prova',      icon: '🪞', label: 'PROVA' },
+    { key: 'Guardaroba', icon: '🗄', label: 'ARMADIO' },
+    { key: 'Profilo',    icon: '💾', label: 'IO' },
+  ];
+
+  renderVals() {
+    const { banner, filter, tab, liked } = this.state;
+    const priceDrops = this.props.priceDrops ?? true;
+
+    return {
+      showScanBanner: banner && (this.props.showScanBanner ?? true),
+      dismissBanner: () => this.setState({ banner: false }),
+
+      filters: Component.FILTERS.map((label) => ({
+        label,
+        cls: label === filter ? 'is-active' : '',
+        onPick: () => this.setState({ filter: label }),
+      })),
+
+      items: Component.FEED.map((it) => {
+        const isLiked = !!liked[it.id];
+        const hasDrop = priceDrops && it.old;
+        return {
+          ...it,
+          file: it.shotLabel.toLowerCase().replace('.bmp', ''),
+          old: priceDrops ? it.old : null,
+          priceColor: hasDrop ? '#2FAF8E' : '#2A2438',
+          likeGlyph: isLiked ? '♥' : '♡',
+          likeColor: isLiked ? '#FF5FA2' : '#8A7FA0',
+          onLike: () =>
+            this.setState((s) => ({ liked: { ...s.liked, [it.id]: !s.liked[it.id] } })),
+        };
+      }),
+
+      navItems: Component.NAV.map((n) => ({
+        ...n,
+        cls: n.key === tab ? 'is-active' : '',
+        onPick: () => this.setState({ tab: n.key }),
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>
