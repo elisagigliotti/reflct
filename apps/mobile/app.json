@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Reflct",
+    "slug": "reflct-mobile",
+    "scheme": "reflct",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#9FE0CC"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.reflct.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#9FE0CC"
+      },
+      "package": "com.reflct.mobile"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-asset"
+    ]
+  }
+}
