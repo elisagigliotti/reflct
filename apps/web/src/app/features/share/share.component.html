@@ -1,0 +1,50 @@
+<div class="win share-win">
+  <app-win-title label="share.exe — condividi look"></app-win-title>
+  <div class="share-win__body">
+    @if (!state.item()) {
+      <p class="share-win__status share-win__status--error">
+        {{ state.error() ?? 'Apri prima un capo in Prova per condividerlo.' }}
+      </p>
+    } @else {
+      <!-- preview look -->
+      <div class="win win--pop preview" style="--rot:-0.6deg">
+        <app-shot [color]="state.item()!.shotColor" [label]="state.item()!.shotLabel" [height]="200"></app-shot>
+      </div>
+
+      <!-- opzioni link -->
+      <h2 class="share-win__section-title">Opzioni link</h2>
+      <div class="link-options win">
+        @for (opt of state.options; track opt.id) {
+          <app-row [keyLabel]="opt.label" [highlighted]="opt.id === state.selected()" (rowClick)="state.select(opt.id)"></app-row>
+        }
+      </div>
+
+      <!-- url generato -->
+      @if (state.loading()) {
+        <p class="share-win__status">generazione link…</p>
+      } @else if (state.error()) {
+        <p class="share-win__status share-win__status--error">{{ state.error() }}</p>
+      } @else if (state.generatedUrl()) {
+        <div class="url-box">
+          <span class="url-box__text">{{ state.generatedUrl() }}</span>
+          <app-btn95 variant="cyan" (click)="copyUrl()">{{ state.copied() ? 'COPIATO ✓' : 'COPIA' }}</app-btn95>
+        </div>
+        @if (state.pin(); as pin) {
+          <p class="share-win__pin">PIN: <strong>{{ pin }}</strong> — condividilo insieme al link, non è recuperabile in seguito.</p>
+        }
+      }
+
+      <!-- grid social -->
+      <h2 class="share-win__section-title">Condividi su</h2>
+      <div class="social-grid">
+        @for (btn of socialButtons; track btn.label) {
+          <button class="social-grid__btn" [attr.aria-label]="btn.label">
+            <span>{{ btn.glyph }}</span>
+          </button>
+        }
+      </div>
+
+      <app-btn95 variant="cta" [block]="true">ESPORTA 9:16</app-btn95>
+    }
+  </div>
+</div>

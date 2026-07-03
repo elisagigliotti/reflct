@@ -1,0 +1,29 @@
+@use 'tokens' as t;
+
+.btn-95 {
+  @include t.btn-95;
+  width: auto;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.btn-95--cta {
+  background: t.$pink;
+  color: #fff;
+}
+
+.btn-95--cyan {
+  background: t.$cyan;
+}
+
+.btn-95--yellow {
+  background: t.$yellow;
+}
+
+.btn-95--block {
+  width: 100%;
+}

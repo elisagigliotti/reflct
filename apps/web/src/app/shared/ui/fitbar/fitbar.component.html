@@ -1,0 +1,5 @@
+<div class="fitbar">
+  @for (seg of segmentArray; track seg) {
+    <span class="fitbar__seg" [class.is-filled]="seg < filledCount"></span>
+  }
+</div>

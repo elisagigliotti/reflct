@@ -1,0 +1,33 @@
+<div class="win onboarding__boot">
+  <app-win-title label="C:\reflct\onboarding.exe"></app-win-title>
+  <div class="onboarding__body">
+    <div class="onboarding__logo">
+      <span>Reflct</span>
+      <span class="onboarding__logo-star onboarding__logo-star--a" aria-hidden="true">✦</span>
+      <span class="onboarding__logo-star onboarding__logo-star--b" aria-hidden="true">✦</span>
+    </div>
+
+    <div class="onboarding__grid-wrap">
+      <div class="onboarding__grid">
+        @for (tile of tiles; track $index) {
+          <div class="win onboarding__tile" [style.--rot]="tile.rot + 'deg'">
+            <app-shot [color]="tile.color" [label]="tile.label" [height]="86"></app-shot>
+          </div>
+        }
+      </div>
+      <div class="onboarding__fade" aria-hidden="true"></div>
+    </div>
+
+    <h1 class="onboarding__headline">Prova vestiti prima di comprarli.</h1>
+
+    <div class="onboarding__stamps">
+      <app-stamp color="#4FD3E6">AR</app-stamp>
+      <app-stamp color="#2FAF8E">IMPORT</app-stamp>
+      <app-stamp color="#C6A5F2">SIZE</app-stamp>
+    </div>
+
+    <app-btn95 variant="cta" [block]="true" (click)="start()">INIZIA →</app-btn95>
+
+    <p class="onboarding__note">nessuna carta richiesta</p>
+  </div>
+</div>

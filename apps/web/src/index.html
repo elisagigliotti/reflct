@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Reflct — prova i vestiti prima di comprarli</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F49AC1">
+  <meta name="description" content="Reflct — piattaforma virtual try-on abbigliamento. Prova i capi sul tuo avatar 3D prima di comprarli.">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!--
+    NOTA PRODUZIONE: i font pixel vanno bundlati nell'app (mai Google Fonts a runtime),
+    come richiesto dall'handoff design (docs/design-reference/README.md, sezione
+    "Adattamenti per piattaforma"). Per questo scaffold, in assenza di npm/build tool
+    per processare i file .woff2 locali, si usa temporaneamente il link Google Fonts.
+    TODO: scaricare i 4 font (Press Start 2P, VT323, Silkscreen, Pixelify Sans) in
+    src/assets/fonts/ e sostituire questo link con @font-face locali in styles.scss.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

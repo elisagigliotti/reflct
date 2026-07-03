@@ -1,0 +1,41 @@
+<div class="win import-win">
+  <app-win-title label="import.exe — incolla link"></app-win-title>
+  <div class="import-win__body">
+    <!-- URL bar -->
+    <div class="url-bar">
+      <input
+        class="url-bar__input"
+        type="url"
+        placeholder="https://…"
+        [value]="state.url()"
+        (input)="onUrlChange($any($event.target).value)"
+      />
+      <app-btn95 variant="cyan" (click)="state.analyze()">ANALIZZA</app-btn95>
+    </div>
+
+    @if (state.loading()) {
+      <div class="loading-box">analisi in corso…</div>
+    } @else if (state.error()) {
+      <div class="loading-box loading-box--error">{{ state.error() }}</div>
+    }
+
+    @if (state.imported(); as item) {
+      <!-- preview card -->
+      <app-feed-card class="preview-card" [item]="item" [liked]="state.addedToWardrobe()" [showPriceDrop]="true" (open)="noop()" (like)="noop()"></app-feed-card>
+
+      <app-btn95
+        variant="cta"
+        [block]="true"
+        (click)="state.addToWardrobe()"
+      >{{ state.addedToWardrobe() ? '✓ NEL GUARDAROBA' : 'AGGIUNGI AL GUARDAROBA' }}</app-btn95>
+    }
+
+    <!-- shop popolari -->
+    <h2 class="import-win__section-title">Shop popolari</h2>
+    <div class="shop-list win">
+      @for (shop of state.shops; track shop.name) {
+        <app-row [icon]="shop.icon" [keyLabel]="shop.name" [showChevron]="true" (rowClick)="state.pickShop(shop)"></app-row>
+      }
+    </div>
+  </div>
+</div>

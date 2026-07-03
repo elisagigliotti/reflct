@@ -1,0 +1,65 @@
+<!-- ============ FINESTRA SALUTO ============ -->
+<div class="win greet-win">
+  <app-win-title label="C:\reflct\home.exe"></app-win-title>
+  <div class="greet-win__body">
+    <div class="greet-win__hello">&gt; bentornata,</div>
+    <h1 class="greet-win__name">{{ user()?.nome ?? '…' }}<span class="greet-win__underscore">_</span></h1>
+    <div class="greet-win__meta">
+      @if (user()?.misureJson) {
+        <app-stamp color="#4FD3E6">avatar: ON</app-stamp>
+      } @else {
+        <app-stamp color="#8A7FA0">avatar: da creare</app-stamp>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- ============ DIALOG: invito body scan ============ -->
+@if (state.showScanBanner()) {
+  <div class="win win--pop scan-dialog">
+    <app-win-title label="system message" [teal]="true" [closable]="true" (close)="state.dismissBanner()"></app-win-title>
+    <div class="scan-dialog__body">
+      <div class="scan-dialog__icon" aria-hidden="true"><span>♥</span></div>
+      <div class="scan-dialog__text">
+        <div class="scan-dialog__title">Crea il tuo avatar 3D</div>
+        <p class="scan-dialog__desc">Fai il body-scan e prova i capi su di te. Ci vogliono 60 secondi.</p>
+        <div class="heart-meter scan-dialog__meter">
+          <span style="color: #ff5fa2">♥</span><span style="color: #ff5fa2">♥</span><span style="color: #4fd3e6">♥</span><span style="color: #2faf8e">♥</span><span style="color: #c6a5f2">♡</span><span style="color: #8a7fa0">♡</span>
+        </div>
+      </div>
+    </div>
+    <div class="scan-dialog__actions">
+      <app-btn95 variant="cta" (click)="goScan()">SCAN NOW</app-btn95>
+      <app-btn95 (click)="state.dismissBanner()">Later</app-btn95>
+    </div>
+  </div>
+}
+
+<!-- ============ FINESTRA GUARDAROBA / FEED ============ -->
+<div class="win win--mint wardrobe-win">
+  <app-win-title label="wardrobe.exe — sfoglia" icon="✦" [teal]="true"></app-win-title>
+
+  <!-- FILTER STRIP -->
+  <div class="wardrobe-win__filters-wrap">
+    <nav class="filter-strip" aria-label="Filtri">
+      @for (f of filters; track f) {
+        <app-tab [active]="f === state.filter()" (click)="state.setFilter(f)">{{ f }}</app-tab>
+      }
+    </nav>
+  </div>
+
+  <!-- MASONRY 2 COLONNE -->
+  <div class="wardrobe-win__masonry-wrap">
+    @if (state.loading()) {
+      <p class="wardrobe-win__status">caricamento capi…</p>
+    } @else if (state.error()) {
+      <p class="wardrobe-win__status wardrobe-win__status--error">{{ state.error() }}</p>
+    } @else {
+      <app-masonry>
+        @for (it of state.items(); track it.id) {
+          <app-feed-card [item]="it" [liked]="state.isLiked(it.id)" (open)="openItem($event)" (like)="state.toggleLike($event)"></app-feed-card>
+        }
+      </app-masonry>
+    }
+  </div>
+</div>

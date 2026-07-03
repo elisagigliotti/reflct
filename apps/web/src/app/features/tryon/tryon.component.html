@@ -1,0 +1,80 @@
+<div class="win tryon-win">
+  <app-win-title label="tryon.exe — cabina di prova" icon="✦"></app-win-title>
+
+  @if (item(); as it) {
+    <div class="tryon-win__body">
+      <!-- viewport avatar -->
+      <div class="avatar-viewport">
+        <span class="avatar-viewport__rec">● REC · AR LIVE</span>
+        <span class="avatar-viewport__cam">AVATAR_LIVE.CAM</span>
+        <div class="avatar-viewport__corner avatar-viewport__corner--tl"></div>
+        <div class="avatar-viewport__corner avatar-viewport__corner--tr"></div>
+        <div class="avatar-viewport__corner avatar-viewport__corner--bl"></div>
+        <div class="avatar-viewport__corner avatar-viewport__corner--br"></div>
+        <div class="avatar-viewport__label">{{ it.name }}{{ tryon.rotated() ? ' · vista retro' : '' }}</div>
+      </div>
+
+      <!-- fit score -->
+      @if (adviceLoading()) {
+        <p class="tryon-win__status">calcolo il fit sul tuo corpo…</p>
+      } @else if (adviceError()) {
+        <p class="tryon-win__status tryon-win__status--error">{{ adviceError() }}</p>
+      } @else if (advice()) {
+        <div class="fit-score">
+          <span class="fit-score__label">Fit sul tuo avatar · taglia {{ advice()!.consigliata }}</span>
+          <span class="fit-score__value">{{ fitPercent() }}%</span>
+        </div>
+        <app-fitbar [percent]="fitPercent()"></app-fitbar>
+
+        <!-- readout misure -->
+        <div class="win win--mint measures-win">
+          @for (row of measureRows(); track row[0]) {
+            <div class="measures-win__row">
+              <span class="measures-win__k">{{ row[0] }}</span>
+              <span
+                class="measures-win__v"
+                [class.measures-win__v--mint]="row[1] === 'PERFETTO' || row[1] === 'OK'"
+                [class.measures-win__v--warn]="row[1] !== 'PERFETTO' && row[1] !== 'OK'"
+              >{{ row[1] }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- selettore taglia -->
+      <div class="selector">
+        <span class="selector__label">Taglia</span>
+        <div class="selector__row">
+          @for (s of tryon.sizes; track s) {
+            <app-tab [active]="s === tryon.trySize()" (click)="tryon.setSize(s)">{{ s }}</app-tab>
+          }
+        </div>
+      </div>
+
+      <!-- selettore colore -->
+      <div class="selector">
+        <span class="selector__label">Colore</span>
+        <div class="selector__row">
+          @for (c of tryon.colors; track c; let i = $index) {
+            <app-swatch [color]="c" [active]="i === tryon.tryColor()" (click)="tryon.setColor(i)"></app-swatch>
+          }
+        </div>
+      </div>
+
+      <!-- azioni -->
+      <div class="actions-row">
+        <app-btn95 variant="cyan" (click)="tryon.toggleRotate()">↻ RUOTA</app-btn95>
+        <app-btn95 (click)="toggleLike()">
+          <span [style.color]="liked() ? '#FF5FA2' : '#8A7FA0'">{{ liked() ? '♥' : '♡' }}</span>
+          SALVA
+        </app-btn95>
+      </div>
+
+      <app-btn95 variant="cta" [block]="true" (click)="addToCart()">AGGIUNGI · {{ it.price }}</app-btn95>
+    </div>
+  } @else {
+    <div class="tryon-win__body">
+      <p class="tryon-win__status">caricamento capo…</p>
+    </div>
+  }
+</div>

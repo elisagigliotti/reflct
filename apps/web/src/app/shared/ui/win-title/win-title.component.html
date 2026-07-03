@@ -1,0 +1,13 @@
+<div class="win-title" [class.win-title--teal]="teal">
+  @if (icon) {
+    <span class="win-title__icon">{{ icon }}</span>
+  }
+  <span class="win-title__label">{{ label }}</span>
+  @if (closable) {
+    <span class="win-btns">
+      <i class="win-btns__close" (click)="close.emit()">×</i>
+    </span>
+  } @else {
+    <span class="win-btns"><i>_</i><i>□</i><i>×</i></span>
+  }
+</div>

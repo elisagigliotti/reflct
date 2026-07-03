@@ -1,0 +1,104 @@
+@use 'tokens' as t;
+
+.scan-win__body {
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scan-win__status {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$muted;
+  text-align: center;
+  padding: 8px;
+
+  &--error {
+    color: t.$warn;
+  }
+}
+
+.scan-win__hint {
+  font-family: t.$font-body;
+  font-size: 14px;
+  color: t.$ink2;
+  text-align: center;
+  margin: 4px 0 0;
+}
+
+.url-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.url-field__label {
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$ink2;
+  text-transform: uppercase;
+}
+
+.url-field__input {
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-button;
+  box-shadow: t.$shadow-button;
+  padding: 7px 10px;
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$ink;
+  background: #fff;
+
+  &::placeholder {
+    color: t.$muted;
+  }
+
+  &:focus {
+    outline: none;
+    transform: translate(-1px, -1px);
+    box-shadow: t.$shadow-button-hover;
+  }
+
+  &--num {
+    max-width: 120px;
+  }
+}
+
+.result-box {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-box__status {
+  font-family: t.$font-title;
+  font-weight: 600;
+  font-size: 14px;
+  color: t.$ink;
+}
+
+.result-box__measures {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.result-box__row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.result-box__k {
+  font-family: t.$font-body;
+  font-size: 15px;
+  color: t.$ink2;
+  text-transform: capitalize;
+}
+
+.result-box__v {
+  font-family: t.$font-chrome;
+  font-size: 11px;
+  color: t.$ink;
+}

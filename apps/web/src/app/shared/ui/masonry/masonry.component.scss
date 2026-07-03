@@ -1,0 +1,5 @@
+@use 'tokens' as t;
+
+.masonry-2 {
+  @include t.masonry-2;
+}

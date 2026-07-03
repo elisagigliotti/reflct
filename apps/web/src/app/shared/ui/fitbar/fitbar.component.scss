@@ -1,0 +1,18 @@
+@use 'tokens' as t;
+
+.fitbar {
+  display: flex;
+  gap: 4px;
+}
+
+.fitbar__seg {
+  flex: 1;
+  height: 14px;
+  border: t.$border-width solid t.$ink;
+  border-radius: 2px;
+  background: #fff;
+
+  &.is-filled {
+    background: t.$mint;
+  }
+}

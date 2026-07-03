@@ -1,0 +1,232 @@
+@use 'tokens' as t;
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.desktop {
+  max-width: 420px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding: 10px 12px calc(88px + env(safe-area-inset-bottom));
+  background-color: t.$desktop;
+  background-image:
+    linear-gradient(rgba(42, 36, 56, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 36, 56, 0.06) 1px, transparent 1px),
+    linear-gradient(180deg, #c7b8f0 0%, t.$desktop 42%);
+  background-size:
+    20px 20px,
+    20px 20px,
+    100% 100%;
+  border-left: t.$border-width solid t.$ink;
+  border-right: t.$border-width solid t.$ink;
+
+  @media (min-width: 421px) {
+    box-shadow: t.$shadow-window-hover;
+  }
+}
+
+.desktop__content {
+  display: flex;
+  flex-direction: column;
+}
+
+// ---------- menubar ----------
+.menubar-wrap {
+  border-radius: 4px 4px 0 0;
+  box-shadow: t.$shadow-window;
+  margin-bottom: t.$gap-block;
+}
+
+.menubar {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: t.$win;
+  border-bottom: t.$border-width solid t.$ink;
+  padding: 4px 8px;
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$ink;
+}
+
+.menubar__logo {
+  font-family: t.$font-pixel;
+  font-size: 9px;
+  color: t.$pink;
+}
+
+.menubar__date {
+  margin-left: auto;
+  font-family: t.$font-body;
+  font-size: 15px;
+  color: t.$ink2;
+}
+
+// ---------- taskbar ----------
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  max-width: 100%;
+  background: t.$win;
+  border-top: t.$border-width solid t.$ink;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  z-index: 20;
+}
+
+.taskbar__start {
+  flex: none;
+
+  ::ng-deep .btn-95 {
+    padding: 6px 11px;
+    min-height: 38px;
+    box-shadow: t.$shadow-button;
+  }
+}
+
+.taskbar__start-glyph {
+  font-size: 12px;
+}
+
+.taskbar__items {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+}
+
+.taskbar__clock {
+  flex: none;
+  border: t.$border-width solid t.$ink;
+  border-radius: 3px;
+  background: t.$win-alt;
+  padding: 3px 6px;
+  font-family: t.$font-body;
+  font-size: 15px;
+  color: t.$ink;
+  line-height: 1;
+  text-align: center;
+  box-shadow: t.$shadow-button;
+}
+
+// ---------- start menu ----------
+.start-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+}
+
+.start-menu {
+  position: fixed;
+  bottom: 62px;
+  left: 50%;
+  transform: translateX(calc(-50% + 130px));
+  width: 200px;
+  max-width: calc(100% - 24px);
+  z-index: 26;
+  box-shadow: t.$shadow-window-hover;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+.start-menu__title {
+  font-family: t.$font-chrome;
+  font-size: 9px;
+  color: t.$muted;
+  text-transform: uppercase;
+  padding: 6px 8px 4px;
+}
+
+.start-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: none;
+  background: none;
+  border-radius: 4px;
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$ink;
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+
+  .ico {
+    width: 20px;
+    text-align: center;
+  }
+
+  &:hover {
+    background: t.$win-alt;
+  }
+
+  &--logout {
+    color: t.$warn;
+  }
+}
+
+.start-menu__sep {
+  height: t.$border-width;
+  background: t.$ink;
+  opacity: 0.15;
+  margin: 4px 4px;
+}
+
+.taskbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  padding: 5px 6px;
+  min-width: 52px;
+  min-height: 46px;
+  color: t.$ink2;
+  font-family: t.$font-chrome;
+  font-size: 8px;
+  text-decoration: none;
+  transition:
+    transform 0.16s ease,
+    color 0.16s ease;
+
+  .ico {
+    width: 30px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: t.$border-width solid transparent;
+    border-radius: 4px;
+    font-size: 16px;
+    line-height: 1;
+    transition:
+      transform 0.16s ease,
+      background 0.16s ease,
+      border-color 0.16s ease;
+  }
+
+  &:hover .ico {
+    transform: translateY(-2px);
+  }
+
+  &.is-active {
+    color: t.$ink;
+
+    .ico {
+      background: #fff;
+      border-color: t.$ink;
+      box-shadow: t.$shadow-button;
+    }
+  }
+}

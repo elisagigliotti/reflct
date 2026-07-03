@@ -1,0 +1,109 @@
+@use 'tokens' as t;
+
+.import-win__body {
+  padding: 13px;
+}
+
+// ---------- url bar ----------
+.url-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.url-bar__input {
+  flex: 1;
+  min-width: 0;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-button;
+  box-shadow: t.$shadow-button;
+  padding: 7px 10px;
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$ink;
+  background: #fff;
+
+  &::placeholder {
+    color: t.$muted;
+  }
+
+  &:focus {
+    outline: none;
+    transform: translate(-1px, -1px);
+    box-shadow: t.$shadow-button-hover;
+  }
+}
+
+.loading-box {
+  border: 2px dashed t.$muted;
+  border-radius: t.$radius-button;
+  padding: 8px 10px;
+  font-family: t.$font-body;
+  font-size: 15px;
+  color: t.$ink2;
+  margin-bottom: 12px;
+  text-align: center;
+
+  &--error {
+    color: t.$warn;
+    border-color: t.$warn;
+  }
+}
+
+.preview-card {
+  display: block;
+  margin-bottom: 12px;
+}
+
+// ---------- selettore taglia ----------
+.selector {
+  margin-bottom: 12px;
+}
+
+.selector__label {
+  display: block;
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$ink2;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.selector__row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+// ---------- fit box ----------
+.fit-box {
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.fit-box__text {
+  font-family: t.$font-body;
+  font-size: 16px;
+}
+
+.fit-box__text--mint {
+  color: t.$mint;
+}
+
+.fit-box__text--warn {
+  color: t.$warn;
+}
+
+// ---------- shop popolari ----------
+.import-win__section-title {
+  font-family: t.$font-title;
+  font-weight: 600;
+  font-size: 15px;
+  color: t.$ink;
+  margin: 16px 0 8px;
+}
+
+.shop-list {
+  overflow: hidden;
+}

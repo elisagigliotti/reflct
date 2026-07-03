@@ -1,0 +1,137 @@
+@use 'tokens' as t;
+
+// ---------- finestra saluto ----------
+.greet-win {
+  margin-bottom: t.$gap-block;
+}
+
+.greet-win__body {
+  padding: 12px 13px 13px;
+}
+
+.greet-win__hello {
+  font-family: t.$font-body;
+  font-size: 17px;
+  color: t.$ink2;
+  line-height: 1;
+}
+
+.greet-win__name {
+  font-family: t.$font-pixel;
+  font-size: 20px;
+  margin: 6px 0 0;
+  line-height: 1.25;
+  color: t.$ink;
+}
+
+.greet-win__underscore {
+  color: t.$pink;
+}
+
+.greet-win__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 9px;
+  flex-wrap: wrap;
+}
+
+.greet-win__tried {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$muted;
+}
+
+// ---------- dialog body-scan ----------
+.scan-dialog {
+  margin-bottom: 14px;
+}
+
+.scan-dialog__body {
+  padding: 13px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.scan-dialog__icon {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border: t.$border-width solid t.$ink;
+  border-radius: 4px;
+  background: t.$pink;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: t.$shadow-button;
+  font-size: 22px;
+  color: #fff;
+}
+
+.scan-dialog__text {
+  flex: 1;
+}
+
+.scan-dialog__title {
+  font-family: t.$font-title;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.15;
+  color: t.$ink;
+}
+
+.scan-dialog__desc {
+  font-family: t.$font-body;
+  font-size: 16px;
+  margin: 3px 0 0;
+  color: t.$ink2;
+  line-height: 1.15;
+}
+
+.heart-meter {
+  display: flex;
+  gap: 2px;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.scan-dialog__meter {
+  margin-top: 8px;
+}
+
+.scan-dialog__actions {
+  display: flex;
+  gap: 9px;
+  padding: 0 13px 13px;
+}
+
+// ---------- finestra guardaroba / feed ----------
+.wardrobe-win {
+  padding-bottom: 4px;
+}
+
+.wardrobe-win__filters-wrap {
+  padding: 8px 8px 0;
+}
+
+.filter-strip {
+  @include t.filter-strip;
+}
+
+.wardrobe-win__masonry-wrap {
+  padding: 4px 8px 10px;
+}
+
+.wardrobe-win__status {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$muted;
+  text-align: center;
+  padding: 20px 8px;
+
+  &--error {
+    color: t.$warn;
+  }
+}

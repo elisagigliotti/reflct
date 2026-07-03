@@ -1,0 +1,98 @@
+@if (user(); as u) {
+  <!-- profile.sys -->
+  <div class="win profile-win">
+    <app-win-title label="profile.sys" icon="☻"></app-win-title>
+    <div class="profile-win__body">
+      <div class="profile-win__avatar" aria-hidden="true"><span>☻</span></div>
+      <div class="profile-win__identity">
+        <div class="profile-win__name-row">
+          <h1 class="profile-win__name">{{ u.nome }} {{ u.cognome }}_</h1>
+          @if (isPremium()) {
+            <app-stamp color="#F5D14E">{{ u.piano }}</app-stamp>
+          }
+        </div>
+        <div class="profile-win__handle">&#64;{{ u.username }}</div>
+        <div class="profile-win__handle">{{ u.email }}</div>
+      </div>
+    </div>
+    <div class="profile-win__actions">
+      <app-btn95 (click)="logout()">↩ ESCI</app-btn95>
+    </div>
+  </div>
+
+  <!-- measures.cfg -->
+  <div class="win win--mint measures-win">
+    <app-win-title label="measures.cfg" [teal]="true"></app-win-title>
+    <div class="measures-win__body">
+      @if (!editing()) {
+        <div class="measures-win__row">
+          <span class="measures-win__k">username</span>
+          <span class="measures-win__v">&#64;{{ u.username }}</span>
+        </div>
+        <div class="measures-win__row">
+          <span class="measures-win__k">data di nascita</span>
+          <span class="measures-win__v">{{ u.dataNascita }}</span>
+        </div>
+        <div class="measures-win__row">
+          <span class="measures-win__k">altezza</span>
+          <span class="measures-win__v">{{ u.altezzaCm ? u.altezzaCm + ' cm' : 'non impostata' }}</span>
+        </div>
+        <p class="measures-win__hint">
+          Le altre misure (busto, vita, taglie…) arrivano dal body-scan — ancora da collegare.
+        </p>
+        <app-btn95 variant="cyan" [block]="true" (click)="startEdit()">✎ MODIFICA PROFILO</app-btn95>
+      } @else {
+        <label class="edit-field">
+          <span class="edit-field__label">Nome</span>
+          <input class="edit-field__input" type="text" [(ngModel)]="nomeDraft" name="nomeDraft" />
+        </label>
+        <label class="edit-field">
+          <span class="edit-field__label">Cognome</span>
+          <input class="edit-field__input" type="text" [(ngModel)]="cognomeDraft" name="cognomeDraft" />
+        </label>
+        <label class="edit-field">
+          <span class="edit-field__label">Username</span>
+          <input class="edit-field__input" type="text" [(ngModel)]="usernameDraft" name="usernameDraft" />
+        </label>
+        <label class="edit-field">
+          <span class="edit-field__label">Data di nascita</span>
+          <input class="edit-field__input" type="date" [(ngModel)]="dataNascitaDraft" name="dataNascitaDraft" />
+        </label>
+        <label class="edit-field">
+          <span class="edit-field__label">Altezza (cm)</span>
+          <input class="edit-field__input" type="number" min="1" [(ngModel)]="altezzaDraft" name="altezzaDraft" />
+        </label>
+        @if (saveError()) {
+          <div class="measures-win__error">{{ saveError() }}</div>
+        }
+        <div class="edit-actions">
+          <app-btn95 variant="cta" [disabled]="saving()" (click)="save()">{{ saving() ? 'SALVO…' : 'SALVA' }}</app-btn95>
+          <app-btn95 [disabled]="saving()" (click)="cancelEdit()">ANNULLA</app-btn95>
+        </div>
+      }
+      <app-btn95 variant="cyan" [block]="true" (click)="redoScan()">↻ RIFAI IL BODY-SCAN</app-btn95>
+    </div>
+  </div>
+
+  <!-- settings.ini -->
+  <div class="win settings-win">
+    <app-win-title label="settings.ini"></app-win-title>
+    <div class="settings-win__body">
+      <app-row icon="🔔" keyLabel="Notifiche" [showChevron]="true"></app-row>
+      <app-row icon="🔒" keyLabel="Privacy & avatar" [showChevron]="true"></app-row>
+      <app-row icon="📏" keyLabel="Unità di misura" [valueLabel]="u.unitaMisura" (rowClick)="toggleUnits()"></app-row>
+      <app-row icon="❔" keyLabel="Aiuto" [showChevron]="true"></app-row>
+    </div>
+  </div>
+
+  <!-- social sticker -->
+  <div class="social-stickers">
+    @for (s of stickers; track s.label) {
+      <button class="social-stickers__btn" [style.color]="s.color" [attr.aria-label]="s.label">{{ s.glyph }}</button>
+    }
+  </div>
+} @else {
+  <div class="win profile-win">
+    <div class="profile-win__loading">Caricamento profilo…</div>
+  </div>
+}

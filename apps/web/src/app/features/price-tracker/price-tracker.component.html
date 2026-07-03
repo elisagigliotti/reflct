@@ -1,0 +1,54 @@
+<div class="win price-win">
+  <app-win-title label="pricewatch.sys — capi monitorati"></app-win-title>
+  <div class="price-win__body">
+    @if (state.loading()) {
+      <p class="price-win__status">caricamento capi monitorati…</p>
+    } @else if (state.error()) {
+      <p class="price-win__status price-win__status--error">{{ state.error() }}</p>
+    } @else if (state.items().length === 0) {
+      <p class="price-win__status">nessun capo con storico prezzo ancora — torna qui dopo un calo prezzo su un capo che segui.</p>
+    }
+    @for (it of state.items(); track it.id) {
+      <div class="win tracked-item">
+        <div class="tracked-item__main">
+          <div class="tracked-item__thumb" style="--rot:-4deg">
+            <app-shot [color]="it.shotColor" [label]="it.shotLabel" [height]="72"></app-shot>
+          </div>
+          <div class="tracked-item__info">
+            <div class="tracked-item__name">{{ it.name }}</div>
+            <div class="tracked-item__brand">{{ it.brand }}</div>
+            <div class="tracked-item__price-row">
+              <span class="tracked-item__price" [class.tracked-item__price--drop]="it.old">{{ it.price }}</span>
+              @if (it.old) {
+                <span class="tracked-item__old-price">{{ it.old }}</span>
+              }
+            </div>
+            @if (it.isAllTimeLow) {
+              <app-stamp color="#2FAF8E">▼ minimo storico</app-stamp>
+            }
+          </div>
+        </div>
+
+        <!-- sparkline -->
+        <div class="sparkline">
+          @for (v of it.history; track $index) {
+            <span class="sparkline__bar" [style.height.%]="(v / maxHistory(it.history)) * 100" [style.background]="barColor($index)"></span>
+          }
+        </div>
+
+        <!-- alert -->
+        <div class="alert-row">
+          <span class="alert-row__label">Alert sotto</span>
+          <input
+            class="alert-row__input"
+            type="number"
+            min="1"
+            [value]="it.alertThreshold ?? ''"
+            (change)="onThresholdInput(it.id, $any($event.target).value)"
+          />
+          <app-btn95 variant="yellow">IMPOSTA</app-btn95>
+        </div>
+      </div>
+    }
+  </div>
+</div>

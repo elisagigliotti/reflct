@@ -1,0 +1,28 @@
+<div class="auth-page">
+  <div class="win login-win">
+    <app-win-title label="login.exe — accedi"></app-win-title>
+    <form class="login-win__body" (ngSubmit)="submit()">
+      <h1 class="auth-title">bentornata<span class="auth-title__underscore">_</span></h1>
+
+      <label class="field">
+        <span class="field__label">Email</span>
+        <input class="field__input" type="email" name="email" [(ngModel)]="email" autocomplete="email" placeholder="tu@esempio.com" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Password</span>
+        <input class="field__input" type="password" name="password" [(ngModel)]="password" autocomplete="current-password" placeholder="••••••••" />
+      </label>
+
+      @if (error()) {
+        <div class="auth-error">{{ error() }}</div>
+      }
+
+      <app-btn95 type="submit" variant="cta" [block]="true" [disabled]="loading()">
+        {{ loading() ? 'ACCESSO IN CORSO…' : 'ACCEDI' }}
+      </app-btn95>
+
+      <p class="auth-switch">Non hai un account? <a routerLink="/register">Registrati</a></p>
+    </form>
+  </div>
+</div>

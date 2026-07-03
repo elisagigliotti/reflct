@@ -1,0 +1,13 @@
+@use 'tokens' as t;
+
+.win {
+  @include t.win(false);
+}
+
+.win--mint {
+  background: t.$win-alt;
+}
+
+.win--pop {
+  @include t.win-pop-hover;
+}

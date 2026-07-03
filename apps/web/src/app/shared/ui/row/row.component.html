@@ -1,0 +1,16 @@
+<button class="row" [class.row--highlighted]="highlighted" (click)="rowClick.emit()">
+  <span class="row__left">
+    @if (icon) {
+      <span class="row__icon" aria-hidden="true">{{ icon }}</span>
+    }
+    <span class="row__k">{{ keyLabel }}</span>
+  </span>
+  <span class="row__right">
+    @if (valueLabel) {
+      <span class="row__v">{{ valueLabel }}</span>
+    }
+    @if (showChevron) {
+      <span class="row__chevron">›</span>
+    }
+  </span>
+</button>

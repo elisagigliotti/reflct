@@ -1,0 +1,183 @@
+@use 'tokens' as t;
+
+.profile-win {
+  margin-bottom: t.$gap-block;
+}
+
+.profile-win__body {
+  padding: 13px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.profile-win__avatar {
+  width: 66px;
+  height: 66px;
+  flex: none;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-window;
+  box-shadow: t.$shadow-button;
+  background-color: t.$lav;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.5) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(-45deg, rgba(42, 36, 56, 0.1) 0 4px, transparent 4px 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+
+.profile-win__identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-win__name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.profile-win__name {
+  font-family: t.$font-pixel;
+  font-size: 20px;
+  color: t.$ink;
+}
+
+.profile-win__handle {
+  font-family: t.$font-body;
+  font-size: 15px;
+  color: t.$muted;
+  margin-top: 3px;
+}
+
+.profile-win__actions {
+  padding: 0 13px 13px;
+}
+
+.profile-win__loading {
+  padding: 24px 13px;
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$muted;
+  text-align: center;
+}
+
+// ---------- measures.cfg ----------
+.measures-win {
+  margin-bottom: t.$gap-block;
+}
+
+.measures-win__body {
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.measures-win__row {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(42, 36, 56, 0.2);
+}
+
+.measures-win__k {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$ink;
+}
+
+.measures-win__v {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$ink;
+
+  &--cyan {
+    color: t.$cyan;
+  }
+}
+
+.measures-win__hint {
+  margin: -4px 0 0;
+  font-family: t.$font-body;
+  font-size: 14px;
+  color: t.$muted;
+}
+
+.measures-win__error {
+  border: 2px solid t.$warn;
+  border-radius: t.$radius-button;
+  padding: 6px 8px;
+  font-family: t.$font-body;
+  font-size: 14px;
+  color: t.$warn;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.edit-field__label {
+  font-family: t.$font-chrome;
+  font-size: 9px;
+  color: t.$ink2;
+  text-transform: uppercase;
+}
+
+.edit-field__input {
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-button;
+  box-shadow: t.$shadow-button;
+  padding: 6px 8px;
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$ink;
+  background: #fff;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+
+  app-btn95 {
+    flex: 1;
+  }
+}
+
+// ---------- settings.ini ----------
+.settings-win {
+  margin-bottom: t.$gap-block;
+  border-style: dashed;
+}
+
+.settings-win__body {
+  padding: 4px 0;
+}
+
+// ---------- social sticker ----------
+.social-stickers {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 4px 0 12px;
+}
+
+.social-stickers__btn {
+  width: 44px;
+  height: 44px;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-window;
+  box-shadow: t.$shadow-button;
+  background: t.$win;
+  font-size: 18px;
+  transition: transform 0.12s ease;
+
+  &:hover {
+    transform: rotate(-3deg) scale(1.05);
+  }
+}

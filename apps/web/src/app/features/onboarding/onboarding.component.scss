@@ -1,0 +1,105 @@
+@use 'tokens' as t;
+
+.onboarding__boot {
+  margin-top: 12px;
+}
+
+.onboarding__body {
+  padding: 18px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.onboarding__logo {
+  position: relative;
+  font-family: t.$font-pixel;
+  font-size: 22px;
+  color: t.$pink;
+  margin-bottom: 14px;
+}
+
+.onboarding__logo-star {
+  position: absolute;
+  font-size: 14px;
+  color: t.$yellow;
+  transition: transform 0.16s ease;
+}
+
+.onboarding__logo-star--a {
+  top: -10px;
+  left: -18px;
+  transform: rotate(-12deg);
+  color: t.$cyan;
+}
+
+.onboarding__logo-star--b {
+  top: -6px;
+  right: -20px;
+  transform: rotate(14deg);
+}
+
+.onboarding__logo:hover .onboarding__logo-star--a {
+  transform: rotate(-24deg) scale(1.1);
+}
+
+.onboarding__logo:hover .onboarding__logo-star--b {
+  transform: rotate(26deg) scale(1.1);
+}
+
+.onboarding__grid-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: t.$radius-window;
+}
+
+.onboarding__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.onboarding__tile {
+  overflow: hidden;
+  transform: rotate(var(--rot, 0deg));
+  border-radius: 4px;
+}
+
+.onboarding__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46px;
+  background: linear-gradient(180deg, rgba(127, 212, 190, 0) 0%, t.$desktop2 90%);
+  pointer-events: none;
+}
+
+.onboarding__headline {
+  font-family: t.$font-title;
+  font-weight: 700;
+  font-size: 19px;
+  color: t.$ink;
+  line-height: 1.2;
+  margin: 16px 0 0;
+}
+
+.onboarding__stamps {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.onboarding__note {
+  margin: 12px 0 0;
+  padding: 6px 12px;
+  border: 2px dashed t.$muted;
+  border-radius: t.$radius-button;
+  font-family: t.$font-body;
+  font-size: 14px;
+  color: t.$muted;
+}

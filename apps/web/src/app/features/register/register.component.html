@@ -1,0 +1,53 @@
+<div class="auth-page">
+  <div class="win register-win">
+    <app-win-title label="register.exe — crea account"></app-win-title>
+    <form class="register-win__body" (ngSubmit)="submit()">
+      <h1 class="auth-title">benvenuta<span class="auth-title__underscore">_</span></h1>
+
+      <label class="field">
+        <span class="field__label">Nome</span>
+        <input class="field__input" type="text" name="nome" [(ngModel)]="nome" autocomplete="given-name" placeholder="giulia" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Cognome</span>
+        <input class="field__input" type="text" name="cognome" [(ngModel)]="cognome" autocomplete="family-name" placeholder="rossi" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Username</span>
+        <input class="field__input" type="text" name="username" [(ngModel)]="username" autocomplete="username" placeholder="giulia_r" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Data di nascita</span>
+        <input class="field__input" type="date" name="dataNascita" [(ngModel)]="dataNascita" autocomplete="bday" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Email</span>
+        <input class="field__input" type="email" name="email" [(ngModel)]="email" autocomplete="email" placeholder="tu@esempio.com" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Password</span>
+        <input class="field__input" type="password" name="password" [(ngModel)]="password" autocomplete="new-password" placeholder="min. 8 caratteri" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Altezza (cm) — opzionale</span>
+        <input class="field__input" type="number" name="altezzaCm" [(ngModel)]="altezzaCm" min="1" placeholder="168" />
+      </label>
+
+      @if (error()) {
+        <div class="auth-error">{{ error() }}</div>
+      }
+
+      <app-btn95 type="submit" variant="cta" [block]="true" [disabled]="loading()">
+        {{ loading() ? 'CREAZIONE IN CORSO…' : 'REGISTRATI' }}
+      </app-btn95>
+
+      <p class="auth-switch">Hai già un account? <a routerLink="/login">Accedi</a></p>
+    </form>
+  </div>
+</div>

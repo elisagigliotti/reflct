@@ -1,0 +1,25 @@
+@use 'tokens' as t;
+
+.swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: t.$border-width solid t.$ink;
+  box-shadow: t.$shadow-button;
+  padding: 0;
+  flex: none;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    outline-color 0.12s ease;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+
+  &:hover {
+    transform: translate(-1px, -1px);
+  }
+
+  &.is-active {
+    outline-color: t.$ink;
+  }
+}

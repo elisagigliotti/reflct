@@ -1,0 +1,46 @@
+@use 'tokens' as t;
+
+.folder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: t.$win;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-folder;
+  box-shadow: t.$shadow-button;
+  padding: 12px 6px 10px;
+  width: 100%;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+
+  &:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: t.$shadow-button-hover;
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: t.$shadow-button-active;
+  }
+}
+
+.folder__icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.folder__name {
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$ink;
+  letter-spacing: 0.02em;
+}
+
+.folder__count {
+  font-family: t.$font-body;
+  font-size: 14px;
+  color: t.$muted;
+  line-height: 1;
+}

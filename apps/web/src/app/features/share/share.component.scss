@@ -1,0 +1,85 @@
+@use 'tokens' as t;
+
+.share-win__body {
+  padding: 13px;
+}
+
+.share-win__status {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$muted;
+  text-align: center;
+  padding: 20px 8px;
+
+  &--error {
+    color: t.$warn;
+  }
+}
+
+.share-win__pin {
+  font-family: t.$font-body;
+  font-size: 14px;
+  color: t.$ink2;
+  margin: -8px 0 16px;
+}
+
+.preview {
+  overflow: hidden;
+  transform: rotate(var(--rot, 0deg));
+  margin-bottom: 14px;
+}
+
+.share-win__section-title {
+  font-family: t.$font-title;
+  font-weight: 600;
+  font-size: 15px;
+  color: t.$ink;
+  margin: 0 0 8px;
+}
+
+.link-options {
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.url-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px dashed t.$muted;
+  border-radius: t.$radius-button;
+  padding: 8px 10px;
+  margin-bottom: 16px;
+}
+
+.url-box__text {
+  flex: 1;
+  min-width: 0;
+  font-family: t.$font-chrome;
+  font-size: 11px;
+  color: t.$ink;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.social-grid__btn {
+  aspect-ratio: 1;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-window;
+  box-shadow: t.$shadow-button;
+  background: t.$win;
+  font-size: 18px;
+  transition: transform 0.12s ease;
+
+  &:hover {
+    transform: rotate(-3deg) scale(1.05);
+  }
+}

@@ -1,0 +1,79 @@
+@use 'tokens' as t;
+
+.wardrobe-win {
+  margin-bottom: t.$gap-block;
+}
+
+.wardrobe-win__body {
+  padding: 13px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-window;
+  box-shadow: t.$shadow-button;
+  padding: 10px 4px;
+  background: t.$win;
+}
+
+.stat-card__value {
+  font-family: t.$font-pixel;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.stat-card__value--pink {
+  color: t.$pink;
+}
+
+.stat-card__value--mint {
+  color: t.$mint;
+}
+
+.stat-card__value--cyan {
+  color: t.$cyan;
+}
+
+.stat-card__label {
+  font-family: t.$font-chrome;
+  font-size: 8px;
+  color: t.$ink2;
+  letter-spacing: 0.03em;
+}
+
+.wardrobe-win__section-title {
+  font-family: t.$font-title;
+  font-weight: 600;
+  font-size: 15px;
+  color: t.$ink;
+  margin: 0 0 8px;
+}
+
+.folders {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: t.$gap-folder-grid;
+}
+
+.saved-win__body {
+  padding: 10px 8px 12px;
+}
+
+.saved-win__empty {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$muted;
+  text-align: center;
+  padding: 24px 12px;
+}

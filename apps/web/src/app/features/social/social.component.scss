@@ -1,0 +1,169 @@
+@use 'tokens' as t;
+
+.social-win__body {
+  padding: 13px;
+}
+
+.social-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.social-win__status {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$muted;
+  text-align: center;
+  padding: 14px 8px;
+
+  &--error {
+    color: t.$warn;
+  }
+}
+
+.social-win__body > app-btn95 {
+  display: block;
+  margin-bottom: 12px;
+}
+
+// ---------- rate my outfit ----------
+.rate-card {
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.rate-card__actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: t.$win;
+  justify-content: center;
+}
+
+.sticker-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 44px;
+  height: 44px;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-window;
+  box-shadow: t.$shadow-button;
+  background: #fff;
+  font-size: 16px;
+  transition: transform 0.12s ease;
+
+  &:hover {
+    transform: rotate(-3deg) scale(1.05);
+  }
+}
+
+.sticker-btn__count {
+  font-family: t.$font-chrome;
+  font-size: 8px;
+  color: t.$ink2;
+}
+
+// ---------- outfit battle ----------
+.battle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.battle__countdown {
+  align-self: center;
+}
+
+.battle__cards {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.battle__card {
+  flex: 1;
+  overflow: hidden;
+  transform: rotate(var(--rot, 0deg));
+}
+
+.battle__card-label {
+  padding: 6px 8px;
+  text-align: center;
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$ink;
+  background: t.$win;
+}
+
+.battle__vs {
+  font-family: t.$font-pixel;
+  font-size: 16px;
+  color: t.$pink;
+  flex: none;
+}
+
+.battle__bar {
+  width: 100%;
+  height: 14px;
+  border: t.$border-width solid t.$ink;
+  border-radius: 3px;
+  display: flex;
+  overflow: hidden;
+}
+
+.battle__bar-seg--a {
+  background: t.$pink;
+}
+
+.battle__bar-seg--b {
+  background: t.$cyan;
+}
+
+.battle__percents {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-family: t.$font-body;
+  font-size: 15px;
+  color: t.$ink2;
+}
+
+.battle__vote-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+
+  app-btn95 {
+    flex: 1;
+  }
+}
+
+// ---------- trending ----------
+.trending-card {
+  overflow: hidden;
+  display: block;
+}
+
+.trending-card__info {
+  padding: 8px 9px 10px;
+  background: t.$win;
+}
+
+.trending-card__name {
+  font-family: t.$font-title;
+  font-weight: 600;
+  font-size: 14px;
+  color: t.$ink;
+}
+
+.trending-card__fire {
+  font-family: t.$font-body;
+  font-size: 15px;
+  color: t.$warn;
+  margin-top: 4px;
+}

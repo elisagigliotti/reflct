@@ -1,0 +1,228 @@
+// ==========================================================================
+// Reflct — stili globali
+// Fonte di verita' dei token: packages/design-tokens/scss/_tokens.scss
+// (path risolto via angular.json > stylePreprocessorOptions.includePaths)
+// ==========================================================================
+@use 'tokens' as t;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: t.$font-body;
+  color: t.$ink;
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+  background: t.$desktop2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+
+img {
+  image-rendering: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+// scrollbar nascosta stile filter-strip anche altrove, se serve
+.no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// ==========================================================================
+// Classi base GLOBALI dei componenti riusabili (.win, .btn-95, .tab, ...).
+//
+// Le schermate applicano questi nomi anche come classi "nude" su div/button
+// (es. `<div class="win win--mint">`), non solo tramite i wrapper Angular
+// (<app-ui-window>, <app-btn95>...). Con l'incapsulamento stile di default
+// di Angular, i selettori scritti dentro il .scss di un wrapper NON si
+// applicherebbero a elementi al di fuori del suo stesso template — quindi
+// vanno duplicati qui a livello globale (i wrapper restano comunque validi,
+// la doppia definizione e' innocua). Fonte valori: packages/design-tokens.
+// ==========================================================================
+
+.win {
+  @include t.win(false);
+}
+
+.win--mint {
+  background: t.$win-alt;
+}
+
+.win--pop {
+  @include t.win-pop-hover;
+}
+
+.win-title {
+  @include t.win-title(false);
+}
+
+.win-title--teal {
+  background: t.$chrome2;
+}
+
+.win-title__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.win-title__icon {
+  font-size: 8px;
+  flex: none;
+}
+
+.win-btns {
+  display: flex;
+  gap: 3px;
+  flex: none;
+}
+
+.win-btns i {
+  width: 13px;
+  height: 12px;
+  display: block;
+  background: t.$win;
+  border: t.$border-width solid t.$ink;
+  border-radius: 2px;
+  font-style: normal;
+  font-size: 8px;
+  line-height: 8px;
+  text-align: center;
+  color: t.$ink;
+}
+
+.win-btns__close {
+  cursor: pointer;
+}
+
+.btn-95 {
+  @include t.btn-95;
+  width: auto;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.btn-95--cta {
+  background: t.$pink;
+  color: #fff;
+}
+
+.btn-95--cyan {
+  background: t.$cyan;
+}
+
+.btn-95--yellow {
+  background: t.$yellow;
+}
+
+.btn-95--block {
+  width: 100%;
+}
+
+.tab {
+  @include t.tab;
+}
+
+.stamp {
+  @include t.stamp;
+}
+
+.size-pill {
+  @include t.size-pill;
+}
+
+.shot {
+  @include t.shot;
+}
+
+.shot__tag {
+  background: rgba(251, 220, 232, 0.9);
+  border: 1px solid t.$ink;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.masonry-2 {
+  @include t.masonry-2;
+}
+
+.filter-strip {
+  @include t.filter-strip;
+}
+
+.folder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: t.$win;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-folder;
+  box-shadow: t.$shadow-button;
+  padding: 12px 6px 10px;
+  width: 100%;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+
+  &:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: t.$shadow-button-hover;
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: t.$shadow-button-active;
+  }
+}
+
+.folder__icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.folder__name {
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$ink;
+  letter-spacing: 0.02em;
+}
+
+.folder__count {
+  font-family: t.$font-body;
+  font-size: 14px;
+  color: t.$muted;
+  line-height: 1;
+}

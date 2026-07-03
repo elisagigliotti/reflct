@@ -1,0 +1,11 @@
+<div
+  class="shot"
+  [style.background-color]="color"
+  [style.height.px]="height"
+  [style.--rot]="rot !== null ? rot + 'deg' : null"
+>
+  @if (label) {
+    <span class="shot__tag">{{ label }}</span>
+  }
+  <ng-content></ng-content>
+</div>

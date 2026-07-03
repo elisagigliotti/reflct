@@ -1,0 +1,177 @@
+@use 'tokens' as t;
+
+.tryon-win__body {
+  padding: 13px;
+}
+
+.tryon-win__status {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$muted;
+  text-align: center;
+  padding: 24px 8px;
+
+  &--error {
+    color: t.$warn;
+  }
+}
+
+// ---------- viewport avatar (placeholder AR) ----------
+.avatar-viewport {
+  position: relative;
+  height: 300px;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-window;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f7c9de;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.5) 0 4px, transparent 4px 9px),
+    repeating-linear-gradient(-45deg, rgba(42, 36, 56, 0.08) 0 4px, transparent 4px 9px);
+}
+
+.avatar-viewport__rec,
+.avatar-viewport__cam {
+  @include t.stamp;
+  position: absolute;
+  top: 8px;
+  background: rgba(251, 220, 232, 0.9);
+  font-size: 8px;
+}
+
+.avatar-viewport__rec {
+  left: 8px;
+}
+
+.avatar-viewport__cam {
+  right: 8px;
+}
+
+.avatar-viewport__corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: t.$ink;
+  border-style: dashed;
+}
+
+.avatar-viewport__corner--tl {
+  top: 32px;
+  left: 8px;
+  border-width: 2px 0 0 2px;
+}
+
+.avatar-viewport__corner--tr {
+  top: 32px;
+  right: 8px;
+  border-width: 2px 2px 0 0;
+}
+
+.avatar-viewport__corner--bl {
+  bottom: 8px;
+  left: 8px;
+  border-width: 0 0 2px 2px;
+}
+
+.avatar-viewport__corner--br {
+  bottom: 8px;
+  right: 8px;
+  border-width: 0 2px 2px 0;
+}
+
+.avatar-viewport__label {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: t.$win;
+  border: t.$border-width solid t.$ink;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-family: t.$font-title;
+  font-size: 15px;
+  color: t.$ink;
+  text-align: center;
+  white-space: nowrap;
+}
+
+// ---------- fit score ----------
+.fit-score {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.fit-score__label {
+  font-family: t.$font-body;
+  font-size: 17px;
+  color: t.$ink;
+}
+
+.fit-score__value {
+  font-family: t.$font-pixel;
+  font-size: 18px;
+  color: t.$mint;
+}
+
+// ---------- readout misure ----------
+.measures-win {
+  margin-top: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.measures-win__row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.measures-win__k {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$ink;
+}
+
+.measures-win__v {
+  font-family: t.$font-chrome;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.measures-win__v--mint {
+  color: t.$mint;
+}
+
+.measures-win__v--warn {
+  color: t.$warn;
+}
+
+// ---------- selettori ----------
+.selector {
+  margin-top: 14px;
+}
+
+.selector__label {
+  display: block;
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$ink2;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.selector__row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+// ---------- azioni ----------
+.actions-row {
+  display: flex;
+  gap: 9px;
+  margin-top: 16px;
+}

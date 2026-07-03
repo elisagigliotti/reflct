@@ -1,0 +1,45 @@
+@use 'tokens' as t;
+
+.win-title {
+  @include t.win-title(false);
+}
+
+.win-title--teal {
+  background: t.$chrome2;
+}
+
+.win-title__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.win-title__icon {
+  font-size: 8px;
+  flex: none;
+}
+
+.win-btns {
+  display: flex;
+  gap: 3px;
+  flex: none;
+}
+
+.win-btns i {
+  width: 13px;
+  height: 12px;
+  display: block;
+  background: t.$win;
+  border: t.$border-width solid t.$ink;
+  border-radius: 2px;
+  font-style: normal;
+  font-size: 8px;
+  line-height: 8px;
+  text-align: center;
+  color: t.$ink;
+}
+
+.win-btns__close {
+  cursor: pointer;
+}

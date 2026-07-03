@@ -1,0 +1,12 @@
+@use 'tokens' as t;
+
+.shot {
+  @include t.shot;
+}
+
+.shot__tag {
+  background: rgba(251, 220, 232, 0.9);
+  border: 1px solid t.$ink;
+  padding: 1px 4px;
+  border-radius: 2px;
+}

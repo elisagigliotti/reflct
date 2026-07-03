@@ -1,0 +1,5 @@
+@use 'tokens' as t;
+
+.tab {
+  @include t.tab;
+}

@@ -1,0 +1,69 @@
+<div class="win scan-win">
+  <app-win-title label="scan.exe — crea il tuo avatar 3D" icon="✦"></app-win-title>
+  <div class="scan-win__body">
+    @if (state.checkingExisting()) {
+      <p class="scan-win__status">verifico se hai già uno scan…</p>
+    } @else {
+      @if (state.lastScan(); as scan) {
+        <div class="win win--mint result-box">
+          <div class="result-box__status">
+            SCAN {{ scan.status === 'COMPLETED' ? 'COMPLETATO ✓' : scan.status === 'FAILED' ? 'FALLITO ✕' : 'IN CORSO…' }}
+          </div>
+          @if (measureEntries().length > 0) {
+            <div class="result-box__measures">
+              @for (m of measureEntries(); track m[0]) {
+                <div class="result-box__row">
+                  <span class="result-box__k">{{ m[0] }}</span>
+                  <span class="result-box__v">{{ m[1] }} cm</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        <app-btn95 variant="cta" [block]="true" (click)="goToFeed()">VAI AL FEED</app-btn95>
+        <p class="scan-win__hint">Vuoi rifare lo scan? Incolla una nuova foto qui sotto.</p>
+      }
+
+      <div class="url-field">
+        <span class="url-field__label">Foto frontale (URL)</span>
+        <input
+          class="url-field__input"
+          type="url"
+          placeholder="https://…"
+          [value]="state.fotoFrontUrl()"
+          (input)="onFrontUrlChange($any($event.target).value)"
+        />
+      </div>
+
+      <div class="url-field">
+        <span class="url-field__label">Foto laterale (opzionale)</span>
+        <input
+          class="url-field__input"
+          type="url"
+          placeholder="https://…"
+          [value]="state.fotoSideUrl()"
+          (input)="onSideUrlChange($any($event.target).value)"
+        />
+      </div>
+
+      <div class="url-field">
+        <span class="url-field__label">Altezza (cm)</span>
+        <input
+          class="url-field__input url-field__input--num"
+          type="number"
+          min="1"
+          [value]="state.altezzaCm() ?? ''"
+          (input)="onAltezzaChange($any($event.target).value)"
+        />
+      </div>
+
+      @if (state.error()) {
+        <p class="scan-win__status scan-win__status--error">{{ state.error() }}</p>
+      }
+
+      <app-btn95 variant="cta" [block]="true" [disabled]="state.loading()" (click)="state.start()">
+        {{ state.loading() ? 'ANALISI IN CORSO…' : 'AVVIA SCAN' }}
+      </app-btn95>
+    }
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<article
+  class="win win--pop card"
+  [style.--rot]="item.rot + 'deg'"
+  (click)="onOpen()"
+  (keyup.enter)="onOpen()"
+  tabindex="0"
+  role="button"
+  [attr.aria-label]="'Apri ' + item.name + ' in Prova'"
+>
+  <!-- mini title bar della card -->
+  <div class="win-title card__title">
+    <span class="win-title__label">{{ fileLabel }}</span>
+    <span class="win-btns"><i class="card__title-close">×</i></span>
+  </div>
+
+  <!-- scatto prodotto (placeholder dithered) -->
+  <app-shot [color]="item.shotColor" [label]="item.shotLabel" [height]="item.h"></app-shot>
+
+  <!-- badge taglia + like sovrapposti -->
+  @if (item.size) {
+    <app-size-pill class="card__size" [size]="item.size"></app-size-pill>
+  }
+  <button
+    class="card__like"
+    [style.color]="likeColor"
+    (click)="onLike($event)"
+    aria-label="Salva nel guardaroba"
+  >{{ likeGlyph }}</button>
+
+  <!-- info capo -->
+  <div class="card__info">
+    <div class="card__name">{{ item.name }}</div>
+    <div class="card__brand">{{ item.brand }}</div>
+
+    <div class="card__price-row">
+      <span class="card__price" [style.color]="priceColor">{{ item.price }}</span>
+      @if (showPriceDrop && item.old) {
+        <span class="card__old-price">{{ item.old }}</span>
+      }
+    </div>
+    @if (showPriceDrop && item.old) {
+      <app-stamp class="card__drop-stamp" color="#2FAF8E">▼ price drop</app-stamp>
+    }
+    @if (item.fit) {
+      <div class="card__fit">✓ {{ item.fit }}</div>
+    }
+  </div>
+</article>

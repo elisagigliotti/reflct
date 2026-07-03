@@ -1,0 +1,11 @@
+<button
+  class="btn-95"
+  [class.btn-95--cta]="variant === 'cta'"
+  [class.btn-95--cyan]="variant === 'cyan'"
+  [class.btn-95--yellow]="variant === 'yellow'"
+  [class.btn-95--block]="block"
+  [type]="type"
+  [disabled]="disabled"
+>
+  <ng-content></ng-content>
+</button>

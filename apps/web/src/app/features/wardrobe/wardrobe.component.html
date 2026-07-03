@@ -1,0 +1,44 @@
+<div class="win wardrobe-win">
+  <app-win-title label="wardrobe.dat — il mio armadio"></app-win-title>
+  <div class="wardrobe-win__body">
+    <!-- 3 stat card -->
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-card__value stat-card__value--pink">{{ feed.savedCount() }}</span>
+        <span class="stat-card__label">SALVATI</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__value stat-card__value--mint">{{ wardrobe.lookCount() }}</span>
+        <span class="stat-card__label">LOOK</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__value stat-card__value--cyan">{{ wardrobe.triedCount() }}</span>
+        <span class="stat-card__label">PROVATI</span>
+      </div>
+    </div>
+
+    <!-- cartelle -->
+    <h2 class="wardrobe-win__section-title">Cartelle</h2>
+    <div class="folders">
+      @for (f of wardrobe.folders(); track f.name) {
+        <app-folder [name]="f.name" [count]="f.count"></app-folder>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- finestra salvati.lst -->
+<div class="win saved-win">
+  <app-win-title label="salvati.lst" [teal]="true"></app-win-title>
+  <div class="saved-win__body">
+    @if (feed.likedItems().length > 0) {
+      <app-masonry>
+        @for (it of feed.likedItems(); track it.id) {
+          <app-feed-card [item]="it" [liked]="true" [showPriceDrop]="false" (open)="openItem($event)" (like)="feed.toggleLike($event)"></app-feed-card>
+        }
+      </app-masonry>
+    } @else {
+      <p class="saved-win__empty">nessun capo salvato — metti ♥ nel feed!</p>
+    }
+  </div>
+</div>

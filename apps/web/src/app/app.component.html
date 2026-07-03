@@ -1,0 +1,59 @@
+<div class="desktop">
+  @if (!hideChrome()) {
+    <!-- ============ MENU BAR OS ============ -->
+    <div class="win menubar-wrap">
+      <div class="menubar">
+        <span class="menubar__logo">Reflct</span>
+        @for (m of menuItems(); track m) {
+          <span>{{ m }}</span>
+        }
+        <span class="menubar__date">{{ date }}</span>
+      </div>
+    </div>
+  }
+
+  <div class="desktop__content">
+    <router-outlet></router-outlet>
+  </div>
+
+  @if (!hideChrome()) {
+    <!-- ============ START MENU (dropdown) ============ -->
+    @if (startMenuOpen()) {
+      <div class="start-menu-backdrop" (click)="closeStartMenu()"></div>
+      <div class="win start-menu">
+        <div class="start-menu__title">reflct — menu</div>
+        @for (item of startMenu; track item.path) {
+          <a class="start-menu__item" [routerLink]="item.path" (click)="closeStartMenu()">
+            <span class="ico" aria-hidden="true">{{ item.icon }}</span>
+            <span>{{ item.label }}</span>
+          </a>
+        }
+        <div class="start-menu__sep"></div>
+        <button type="button" class="start-menu__item start-menu__item--logout" (click)="logout()">
+          <span class="ico" aria-hidden="true">⏻</span>
+          <span>Esci</span>
+        </button>
+      </div>
+    }
+
+    <!-- ============ TASKBAR / BOTTOM NAV ============ -->
+    <nav class="taskbar" aria-label="Navigazione">
+      <app-btn95 variant="yellow" class="taskbar__start" (click)="toggleStartMenu()">
+        <span class="taskbar__start-glyph">◈</span> START
+      </app-btn95>
+      <div class="taskbar__items">
+        @for (n of nav; track n.key) {
+          <a
+            class="taskbar-item"
+            [class.is-active]="isActive(n.path)"
+            [routerLink]="n.path"
+          >
+            <span class="ico" aria-hidden="true">{{ n.icon }}</span>
+            <span>{{ n.label }}</span>
+          </a>
+        }
+      </div>
+      <div class="taskbar__clock">{{ clock }}</div>
+    </nav>
+  }
+</div>

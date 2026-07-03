@@ -1,0 +1,64 @@
+@use 'tokens' as t;
+
+.row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(42, 36, 56, 0.15);
+  padding: 10px 12px;
+  text-align: left;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &--highlighted {
+    background: t.$yellow;
+    border-radius: t.$radius-button;
+    border-bottom: none;
+  }
+}
+
+.row__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.row__icon {
+  font-size: 16px;
+  flex: none;
+}
+
+.row__k {
+  font-family: t.$font-body;
+  font-size: 16px;
+  color: t.$ink;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row__right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.row__v {
+  font-family: t.$font-chrome;
+  font-size: 11px;
+  color: t.$cyan;
+}
+
+.row__chevron {
+  font-family: t.$font-body;
+  font-size: 18px;
+  color: t.$muted;
+}
