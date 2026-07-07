@@ -1,0 +1,113 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Backend API (Spring Boot, :8080)",
+      "type": "shell",
+      "command": "mvn",
+      "args": ["spring-boot:run", "-Dspring-boot.run.profiles=dev"],
+      "options": { "cwd": "${workspaceFolder}/backend/api" },
+      "isBackground": true,
+      "presentation": { "panel": "dedicated", "group": "reflct", "reveal": "always" },
+      "problemMatcher": {
+        "pattern": { "regexp": "____NEVER_MATCH____" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Started ReflctApiApplication"
+        }
+      }
+    },
+    {
+      "label": "2. AI Service (FastAPI, :8001)",
+      "type": "shell",
+      "command": "uvicorn",
+      "args": ["app.main:app", "--port", "8001", "--reload"],
+      "options": { "cwd": "${workspaceFolder}/backend/ai-service" },
+      "isBackground": true,
+      "presentation": { "panel": "dedicated", "group": "reflct", "reveal": "silent" },
+      "problemMatcher": {
+        "pattern": { "regexp": "____NEVER_MATCH____" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Application startup complete"
+        }
+      }
+    },
+    {
+      "label": "3. Scraping Service (FastAPI, :8002)",
+      "type": "shell",
+      "command": "uvicorn",
+      "args": ["app.main:app", "--port", "8002", "--reload"],
+      "options": { "cwd": "${workspaceFolder}/backend/scraping-service" },
+      "isBackground": true,
+      "presentation": { "panel": "dedicated", "group": "reflct", "reveal": "silent" },
+      "problemMatcher": {
+        "pattern": { "regexp": "____NEVER_MATCH____" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Application startup complete"
+        }
+      }
+    },
+    {
+      "label": "4. Web (Angular, :4200)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["start"],
+      "options": { "cwd": "${workspaceFolder}/apps/web" },
+      "isBackground": true,
+      "presentation": { "panel": "dedicated", "group": "reflct", "reveal": "always" },
+      "problemMatcher": {
+        "pattern": { "regexp": "____NEVER_MATCH____" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Compiled successfully|Failed to compile"
+        }
+      }
+    },
+    {
+      "label": "5. Mobile (Expo)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["expo", "start"],
+      "options": { "cwd": "${workspaceFolder}/apps/mobile" },
+      "isBackground": true,
+      "presentation": { "panel": "dedicated", "group": "reflct", "reveal": "always" },
+      "problemMatcher": {
+        "pattern": { "regexp": "____NEVER_MATCH____" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Metro waiting on"
+        }
+      }
+    },
+    {
+      "label": "🚀 Avvia tutto (backend + web)",
+      "dependsOn": [
+        "1. Backend API (Spring Boot, :8080)",
+        "2. AI Service (FastAPI, :8001)",
+        "3. Scraping Service (FastAPI, :8002)",
+        "4. Web (Angular, :4200)"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "📱 Avvia tutto + Mobile",
+      "dependsOn": [
+        "1. Backend API (Spring Boot, :8080)",
+        "2. AI Service (FastAPI, :8001)",
+        "3. Scraping Service (FastAPI, :8002)",
+        "4. Web (Angular, :4200)",
+        "5. Mobile (Expo)"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}
