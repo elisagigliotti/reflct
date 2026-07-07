@@ -58,3 +58,16 @@ export function toggleFavorite(garmentId: string): Promise<ToggleFavoriteRespons
 export function getGallery(): Promise<Page<WardrobeItemResponse>> {
   return api.get<Page<WardrobeItemResponse>>('/gallery');
 }
+
+export interface PriceHistoryPointResponse {
+  data: string;
+  prezzo: number;
+}
+
+export function importGarment(url: string): Promise<GarmentItemResponse> {
+  return api.post<GarmentItemResponse>('/garments/import', { url });
+}
+
+export function getPriceHistory(garmentId: string): Promise<PriceHistoryPointResponse[]> {
+  return api.get<PriceHistoryPointResponse[]>(`/garments/${garmentId}/price-history`);
+}

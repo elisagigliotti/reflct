@@ -1,10 +1,10 @@
 // Battle / Social (battle.net) — NUOVA, spec reskin (packages/design-tokens/README.md #6).
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+// Dati REALI: GET /api/v1/social/posts, POST /social/vote, POST /social/post.
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fonts, borders, spacing } from '../../theme/theme';
-import { BATTLE_PAIR, TRENDING } from '../../data/mockData';
 import DesktopBackground from '../../ui/DesktopBackground';
 import Menubar from '../../ui/Menubar';
 import UiWindow from '../../ui/UiWindow';
@@ -15,24 +15,69 @@ import Stamp from '../../ui/Stamp';
 import Shot from '../../ui/Shot';
 import { DualFitbar } from '../../ui/Fitbar';
 import { FeedStackParamList } from '../../navigation/types';
+import { listPosts, vote, createPost, SocialPostResponse, TipoSocialPost } from '../../api/social';
+import { startTryOn } from '../../api/tryon';
+import { useAppState } from '../../state/AppStateContext';
+import { deriveShotColor } from '../../data/garmentVisuals';
 
 type Props = NativeStackScreenProps<FeedStackParamList, 'Social'>;
-
 type SocialTab = 'Rate' | 'Battle' | 'Trending';
 
-const EMOJI_VOTES: { glyph: string; count: number }[] = [
-  { glyph: '🔥', count: 214 },
-  { glyph: '😐', count: 32 },
-  { glyph: '⏭', count: 18 },
-];
+function parseVoti(json: string): Record<string, number> {
+  try { return JSON.parse(json); } catch { return {}; }
+}
 
 export default function SocialScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const { items: feedItems } = useAppState();
   const [tab, setTab] = useState<SocialTab>('Rate');
-  const [voted, setVoted] = useState(false);
+  const [posts, setPosts] = useState<SocialPostResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [posting, setPosting] = useState(false);
+  const [votedIds, setVotedIds] = useState<Set<string>>(new Set());
 
-  const totalVotes = BATTLE_PAIR.votesA + BATTLE_PAIR.votesB;
-  const ratioA = totalVotes ? BATTLE_PAIR.votesA / totalVotes : 0.5;
+  const loadPosts = useCallback((tipo: TipoSocialPost) => {
+    setLoading(true);
+    setError(null);
+    listPosts(tipo)
+      .then(setPosts)
+      .catch(() => setError('Impossibile caricare i post. Riprova più tardi.'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (tab === 'Rate') loadPosts('RATE');
+    else if (tab === 'Battle') loadPosts('BATTLE');
+    // Trending usa i capi del feed
+  }, [tab, loadPosts]);
+
+  const handleVote = (postId: string, opzione: string) => {
+    if (votedIds.has(postId)) return;
+    vote({ postId, opzione })
+      .then((updated) => {
+        setPosts((prev) => prev.map((p) => (p.id === postId ? updated : p)));
+        setVotedIds((prev) => new Set(prev).add(postId));
+      })
+      .catch(() => {/* voto già dato o errore di rete: silenzioso */});
+  };
+
+  const handlePostRandom = () => {
+    if (feedItems.length === 0 || posting) return;
+    const item = feedItems[Math.floor(Math.random() * feedItems.length)];
+    const tipo: TipoSocialPost = tab === 'Battle' ? 'BATTLE' : 'RATE';
+    setPosting(true);
+    setError(null);
+    startTryOn({ garmentId: String(item.id), fotoUrl: 'https://reflct.app/placeholder/avatar.jpg' })
+      .then((session) => createPost({ sessionId: session.id, tipo }))
+      .then(() => loadPosts(tipo))
+      .catch(() => setError('Impossibile creare il post.'))
+      .finally(() => setPosting(false));
+  };
+
+  const ratePost = posts[0] ?? null;
+  const battlePost = posts[0] ?? null;
+  const trendingItems = feedItems.slice(0, 4);
 
   return (
     <DesktopBackground>
@@ -51,69 +96,124 @@ export default function SocialScreen({ navigation }: Props) {
               <Tab label="Trending" active={tab === 'Trending'} onPress={() => setTab('Trending')} />
             </View>
 
-            {tab === 'Rate' && (
+            {loading && <ActivityIndicator color={colors.pink} style={{ marginVertical: 24 }} />}
+            {error && <Text style={styles.errorText}>{error}</Text>}
+
+            {!loading && tab === 'Rate' && (
               <View>
-                <UiWindow style={styles.rateCard}>
-                  <Shot height={180} color={colors.pink} label="OUTFIT_07.BMP" />
-                </UiWindow>
-                <View style={styles.emojiRow}>
-                  {EMOJI_VOTES.map((e) => (
-                    <View key={e.glyph} style={styles.emojiItem}>
-                      <Pressable style={styles.emojiBtn}>
-                        <Text style={styles.emojiGlyph}>{e.glyph}</Text>
-                      </Pressable>
-                      <Text style={styles.emojiCount}>{e.count}</Text>
+                {ratePost ? (
+                  <>
+                    <UiWindow style={styles.rateCard}>
+                      <Shot
+                        height={180}
+                        color={deriveShotColor(ratePost.garmentId)}
+                        label={ratePost.garmentNome.toUpperCase().slice(0, 12) + '.BMP'}
+                      />
+                    </UiWindow>
+                    <View style={styles.emojiRow}>
+                      {(['🔥', '😐', '⏭'] as const).map((glyph, i) => {
+                        const keys = ['fire', 'meh', 'skip'] as const;
+                        const voti = parseVoti(ratePost.votiJson);
+                        return (
+                          <View key={glyph} style={styles.emojiItem}>
+                            <Pressable
+                              style={styles.emojiBtn}
+                              onPress={() => handleVote(ratePost.id, keys[i])}
+                              disabled={votedIds.has(ratePost.id)}
+                            >
+                              <Text style={styles.emojiGlyph}>{glyph}</Text>
+                            </Pressable>
+                            <Text style={styles.emojiCount}>{voti[keys[i]] ?? 0}</Text>
+                          </View>
+                        );
+                      })}
                     </View>
-                  ))}
-                </View>
+                  </>
+                ) : (
+                  <Text style={styles.emptyText}>Nessun outfit da votare.</Text>
+                )}
+                <Btn95
+                  label={posting ? 'posting…' : 'POSTA UN CAPO'}
+                  variant="cyan"
+                  block
+                  style={styles.postBtn}
+                  onPress={handlePostRandom}
+                  disabled={posting}
+                />
               </View>
             )}
 
-            {tab === 'Battle' && (
+            {!loading && tab === 'Battle' && (
               <View>
-                <View style={styles.battleRow}>
-                  <View style={[styles.battleCardWrap, { transform: [{ rotate: '-1deg' }] }]}>
-                    <UiWindow>
-                      <Shot height={140} color={colors.cyan} label={BATTLE_PAIR.itemAName} />
-                    </UiWindow>
-                  </View>
-                  <Text style={styles.vsText}>VS</Text>
-                  <View style={[styles.battleCardWrap, { transform: [{ rotate: '1deg' }] }]}>
-                    <UiWindow>
-                      <Shot height={140} color={colors.mint} label={BATTLE_PAIR.itemBName} />
-                    </UiWindow>
-                  </View>
-                </View>
-
-                <View style={styles.countdownRow}>
-                  <Stamp label={BATTLE_PAIR.countdown} color={colors.ink} />
-                </View>
-
-                <DualFitbar ratioA={ratioA} />
-                <View style={styles.voteLabelsRow}>
-                  <Text style={styles.voteLabel}>{Math.round(ratioA * 100)}%</Text>
-                  <Text style={styles.voteLabel}>{Math.round((1 - ratioA) * 100)}%</Text>
-                </View>
-
+                {battlePost ? (() => {
+                  const voti = parseVoti(battlePost.votiJson);
+                  const a = voti['a'] ?? 0;
+                  const b = voti['b'] ?? 0;
+                  const total = a + b || 1;
+                  const ratioA = a / total;
+                  const alreadyVoted = votedIds.has(battlePost.id);
+                  return (
+                    <>
+                      <View style={styles.battleRow}>
+                        <View style={[styles.battleCardWrap, { transform: [{ rotate: '-1deg' }] }]}>
+                          <UiWindow>
+                            <Shot height={140} color={deriveShotColor(battlePost.garmentId)} label={battlePost.garmentNome.toUpperCase().slice(0, 10)} />
+                          </UiWindow>
+                        </View>
+                        <Text style={styles.vsText}>VS</Text>
+                        <View style={[styles.battleCardWrap, { transform: [{ rotate: '1deg' }] }]}>
+                          <UiWindow>
+                            <Shot height={140} color={colors.mint} label="SFIDANTE" />
+                          </UiWindow>
+                        </View>
+                      </View>
+                      <DualFitbar ratioA={ratioA} />
+                      <View style={styles.voteLabelsRow}>
+                        <Text style={styles.voteLabel}>{Math.round(ratioA * 100)}%</Text>
+                        <Text style={styles.voteLabel}>{Math.round((1 - ratioA) * 100)}%</Text>
+                      </View>
+                      <View style={styles.battleBtns}>
+                        <Btn95
+                          label={alreadyVoted ? 'VOTATO ✓' : 'VOTA A'}
+                          variant={alreadyVoted ? 'cta' : 'default'}
+                          disabled={alreadyVoted}
+                          style={{ flex: 1 }}
+                          onPress={() => handleVote(battlePost.id, 'a')}
+                        />
+                        <Btn95
+                          label={alreadyVoted ? 'VOTATO ✓' : 'VOTA B'}
+                          variant={alreadyVoted ? 'cta' : 'default'}
+                          disabled={alreadyVoted}
+                          style={{ flex: 1 }}
+                          onPress={() => handleVote(battlePost.id, 'b')}
+                        />
+                      </View>
+                    </>
+                  );
+                })() : (
+                  <Text style={styles.emptyText}>Nessun battle attivo.</Text>
+                )}
                 <Btn95
-                  label={voted ? 'VOTATO ✓' : 'VOTA A'}
-                  variant={voted ? 'cta' : 'default'}
-                  disabled={voted}
+                  label={posting ? 'posting…' : 'CREA BATTLE'}
+                  variant="cyan"
                   block
-                  style={styles.voteBtn}
-                  onPress={() => setVoted(true)}
+                  style={styles.postBtn}
+                  onPress={handlePostRandom}
+                  disabled={posting}
                 />
               </View>
             )}
 
             {tab === 'Trending' && (
               <View style={styles.trendingGrid}>
-                {TRENDING.map((t) => (
-                  <View key={t.id} style={styles.trendingCell}>
+                {trendingItems.length === 0 ? (
+                  <Text style={styles.emptyText}>Nessun capo nel feed.</Text>
+                ) : trendingItems.map((t) => (
+                  <View key={String(t.id)} style={styles.trendingCell}>
                     <UiWindow>
-                      <Shot height={130} color={t.shotColor} label={t.name} />
+                      <Shot height={130} color={t.shotColor} label={t.shotLabel} />
                       <View style={styles.trendingFooter}>
-                        <Text style={styles.fireCount}>🔥 {t.fireCount}</Text>
+                        <Text style={styles.fireCount}>🔥 {t.name}</Text>
                       </View>
                     </UiWindow>
                   </View>
@@ -131,86 +231,29 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingHorizontal: 12 },
   pad: { padding: spacing.windowPadding },
-  tabRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 14,
-  },
-  rateCard: {
-    marginBottom: 12,
-  },
-  emojiRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  emojiItem: {
-    alignItems: 'center',
-    gap: 4,
-  },
+  tabRow: { flexDirection: 'row', gap: 8, marginBottom: 14 },
+  rateCard: { marginBottom: 12 },
+  emojiRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  emojiItem: { alignItems: 'center', gap: 4 },
   emojiBtn: {
-    width: 44,
-    height: 44,
-    borderWidth: borders.width,
-    borderColor: colors.ink,
-    borderRadius: borders.radius.button,
-    backgroundColor: colors.win,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 44, height: 44,
+    borderWidth: borders.width, borderColor: colors.ink,
+    borderRadius: borders.radius.button, backgroundColor: colors.win,
+    alignItems: 'center', justifyContent: 'center',
   },
-  emojiGlyph: {
-    fontSize: 20,
-  },
-  emojiCount: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: colors.ink2,
-  },
-  battleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  battleCardWrap: {
-    flex: 1,
-  },
-  vsText: {
-    fontFamily: fonts.pixel,
-    fontSize: 16,
-    color: colors.pink,
-  },
-  countdownRow: {
-    alignItems: 'center',
-    marginTop: 12,
-    marginBottom: 10,
-  },
-  voteLabelsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 4,
-  },
-  voteLabel: {
-    fontFamily: fonts.chrome,
-    fontSize: 10,
-    color: colors.ink2,
-  },
-  voteBtn: {
-    marginTop: 14,
-  },
-  trendingGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.masonryColumnGap,
-  },
-  trendingCell: {
-    width: '47%',
-  },
-  trendingFooter: {
-    padding: 8,
-    backgroundColor: colors.win,
-  },
-  fireCount: {
-    fontFamily: fonts.body,
-    fontSize: 16,
-    color: colors.ink,
-  },
+  emojiGlyph: { fontSize: 20 },
+  emojiCount: { fontFamily: fonts.body, fontSize: 14, color: colors.ink2 },
+  battleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  battleCardWrap: { flex: 1 },
+  vsText: { fontFamily: fonts.pixel, fontSize: 16, color: colors.pink },
+  voteLabelsRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
+  voteLabel: { fontFamily: fonts.chrome, fontSize: 10, color: colors.ink2 },
+  battleBtns: { flexDirection: 'row', gap: 8, marginTop: 14 },
+  postBtn: { marginTop: 16 },
+  emptyText: { fontFamily: fonts.body, fontSize: 14, color: colors.ink2, marginVertical: 16, textAlign: 'center' },
+  errorText: { fontFamily: fonts.body, fontSize: 13, color: colors.pink, marginBottom: 10 },
+  trendingGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.masonryColumnGap },
+  trendingCell: { width: '47%' },
+  trendingFooter: { padding: 8, backgroundColor: colors.win },
+  fireCount: { fontFamily: fonts.body, fontSize: 14, color: colors.ink },
 });

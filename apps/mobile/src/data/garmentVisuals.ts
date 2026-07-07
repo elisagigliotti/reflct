@@ -16,7 +16,7 @@ function hashString(id: string): number {
   return hash;
 }
 
-function deriveShotColor(id: string): string {
+export function deriveShotColor(id: string): string {
   return PALETTE[hashString(id) % PALETTE.length];
 }
 

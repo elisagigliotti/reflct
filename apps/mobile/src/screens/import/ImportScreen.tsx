@@ -1,10 +1,11 @@
 // Import Link (import.exe) — NUOVA, spec reskin (packages/design-tokens/README.md #4).
+// Dati REALI: POST /api/v1/garments/import (delega a scraping-service).
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, TextInput, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fonts, borders, spacing, shadowOffsets } from '../../theme/theme';
-import { FEED, SHOP_LINKS, SIZES } from '../../data/mockData';
+import { SHOP_LINKS, SIZES } from '../../data/mockData';
 import DesktopBackground from '../../ui/DesktopBackground';
 import Menubar from '../../ui/Menubar';
 import UiWindow from '../../ui/UiWindow';
@@ -16,6 +17,9 @@ import { SizePillSelectable } from '../../ui/SizePill';
 import FeedCard from '../../ui/FeedCard';
 import { useAppState } from '../../state/AppStateContext';
 import { FeedStackParamList } from '../../navigation/types';
+import { importGarment, GarmentItemResponse } from '../../api/garments';
+import { toFeedItem } from '../../data/garmentVisuals';
+import { FeedItem } from '../../data/models';
 
 type Props = NativeStackScreenProps<FeedStackParamList, 'Import'>;
 
@@ -24,21 +28,32 @@ export default function ImportScreen({ navigation }: Props) {
   const { liked, toggleLike } = useAppState();
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
-  const [analyzed, setAnalyzed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [imported, setImported] = useState<FeedItem | null>(null);
+  const [addedToWardrobe, setAddedToWardrobe] = useState(false);
   const [size, setSize] = useState<(typeof SIZES)[number]>('M');
 
-  const previewItem = FEED[0]; // mock: capo importato di esempio
-  const recommendedSize: (typeof SIZES)[number] = 'M';
-
-  const handleAnalyze = () => {
-    if (!url.trim()) return;
+  const handleAnalyze = async () => {
+    const trimmed = url.trim();
+    if (!trimmed) return;
     setLoading(true);
-    setAnalyzed(false);
-    // Nessun timer/animazione continua: simulazione istantanea dello stato loading -> risultato.
-    setTimeout(() => {
+    setError(null);
+    setImported(null);
+    setAddedToWardrobe(false);
+    try {
+      const garment: GarmentItemResponse = await importGarment(trimmed);
+      setImported(toFeedItem(garment));
+    } catch {
+      setError('Impossibile importare questo link. Riprova con un altro URL.');
+    } finally {
       setLoading(false);
-      setAnalyzed(true);
-    }, 10);
+    }
+  };
+
+  const handleAddToWardrobe = () => {
+    if (!imported || addedToWardrobe) return;
+    toggleLike(imported.id);
+    setAddedToWardrobe(true);
   };
 
   return (
@@ -72,13 +87,23 @@ export default function ImportScreen({ navigation }: Props) {
               </View>
             )}
 
-            {analyzed && (
+            {error && (
+              <View style={styles.errorBox}>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            )}
+
+            {imported && (
               <View style={styles.previewSection}>
                 <FeedCard
-                  item={{ ...previewItem, rot: -0.5 }}
-                  liked={!!liked[previewItem.id]}
-                  onPress={() => navigation.getParent()?.navigate('Prova', { screen: 'TryOnHome', params: { itemId: previewItem.id } })}
-                  onToggleLike={() => toggleLike(previewItem.id)}
+                  item={{ ...imported, rot: -0.5 }}
+                  liked={!!liked[String(imported.id)]}
+                  onPress={() =>
+                    navigation
+                      .getParent()
+                      ?.navigate('Prova', { screen: 'TryOnHome', params: { itemId: imported.id } })
+                  }
+                  onToggleLike={() => toggleLike(imported.id)}
                 />
 
                 <Text style={styles.sectionLabel}>Taglia</Text>
@@ -86,7 +111,7 @@ export default function ImportScreen({ navigation }: Props) {
                   {SIZES.map((s) => (
                     <View key={s} style={styles.sizeItem}>
                       <SizePillSelectable label={s} active={s === size} onPress={() => setSize(s)} />
-                      {s === recommendedSize && <Stamp label="CONSIGLIATA" color={colors.pink} style={styles.recommendedStamp} />}
+                      {s === 'M' && <Stamp label="CONSIGLIATA" color={colors.pink} style={styles.recommendedStamp} />}
                     </View>
                   ))}
                 </View>
@@ -97,7 +122,13 @@ export default function ImportScreen({ navigation }: Props) {
                   </View>
                 </UiWindow>
 
-                <Btn95 label="AGGIUNGI AL GUARDAROBA" variant="cta" block style={styles.ctaBtn} onPress={() => navigation.goBack()} />
+                <Btn95
+                  label={addedToWardrobe ? 'AGGIUNTO ✓' : 'AGGIUNGI AL GUARDAROBA'}
+                  variant="cta"
+                  block
+                  style={styles.ctaBtn}
+                  onPress={handleAddToWardrobe}
+                />
               </View>
             )}
 
@@ -108,7 +139,9 @@ export default function ImportScreen({ navigation }: Props) {
                   key={shop.id}
                   icon="🛍"
                   keyLabel={shop.name}
-                  onPress={() => setUrl(`https://www.${shop.name.toLowerCase().replace('&', '')}.com/prodotto/123`)}
+                  onPress={() =>
+                    setUrl(`https://www.${shop.name.toLowerCase().replace('&', '')}.com/prodotto/123`)
+                  }
                   showChevron
                 />
               ))}
@@ -148,9 +181,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.ink,
   },
-  analyzeBtn: {
-    marginBottom: 14,
-  },
+  analyzeBtn: { marginBottom: 14 },
   loadingBox: {
     borderWidth: 2,
     borderStyle: 'dashed',
@@ -160,14 +191,17 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     alignItems: 'center',
   },
-  loadingText: {
-    fontFamily: fonts.body,
-    fontSize: 16,
-    color: colors.ink2,
+  loadingText: { fontFamily: fonts.body, fontSize: 16, color: colors.ink2 },
+  errorBox: {
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: colors.pink,
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 14,
   },
-  previewSection: {
-    marginBottom: 18,
-  },
+  errorText: { fontFamily: fonts.body, fontSize: 14, color: colors.pink },
+  previewSection: { marginBottom: 18 },
   sectionLabel: {
     fontFamily: fonts.chrome,
     fontSize: 10,
@@ -176,31 +210,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     textTransform: 'uppercase',
   },
-  sizeRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  sizeItem: {
-    alignItems: 'center',
-    position: 'relative',
-  },
-  recommendedStamp: {
-    marginTop: 6,
-  },
-  fitBox: {
-    marginTop: 14,
-  },
-  fitBoxPad: {
-    padding: 12,
-  },
-  fitBoxText: {
-    fontFamily: fonts.chromeBold,
-    fontSize: 13,
-    color: colors.mint,
-  },
-  ctaBtn: {
-    marginTop: 14,
-  },
+  sizeRow: { flexDirection: 'row', gap: 12 },
+  sizeItem: { alignItems: 'center', position: 'relative' },
+  recommendedStamp: { marginTop: 6 },
+  fitBox: { marginTop: 14 },
+  fitBoxPad: { padding: 12 },
+  fitBoxText: { fontFamily: fonts.chromeBold, fontSize: 13, color: colors.mint },
+  ctaBtn: { marginTop: 14 },
   shopsTitle: {
     fontFamily: fonts.title,
     fontSize: 15,
