@@ -79,3 +79,36 @@ export const api = {
   patch: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
 };
+
+/**
+ * Upload multipart (FormData): niente Content-Type forzato a application/json,
+ * altrimenti fetch non puo' impostare da solo il boundary multipart/form-data.
+ */
+export async function uploadMultipart<T>(path: string, formData: FormData): Promise<T> {
+  const headers: Record<string, string> = {};
+  const token = await getToken();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, { method: 'POST', body: formData, headers });
+  } catch {
+    throw new ApiError(0, 'Impossibile contattare il server. Controlla la connessione.');
+  }
+
+  if (!response.ok) {
+    let message = `Errore ${response.status}`;
+    try {
+      const body = await response.json();
+      if (body?.message) {
+        message = body.message;
+      }
+    } catch {
+      // corpo non JSON: si tiene il messaggio generico
+    }
+    throw new ApiError(response.status, message);
+  }
+  return (await response.json()) as T;
+}

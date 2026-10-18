@@ -25,28 +25,6 @@
       }
 
       <div class="url-field">
-        <span class="url-field__label">Foto frontale (URL)</span>
-        <input
-          class="url-field__input"
-          type="url"
-          placeholder="https://…"
-          [value]="state.fotoFrontUrl()"
-          (input)="onFrontUrlChange($any($event.target).value)"
-        />
-      </div>
-
-      <div class="url-field">
-        <span class="url-field__label">Foto laterale (opzionale)</span>
-        <input
-          class="url-field__input"
-          type="url"
-          placeholder="https://…"
-          [value]="state.fotoSideUrl()"
-          (input)="onSideUrlChange($any($event.target).value)"
-        />
-      </div>
-
-      <div class="url-field">
         <span class="url-field__label">Altezza (cm)</span>
         <input
           class="url-field__input url-field__input--num"
@@ -61,9 +39,55 @@
         <p class="scan-win__status scan-win__status--error">{{ state.error() }}</p>
       }
 
-      <app-btn95 variant="cta" [block]="true" [disabled]="state.loading()" (click)="state.start()">
-        {{ state.loading() ? 'ANALISI IN CORSO…' : 'AVVIA SCAN' }}
-      </app-btn95>
+      @if (showCamera()) {
+        <app-camera-capture
+          guideLabel="Di fronte, a figura intera, buona luce"
+          (capture)="onCaptured($event)"
+          (cancel)="showCamera.set(false)"
+        ></app-camera-capture>
+      } @else if (capturedPreviewUrl()) {
+        <img class="scan-win__preview" [src]="capturedPreviewUrl()" alt="Foto scattata" />
+        <div class="scan-win__preview-actions">
+          <app-btn95 (click)="retake()">↺ Rifai</app-btn95>
+          <app-btn95 variant="cta" [disabled]="state.loading()" (click)="confirmAndAnalyze()">
+            {{ state.uploading() ? 'CARICO FOTO…' : state.loading() ? 'ANALISI…' : '✓ Analizza' }}
+          </app-btn95>
+        </div>
+      } @else {
+        <app-btn95 variant="cta" [block]="true" (click)="openCamera()">📷 Scatta con la fotocamera</app-btn95>
+
+        <button type="button" class="scan-win__manual-toggle" (click)="showManual.set(!showManual())">
+          {{ showManual() ? '▲ nascondi' : '▼' }} oppure incolla un URL foto
+        </button>
+
+        @if (showManual()) {
+          <div class="url-field">
+            <span class="url-field__label">Foto frontale (URL)</span>
+            <input
+              class="url-field__input"
+              type="url"
+              placeholder="https://…"
+              [value]="state.fotoFrontUrl()"
+              (input)="onFrontUrlChange($any($event.target).value)"
+            />
+          </div>
+
+          <div class="url-field">
+            <span class="url-field__label">Foto laterale (opzionale)</span>
+            <input
+              class="url-field__input"
+              type="url"
+              placeholder="https://…"
+              [value]="state.fotoSideUrl()"
+              (input)="onSideUrlChange($any($event.target).value)"
+            />
+          </div>
+
+          <app-btn95 variant="cta" [block]="true" [disabled]="state.loading()" (click)="state.start()">
+            {{ state.loading() ? 'ANALISI IN CORSO…' : 'AVVIA SCAN' }}
+          </app-btn95>
+        }
+      }
     }
   </div>
 </div>

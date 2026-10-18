@@ -43,6 +43,9 @@ class TryOnRenderRequest(BaseModel):
     session_id: str
     garment_id: str
     vista: Vista = "front"
+    person_image_url: str
+    garment_image_url: str
+    garment_categoria: Optional[str] = None
 
 
 class JobStatus(str, Enum):

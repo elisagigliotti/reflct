@@ -1,27 +1,127 @@
 /**
  * Reflct OS — Design tokens (React Native)
  * Stile: retro-OS Y2K / vaporwave. Fonte di verita': packages/design-tokens/tokens.json
- * Import: import { colors, fonts, radii, shadows, spacing } from '@reflct/design-tokens/rn/theme';
+ *
+ * Temi: piu' palette colore intercambiabili a runtime (stesse chiavi, stessi
+ * componenti/bordi/ombre "non derogabili" — cambia solo il colore). Uso tipico:
+ * `import { useTheme } from 'apps/mobile/src/theme/ThemeContext'` per leggere
+ * la palette attiva dentro un componente. Import diretto di `colors` qui sotto
+ * resta valido come fallback statico (palette 'y2k') per codice non ancora
+ * migrato al context.
  */
 
-export const colors = {
-  desktop: '#9FE0CC',
-  desktop2: '#7FD4BE',
-  win: '#FBDCE8',
-  winAlt: '#DCF3EC',
-  chrome: '#F49AC1',
-  chrome2: '#6FCBB6',
-  ink: '#2A2438',
-  ink2: '#5A4E6E',
-  muted: '#8A7FA0',
-  pink: '#FF5FA2',
-  cyan: '#4FD3E6',
-  mint: '#2FAF8E',
-  yellow: '#F5D14E',
-  lav: '#C6A5F2',
-  warn: '#F5A03D',
-  white: '#FFFFFF',
-} as const;
+export type ReflctColor =
+  | 'desktop'
+  | 'desktop2'
+  | 'win'
+  | 'winAlt'
+  | 'chrome'
+  | 'chrome2'
+  | 'ink'
+  | 'ink2'
+  | 'muted'
+  | 'pink'
+  | 'cyan'
+  | 'mint'
+  | 'yellow'
+  | 'lav'
+  | 'warn'
+  | 'white';
+
+export type ReflctPalette = Record<ReflctColor, string>;
+
+export type ThemeId = 'y2k' | 'dark' | 'sunset' | 'mono';
+
+export const palettes: Record<ThemeId, ReflctPalette> = {
+  // Default — handoff hifi originale (pastelli vaporwave Win9x).
+  y2k: {
+    desktop: '#9FE0CC',
+    desktop2: '#7FD4BE',
+    win: '#FBDCE8',
+    winAlt: '#DCF3EC',
+    chrome: '#F49AC1',
+    chrome2: '#6FCBB6',
+    ink: '#2A2438',
+    ink2: '#5A4E6E',
+    muted: '#8A7FA0',
+    pink: '#FF5FA2',
+    cyan: '#4FD3E6',
+    mint: '#2FAF8E',
+    yellow: '#F5D14E',
+    lav: '#C6A5F2',
+    warn: '#F5A03D',
+    white: '#FFFFFF',
+  },
+  // Dark mode — stessa grammatica retro-OS, chrome neon su pannelli scuri.
+  dark: {
+    desktop: '#14101F',
+    desktop2: '#1C1730',
+    win: '#211B33',
+    winAlt: '#2A2340',
+    chrome: '#FF3FA0',
+    chrome2: '#34E4D0',
+    ink: '#F3EEFF',
+    ink2: '#C9BFE8',
+    muted: '#8478A8',
+    pink: '#FF3FA0',
+    cyan: '#34E4D0',
+    mint: '#4CF2A0',
+    yellow: '#FFE94E',
+    lav: '#B79CFF',
+    warn: '#FF9F4E',
+    white: '#FFFFFF',
+  },
+  // Sunset Arcade — palette calda corallo/arancio.
+  sunset: {
+    desktop: '#FFD9A8',
+    desktop2: '#FFC988',
+    win: '#FFF1DE',
+    winAlt: '#FFE7C2',
+    chrome: '#FF7A59',
+    chrome2: '#FFB347',
+    ink: '#3A2419',
+    ink2: '#6B4A38',
+    muted: '#A67F63',
+    pink: '#FF4D8D',
+    cyan: '#3DC7C0',
+    mint: '#4CAF7D',
+    yellow: '#FFD23F',
+    lav: '#C9A0FF',
+    warn: '#E85D3D',
+    white: '#FFFFFF',
+  },
+  // Mono CRT — terminale fosfori verdi monocromatico.
+  mono: {
+    desktop: '#0C1410',
+    desktop2: '#0F1B14',
+    win: '#10241A',
+    winAlt: '#142E20',
+    chrome: '#1F4A32',
+    chrome2: '#245A3B',
+    ink: '#4CFF8A',
+    ink2: '#38C96C',
+    muted: '#2A8F52',
+    pink: '#4CFF8A',
+    cyan: '#6CFFB0',
+    mint: '#4CFF8A',
+    yellow: '#B6FF6C',
+    lav: '#8CFFDA',
+    warn: '#FFD25C',
+    white: '#EAFFF2',
+  },
+};
+
+export const themeMeta: { id: ThemeId; label: string; icon: string }[] = [
+  { id: 'y2k', label: 'Y2K Dream', icon: '🩷' },
+  { id: 'dark', label: 'Notte Neon', icon: '🌙' },
+  { id: 'sunset', label: 'Sunset Arcade', icon: '🌅' },
+  { id: 'mono', label: 'Mono CRT', icon: '🟢' },
+];
+
+export const DEFAULT_THEME: ThemeId = 'y2k';
+
+/** Fallback statico (palette di default) per codice non ancora migrato al ThemeContext. */
+export const colors = palettes[DEFAULT_THEME];
 
 // I file .ttf vanno bundlati in assets/fonts e caricati con expo-font (useFonts).
 // NON caricare da Google Fonts a runtime su native (vedi README handoff).
@@ -36,7 +136,6 @@ export const fonts = {
 
 export const borders = {
   width: 2,
-  color: colors.ink,
   radius: {
     window: 4,
     folder: 5,
@@ -80,5 +179,3 @@ export const nav = [
   { key: 'Armadio', icon: '🗄', label: 'ARMADIO' },
   { key: 'Io', icon: '💾', label: 'IO' },
 ] as const;
-
-export type ReflctColor = keyof typeof colors;

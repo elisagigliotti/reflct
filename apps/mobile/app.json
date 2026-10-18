@@ -15,7 +15,10 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.reflct.mobile"
+      "bundleIdentifier": "com.reflct.mobile",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Reflct usa la fotocamera per il body-scan e per provare virtualmente i capi."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +31,13 @@
     },
     "plugins": [
       "expo-font",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Reflct usa la fotocamera per il body-scan e per provare virtualmente i capi."
+        }
+      ]
     ]
   }
 }

@@ -74,6 +74,32 @@
     </div>
   </div>
 
+  <!-- aspetto.cfg -->
+  <div class="win win--mint theme-win">
+    <app-win-title label="aspetto.cfg" [teal]="true"></app-win-title>
+    <div class="theme-win__body">
+      <p class="measures-win__hint">Scegli il tema grafico dell'app.</p>
+      <div class="theme-grid">
+        @for (opt of theme.options; track opt.id) {
+          <button
+            type="button"
+            class="theme-card"
+            [class.theme-card--active]="theme.themeId() === opt.id"
+            (click)="theme.setTheme(opt.id)"
+          >
+            <span class="theme-card__preview" [attr.data-theme]="opt.id === 'y2k' ? null : opt.id">
+              <span class="theme-card__dot" style="background: var(--c-chrome)"></span>
+              <span class="theme-card__dot" style="background: var(--c-chrome2)"></span>
+              <span class="theme-card__dot" style="background: var(--c-win)"></span>
+              <span class="theme-card__icon">{{ opt.icon }}</span>
+            </span>
+            <span class="theme-card__label">{{ opt.label }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
   <!-- settings.ini -->
   <div class="win settings-win">
     <app-win-title label="settings.ini"></app-win-title>

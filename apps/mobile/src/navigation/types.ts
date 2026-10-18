@@ -10,6 +10,7 @@ export type FeedStackParamList = {
 export type TryOnStackParamList = {
   TryOnHome: { itemId?: string | number } | undefined;
   Share: { itemId?: string | number } | undefined;
+  BodyScan: undefined;
 };
 
 export type WardrobeStackParamList = {

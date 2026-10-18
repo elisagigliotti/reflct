@@ -1,0 +1,61 @@
+// ==========================================================================
+// Reflct OS — Temi alternativi (palette colore runtime)
+// Ogni blocco sovrascrive le CSS custom properties --c-* lette da _tokens.scss.
+// Attivazione: <html data-theme="dark|sunset|mono"> (vedi ThemeService).
+// Nessun blocco per 'y2k': e' il fallback hardcoded gia' in _tokens.scss.
+// Le stesse 4 palette esistono anche in rn/theme.ts (mobile) — tenerle allineate.
+// ==========================================================================
+
+[data-theme='dark'] {
+  --c-desktop: #14101f;
+  --c-desktop2: #1c1730;
+  --c-win: #211b33;
+  --c-win-alt: #2a2340;
+  --c-chrome: #ff3fa0;
+  --c-chrome2: #34e4d0;
+  --c-ink: #f3eeff;
+  --c-ink2: #c9bfe8;
+  --c-muted: #8478a8;
+  --c-pink: #ff3fa0;
+  --c-cyan: #34e4d0;
+  --c-mint: #4cf2a0;
+  --c-yellow: #ffe94e;
+  --c-lav: #b79cff;
+  --c-warn: #ff9f4e;
+}
+
+[data-theme='sunset'] {
+  --c-desktop: #ffd9a8;
+  --c-desktop2: #ffc988;
+  --c-win: #fff1de;
+  --c-win-alt: #ffe7c2;
+  --c-chrome: #ff7a59;
+  --c-chrome2: #ffb347;
+  --c-ink: #3a2419;
+  --c-ink2: #6b4a38;
+  --c-muted: #a67f63;
+  --c-pink: #ff4d8d;
+  --c-cyan: #3dc7c0;
+  --c-mint: #4caf7d;
+  --c-yellow: #ffd23f;
+  --c-lav: #c9a0ff;
+  --c-warn: #e85d3d;
+}
+
+[data-theme='mono'] {
+  --c-desktop: #0c1410;
+  --c-desktop2: #0f1b14;
+  --c-win: #10241a;
+  --c-win-alt: #142e20;
+  --c-chrome: #1f4a32;
+  --c-chrome2: #245a3b;
+  --c-ink: #4cff8a;
+  --c-ink2: #38c96c;
+  --c-muted: #2a8f52;
+  --c-pink: #4cff8a;
+  --c-cyan: #6cffb0;
+  --c-mint: #4cff8a;
+  --c-yellow: #b6ff6c;
+  --c-lav: #8cffda;
+  --c-warn: #ffd25c;
+}

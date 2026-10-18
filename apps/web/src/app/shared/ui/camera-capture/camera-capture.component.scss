@@ -1,0 +1,132 @@
+@use 'tokens' as t;
+
+.cam {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cam__viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: t.$ink;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-window;
+  overflow: hidden;
+}
+
+.cam__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); // effetto specchio in facing "user", coerente con l'uso reale
+}
+
+.cam__frame {
+  position: absolute;
+  inset: 12% 18%;
+  border: 2px dashed rgba(255, 255, 255, 0.55);
+  border-radius: t.$radius-window;
+  pointer-events: none;
+}
+
+.cam__guide-badge {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: t.$win;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-button;
+  padding: 4px 10px;
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$ink;
+  white-space: nowrap;
+}
+
+.cam__status {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: #fff;
+}
+
+.cam__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+}
+
+.cam__shutter {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: t.$border-width solid t.$ink;
+  background: t.$win;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.cam__shutter-inner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: t.$pink;
+}
+
+.cam__shutter--busy .cam__shutter-inner {
+  background: t.$muted;
+}
+
+.cam__flip,
+.cam__flip-ghost {
+  width: 40px;
+  height: 40px;
+}
+
+.cam__flip {
+  border-radius: 50%;
+  border: t.$border-width solid t.$ink;
+  background: t.$win-alt;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.cam__cancel {
+  align-self: center;
+}
+
+.cam__msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 12px;
+  text-align: center;
+  font-family: t.$font-body;
+  font-size: 15px;
+  color: t.$ink;
+}
+
+.cam__msg-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cam__canvas-hidden {
+  display: none;
+}

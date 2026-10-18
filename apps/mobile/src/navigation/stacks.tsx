@@ -7,6 +7,7 @@ import FeedScreen from '../screens/feed/FeedScreen';
 import ImportScreen from '../screens/import/ImportScreen';
 import SocialScreen from '../screens/social/SocialScreen';
 import TryOnScreen from '../screens/tryon/TryOnScreen';
+import BodyScanScreen from '../screens/tryon/BodyScanScreen';
 import ShareScreen from '../screens/share/ShareScreen';
 import WardrobeScreen from '../screens/wardrobe/WardrobeScreen';
 import PriceTrackerScreen from '../screens/priceTracker/PriceTrackerScreen';
@@ -32,6 +33,7 @@ export function TryOnStackNavigator() {
     <TryOnStack.Navigator screenOptions={noHeader}>
       <TryOnStack.Screen name="TryOnHome" component={TryOnScreen} />
       <TryOnStack.Screen name="Share" component={ShareScreen} />
+      <TryOnStack.Screen name="BodyScan" component={BodyScanScreen} />
     </TryOnStack.Navigator>
   );
 }

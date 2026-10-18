@@ -3,6 +3,7 @@ import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { ThemeService } from '../../core/theme/theme.service';
 import { Btn95Component } from '../../shared/ui/btn95/btn95.component';
 import { RowComponent } from '../../shared/ui/row/row.component';
 import { StampComponent } from '../../shared/ui/stamp/stamp.component';
@@ -52,6 +53,7 @@ export class ProfileComponent {
   constructor(
     private readonly auth: AuthService,
     private readonly router: Router,
+    readonly theme: ThemeService,
   ) {}
 
   startEdit(): void {

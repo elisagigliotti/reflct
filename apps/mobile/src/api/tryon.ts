@@ -1,16 +1,22 @@
-// Client verso com.reflct.api.tryon — necessario per Social e Share,
-// che referenziano entrambi un TryOnSession.
+// Client verso com.reflct.api.tryon — usato da Prova (render fotorealistico
+// reale) e da Social/Share, che referenziano entrambi un TryOnSession.
 import { api } from './client';
 
 export interface TryOnStartRequest {
   garmentId: string;
   fotoUrl: string;
+  vista?: 'FRONTE' | 'RETRO';
 }
 
 export interface TryOnSessionResponse {
   id: string;
   garmentId: string;
-  status: string;
+  fotoUrl: string;
+  videoUrl: string | null;
+  vista: string;
+  tagliaConsigliata: string | null;
+  fitScore: number | null;
+  status: 'PROCESSING' | 'COMPLETED' | 'FAILED';
   createdAt: string;
 }
 

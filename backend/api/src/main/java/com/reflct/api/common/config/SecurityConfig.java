@@ -21,6 +21,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
  *  - POST /api/v1/auth/login
  *  - GET  /api/v1/share/{token}   (pagina pubblica no-auth, sezione 5.6)
  *  - GET  /api/v1/payments/plans  (lista piani, deve essere visibile senza account)
+ *  - GET  /uploads/**             (foto caricate, servite come farebbe un bucket
+ *                                   S3 public-read; l'upload in se' - POST /api/v1/media/images -
+ *                                   resta protetto perche' non e' in questa lista)
  * Tutti gli altri endpoint richiedono un JWT valido.
  */
 @Configuration
@@ -47,6 +50,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/login",
                                 "/api/v1/share/*",
                                 "/api/v1/payments/plans",
+                                "/uploads/**",
                                 "/ws/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

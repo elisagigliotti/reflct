@@ -3,16 +3,39 @@
 
   @if (item(); as it) {
     <div class="tryon-win__body">
-      <!-- viewport avatar -->
-      <div class="avatar-viewport">
-        <span class="avatar-viewport__rec">● REC · AR LIVE</span>
-        <span class="avatar-viewport__cam">AVATAR_LIVE.CAM</span>
-        <div class="avatar-viewport__corner avatar-viewport__corner--tl"></div>
-        <div class="avatar-viewport__corner avatar-viewport__corner--tr"></div>
-        <div class="avatar-viewport__corner avatar-viewport__corner--bl"></div>
-        <div class="avatar-viewport__corner avatar-viewport__corner--br"></div>
-        <div class="avatar-viewport__label">{{ it.name }}{{ tryon.rotated() ? ' · vista retro' : '' }}</div>
-      </div>
+      <a routerLink="/scan" class="scan-cta">📷 Fai/rifai il body-scan</a>
+
+      @if (renderStep() === 'camera') {
+        <app-camera-capture
+          guideLabel="Di fronte, a figura intera"
+          (capture)="onRenderPhotoCaptured($event)"
+          (cancel)="cancelRenderCamera()"
+        ></app-camera-capture>
+      } @else {
+        <!-- viewport avatar -->
+        <div class="avatar-viewport">
+          @if (renderedImageUrl()) {
+            <img class="avatar-viewport__photo" [src]="renderedImageUrl()" alt="Render fotorealistico" />
+          } @else {
+            <span class="avatar-viewport__cam">AVATAR_LIVE.CAM</span>
+          }
+          <span class="avatar-viewport__rec">● REC · AR LIVE</span>
+          <div class="avatar-viewport__corner avatar-viewport__corner--tl"></div>
+          <div class="avatar-viewport__corner avatar-viewport__corner--tr"></div>
+          <div class="avatar-viewport__corner avatar-viewport__corner--bl"></div>
+          <div class="avatar-viewport__corner avatar-viewport__corner--br"></div>
+          <div class="avatar-viewport__label">{{ it.name }}{{ tryon.rotated() ? ' · vista retro' : '' }}</div>
+        </div>
+
+        @if (renderStep() === 'busy') {
+          <p class="tryon-win__status">genero il render fotorealistico… può richiedere fino a 30s</p>
+        } @else if (renderStep() === 'error') {
+          <p class="tryon-win__status tryon-win__status--error">{{ renderError() }}</p>
+        }
+        <app-btn95 variant="cta" [block]="true" (click)="openRenderCamera()">
+          {{ renderedImageUrl() ? '📸 Rifai il render fotorealistico' : '📸 Genera il render fotorealistico' }}
+        </app-btn95>
+      }
 
       <!-- fit score -->
       @if (adviceLoading()) {

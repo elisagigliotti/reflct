@@ -2,11 +2,13 @@
 // GET/PATCH /api/v1/users/me (com.reflct.api.user), non piu' mock. Le "stats"
 // decorative del Concept v4.0 sono state rimosse: non c'e' ancora un endpoint
 // che le calcoli davvero (vedi apps/web/src/app/features/profile per la stessa scelta).
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, StyleSheet } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { Pressable, View, Text, ScrollView, TextInput, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { colors, fonts, borders, shadowOffsets, spacing } from '../../theme/theme';
+import { fonts, borders, shadowOffsets, spacing } from '../../theme/theme';
+import { useTheme } from '../../theme/ThemeContext';
+import { ReflctPalette, ThemeId, palettes } from '../../../../../packages/design-tokens/rn/theme';
 import { useAuth } from '../../state/AuthContext';
 import DesktopBackground from '../../ui/DesktopBackground';
 import Menubar from '../../ui/Menubar';
@@ -22,6 +24,8 @@ type Props = NativeStackScreenProps<ProfileStackParamList, 'ProfileHome'>;
 export default function ProfileScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const { user, logout, updateMe } = useAuth();
+  const { colors, themeId, setThemeId, options } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [editing, setEditing] = useState(false);
   const [nomeDraft, setNomeDraft] = useState('');
@@ -151,8 +155,27 @@ export default function ProfileScreen({ navigation }: Props) {
               variant="cyan"
               block
               style={styles.rescanBtn}
-              onPress={() => navigation.getParent()?.navigate('Prova', { screen: 'TryOnHome' })}
+              onPress={() => navigation.getParent()?.navigate('Prova', { screen: 'BodyScan' })}
             />
+          </View>
+        </UiWindow>
+
+        <UiWindow variant="mint" style={styles.blockGap}>
+          <WinTitle label="aspetto.cfg" variant="teal" icon="🎨" />
+          <View style={styles.pad}>
+            <Text style={styles.hint}>Scegli il tema grafico dell'app.</Text>
+            <View style={styles.themeGrid}>
+              {options.map((opt) => (
+                <ThemeCard
+                  key={opt.id}
+                  id={opt.id}
+                  label={opt.label}
+                  icon={opt.icon}
+                  active={opt.id === themeId}
+                  onPress={() => setThemeId(opt.id)}
+                />
+              ))}
+            </View>
           </View>
         </UiWindow>
 
@@ -182,12 +205,85 @@ export default function ProfileScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+interface ThemeCardProps {
+  id: ThemeId;
+  label: string;
+  icon: string;
+  active: boolean;
+  onPress: () => void;
+}
+
+// Mini-preview del tema: mostra i colori della SUA palette (non di quella
+// attiva), cosi' l'utente vede l'anteprima prima di selezionarlo.
+function ThemeCard({ id, label, icon, active, onPress }: ThemeCardProps) {
+  const preview = palettes[id];
+  const { colors: activeColors } = useTheme();
+  return (
+    <Pressable onPress={onPress} style={cardStyles.wrap}>
+      <View
+        style={[
+          cardStyles.swatchRow,
+          { backgroundColor: preview.desktop, borderColor: activeColors.ink },
+          active && { borderColor: activeColors.pink, borderWidth: 3 },
+        ]}
+      >
+        <View style={[cardStyles.dot, { backgroundColor: preview.chrome }]} />
+        <View style={[cardStyles.dot, { backgroundColor: preview.chrome2 }]} />
+        <View style={[cardStyles.dot, { backgroundColor: preview.win }]} />
+        <Text style={cardStyles.icon}>{icon}</Text>
+      </View>
+      <Text style={[cardStyles.label, { color: activeColors.ink }, active && { color: activeColors.pink }]} numberOfLines={1}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
+const cardStyles = StyleSheet.create({
+  wrap: {
+    width: '47%',
+    alignItems: 'center',
+    gap: 5,
+  },
+  swatchRow: {
+    width: '100%',
+    height: 48,
+    borderRadius: borders.radius.button,
+    borderWidth: borders.width,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+  },
+  dot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  icon: {
+    fontSize: 16,
+    marginLeft: 4,
+  },
+  label: {
+    fontFamily: fonts.chrome,
+    fontSize: 10,
+    letterSpacing: 0.3,
+  },
+});
+
+function createStyles(colors: ReflctPalette) {
+  return StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingHorizontal: 12 },
   blockGap: { marginBottom: spacing.blockGap },
   pad: { padding: spacing.windowPadding },
   profilePad: { padding: spacing.windowPadding },
+  themeGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginTop: 8,
+  },
   loadingWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   loadingText: { fontFamily: fonts.body, fontSize: 16, color: colors.muted },
   avatarRow: {
@@ -319,4 +415,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: colors.ink,
   },
-});
+  });
+}

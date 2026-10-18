@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SizeAdvisorService } from '../../core/sizeadvisor/size-advisor.service';
 import { SizeAdvisorResponse } from '../../core/sizeadvisor/models';
 import { FeedStateService } from '../../core/state/feed-state.service';
 import { TryonStateService } from '../../core/state/tryon-state.service';
+import { TryOnService } from '../../core/tryon/tryon.service';
+import { MediaService } from '../../core/media/media.service';
 import { Btn95Component } from '../../shared/ui/btn95/btn95.component';
 import { FitbarComponent } from '../../shared/ui/fitbar/fitbar.component';
 import { SwatchComponent } from '../../shared/ui/swatch/swatch.component';
 import { TabComponent } from '../../shared/ui/tab/tab.component';
 import { WinTitleComponent } from '../../shared/ui/win-title/win-title.component';
+import { CameraCaptureComponent } from '../../shared/ui/camera-capture/camera-capture.component';
 
 const MEASURE_LABELS: Record<string, string> = {
   busto_cm: 'busto',
@@ -32,7 +35,16 @@ const MEASURE_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-tryon',
   standalone: true,
-  imports: [CommonModule, WinTitleComponent, Btn95Component, SwatchComponent, FitbarComponent, TabComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    WinTitleComponent,
+    Btn95Component,
+    SwatchComponent,
+    FitbarComponent,
+    TabComponent,
+    CameraCaptureComponent,
+  ],
   templateUrl: './tryon.component.html',
   styleUrl: './tryon.component.scss',
 })
@@ -48,6 +60,11 @@ export class TryonComponent {
     const it = this.item();
     return it ? this.feed.isLiked(it.id) : false;
   });
+
+  /** Render fotorealistico REALE (CatVTON via ai-service, vedi tryon.service.ts). */
+  readonly renderStep = signal<'idle' | 'camera' | 'busy' | 'error'>('idle');
+  readonly renderedImageUrl = signal<string | null>(null);
+  readonly renderError = signal<string | null>(null);
 
   /** Consiglio taglia/fit REALE da GET /api/v1/size-advisor/{id} (confronta corpo/taglia via ai-service). */
   readonly advice = signal<SizeAdvisorResponse | null>(null);
@@ -65,6 +82,8 @@ export class TryonComponent {
     readonly feed: FeedStateService,
     readonly tryon: TryonStateService,
     private readonly sizeAdvisorService: SizeAdvisorService,
+    private readonly tryOnService: TryOnService,
+    private readonly mediaService: MediaService,
     route: ActivatedRoute,
     private readonly router: Router,
   ) {
@@ -101,6 +120,52 @@ export class TryonComponent {
         },
       });
     }, { allowSignalWrites: true });
+  }
+
+  openRenderCamera(): void {
+    this.renderError.set(null);
+    this.renderStep.set('camera');
+  }
+
+  cancelRenderCamera(): void {
+    this.renderStep.set('idle');
+  }
+
+  onRenderPhotoCaptured(blob: Blob): void {
+    const it = this.item();
+    if (!it) {
+      return;
+    }
+    this.renderStep.set('busy');
+    this.mediaService.uploadImage(blob).subscribe({
+      next: (fotoUrl) => {
+        this.tryOnService
+          .start({
+            garmentId: String(it.id),
+            fotoUrl,
+            vista: this.tryon.rotated() ? 'RETRO' : 'FRONTE',
+          })
+          .subscribe({
+            next: (session) => {
+              if (session.status === 'COMPLETED' && session.videoUrl) {
+                this.renderedImageUrl.set(session.videoUrl);
+                this.renderStep.set('idle');
+              } else {
+                this.renderError.set('Il rendering non è riuscito. Riprova con un\'altra foto.');
+                this.renderStep.set('error');
+              }
+            },
+            error: () => {
+              this.renderError.set('Servizio di rendering non raggiungibile. Riprova più tardi.');
+              this.renderStep.set('error');
+            },
+          });
+      },
+      error: () => {
+        this.renderError.set('Upload della foto non riuscito.');
+        this.renderStep.set('error');
+      },
+    });
   }
 
   toggleLike(): void {

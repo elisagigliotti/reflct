@@ -1,7 +1,9 @@
 // .row (+ __k, __v) — riga bigliettino (usata in settings, shop popolari, share options).
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, fonts, borders } from '../theme/theme';
+import { fonts, borders } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
+import { ReflctPalette } from '../../../../packages/design-tokens/rn/theme';
 
 interface RowProps {
   keyLabel: string;
@@ -13,6 +15,8 @@ interface RowProps {
 }
 
 export default function Row({ keyLabel, valueLabel, onPress, highlighted, showChevron, icon }: RowProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <Pressable onPress={onPress} style={[styles.row, highlighted && styles.rowHighlighted]}>
       <View style={styles.left}>
@@ -33,7 +37,8 @@ export default function Row({ keyLabel, valueLabel, onPress, highlighted, showCh
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ReflctPalette) {
+  return StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -77,4 +82,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.muted,
   },
-});
+  });
+}

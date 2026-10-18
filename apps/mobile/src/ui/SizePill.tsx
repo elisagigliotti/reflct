@@ -1,7 +1,9 @@
 // .size-pill — badge taglia (Feed, overlay su card) e selettore taglia (Prova/Import).
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, Text, View, StyleSheet } from 'react-native';
-import { colors, fonts, borders, shadowOffsets } from '../theme/theme';
+import { fonts, borders, shadowOffsets } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
+import { ReflctPalette } from '../../../../packages/design-tokens/rn/theme';
 
 interface SizePillBadgeProps {
   label: string;
@@ -10,6 +12,8 @@ interface SizePillBadgeProps {
 
 // Variante badge non interattiva (overlay sulla card Feed)
 export function SizePillBadge({ label, style }: SizePillBadgeProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={[styles.badge, style]}>
       <Text style={styles.badgeText}>{label}</Text>
@@ -26,6 +30,8 @@ interface SizePillSelectableProps {
 
 // Variante selezionabile (selettore taglia in Prova/Import)
 export function SizePillSelectable({ label, active, recommended, onPress }: SizePillSelectableProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <Pressable onPress={onPress} style={styles.selWrap}>
       <View pointerEvents="none" style={styles.selShadow} />
@@ -39,7 +45,8 @@ export function SizePillSelectable({ label, active, recommended, onPress }: Size
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ReflctPalette) {
+  return StyleSheet.create({
   badge: {
     backgroundColor: colors.cyan,
     borderWidth: borders.width,
@@ -88,15 +95,16 @@ const styles = StyleSheet.create({
   selTextActive: {
     color: colors.white,
   },
-  recDot: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.pink,
-    borderWidth: 1,
-    borderColor: colors.ink,
-  },
-});
+    recDot: {
+      position: 'absolute',
+      top: -4,
+      right: -4,
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: colors.pink,
+      borderWidth: 1,
+      borderColor: colors.ink,
+    },
+  });
+}

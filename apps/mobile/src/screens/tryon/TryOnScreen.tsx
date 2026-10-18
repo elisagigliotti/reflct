@@ -3,12 +3,15 @@
 // se non arriva un id valido dai param di navigazione, si usa il primo capo
 // disponibile appena il feed e' pronto (stesso schema del web, vedi
 // apps/web/src/app/features/tryon/tryon.component.ts).
-import React, { useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fonts, spacing } from '../../theme/theme';
 import { useAppState } from '../../state/AppStateContext';
+import { uploadImage } from '../../api/media';
+import { startTryOn } from '../../api/tryon';
+import { ApiError } from '../../api/client';
 import DesktopBackground from '../../ui/DesktopBackground';
 import Menubar from '../../ui/Menubar';
 import UiWindow from '../../ui/UiWindow';
@@ -17,9 +20,12 @@ import Stamp from '../../ui/Stamp';
 import Btn95 from '../../ui/Btn95';
 import Fitbar from '../../ui/Fitbar';
 import Swatch from '../../ui/Swatch';
+import CameraCapture from '../../ui/CameraCapture';
 import { SizePillSelectable } from '../../ui/SizePill';
 import { SIZES, TRYON_COLORS } from '../../data/mockData';
 import { TryOnStackParamList } from '../../navigation/types';
+
+type RenderStep = 'idle' | 'camera' | 'busy' | 'error';
 
 type Props = NativeStackScreenProps<TryOnStackParamList, 'TryOnHome'>;
 
@@ -50,6 +56,30 @@ export default function TryOnScreen({ route, navigation }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramItemId]);
 
+  const [renderStep, setRenderStep] = useState<RenderStep>('idle');
+  const [renderedUri, setRenderedUri] = useState<string | null>(null);
+  const [renderError, setRenderError] = useState<string | null>(null);
+
+  const onRenderCapture = async (uri: string) => {
+    if (!item) return;
+    setRenderStep('busy');
+    setRenderError(null);
+    try {
+      const fotoUrl = await uploadImage(uri);
+      const session = await startTryOn({ garmentId: String(item.id), fotoUrl, vista: 'FRONTE' });
+      if (session.status === 'COMPLETED' && session.videoUrl) {
+        setRenderedUri(session.videoUrl);
+        setRenderStep('idle');
+      } else {
+        setRenderError('Il rendering non è riuscito. Riprova con un\'altra foto.');
+        setRenderStep('error');
+      }
+    } catch (err) {
+      setRenderError(err instanceof ApiError ? err.message : 'Errore imprevisto durante il rendering.');
+      setRenderStep('error');
+    }
+  };
+
   const fitPct = 92;
   const isLiked = item ? !!liked[String(item.id)] : false;
 
@@ -63,6 +93,17 @@ export default function TryOnScreen({ route, navigation }: Props) {
     );
   }
 
+  if (renderStep === 'camera') {
+    return (
+      <CameraCapture
+        facingDefault="front"
+        guideLabel="Di fronte, a figura intera"
+        onCapture={onRenderCapture}
+        onCancel={() => setRenderStep('idle')}
+      />
+    );
+  }
+
   return (
     <DesktopBackground>
       <ScrollView
@@ -71,12 +112,24 @@ export default function TryOnScreen({ route, navigation }: Props) {
       >
         <Menubar menuItems={['Cabina', 'AR', 'View']} />
 
+        <Btn95
+          label="📷 Fai/rifai il body-scan"
+          variant="cyan"
+          block
+          style={styles.scanCta}
+          onPress={() => navigation.navigate('BodyScan')}
+        />
+
         <UiWindow>
           <WinTitle label="tryon.exe — cabina di prova" icon="✦" />
           <View style={styles.pad}>
-            {/* Viewport avatar / AR placeholder */}
+            {/* Viewport avatar: foto renderizzata REALE (CatVTON) se presente, altrimenti placeholder AR */}
             <View style={styles.viewport}>
-              <View style={styles.viewportDither} />
+              {renderedUri ? (
+                <Image source={{ uri: renderedUri }} style={styles.viewportPhoto} resizeMode="cover" />
+              ) : (
+                <View style={styles.viewportDither} />
+              )}
               {/* corner marker AR: 4 angoli tratteggiati */}
               <View style={[styles.corner, styles.cornerTL]} />
               <View style={[styles.corner, styles.cornerTR]} />
@@ -85,15 +138,30 @@ export default function TryOnScreen({ route, navigation }: Props) {
 
               <View style={styles.viewportTopRow}>
                 <Stamp label="● REC · AR LIVE" color={colors.ink} style={styles.recStamp} />
-                <Stamp label="AVATAR_LIVE.CAM" color={colors.ink} style={styles.recStamp} />
+                {!renderedUri && <Stamp label="AVATAR_LIVE.CAM" color={colors.ink} style={styles.recStamp} />}
               </View>
 
-              <Text style={styles.avatarPlaceholderText}>AVATAR_LIVE.CAM</Text>
+              {!renderedUri && <Text style={styles.avatarPlaceholderText}>AVATAR_LIVE.CAM</Text>}
 
               <View style={styles.itemLabel}>
                 <Text style={styles.itemLabelText}>{item.name}</Text>
               </View>
             </View>
+
+            {renderStep === 'busy' && (
+              <Text style={styles.renderStatus}>genero il render fotorealistico… può richiedere fino a 30s</Text>
+            )}
+            {renderStep === 'error' && renderError && (
+              <Text style={[styles.renderStatus, { color: colors.warn }]}>{renderError}</Text>
+            )}
+            <Btn95
+              label={renderedUri ? '📸 Rifai il render fotorealistico' : '📸 Genera il render fotorealistico'}
+              variant="cta"
+              block
+              style={styles.renderCta}
+              disabled={renderStep === 'busy'}
+              onPress={() => setRenderStep('camera')}
+            />
 
             {/* Fit score */}
             <View style={styles.fitHeaderRow}>
@@ -161,6 +229,7 @@ export default function TryOnScreen({ route, navigation }: Props) {
 const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingHorizontal: 12 },
+  scanCta: { marginBottom: 12 },
   pad: { padding: spacing.windowPadding },
   loadingWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   loadingText: { fontFamily: fonts.body, fontSize: 16, color: colors.muted },
@@ -178,6 +247,19 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: '#F7C9DE',
     opacity: 0.9,
+  },
+  viewportPhoto: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  renderStatus: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: colors.muted,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  renderCta: {
+    marginBottom: 12,
   },
   corner: {
     position: 'absolute',

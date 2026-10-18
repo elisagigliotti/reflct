@@ -1,8 +1,10 @@
 // Card capo (mini-finestra ripetuta in Feed/Armadio/Import), stile .win.win--pop.
 // Cliccabile -> naviga a Prova con l'id del capo.
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { colors, fonts, borders, shadowOffsets } from '../theme/theme';
+import { fonts, borders, shadowOffsets } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
+import { ReflctPalette } from '../../../../packages/design-tokens/rn/theme';
 import WinTitle from './WinTitle';
 import Shot from './Shot';
 import { SizePillBadge } from './SizePill';
@@ -17,6 +19,8 @@ interface FeedCardProps {
 }
 
 export default function FeedCard({ item, liked, onPress, onToggleLike }: FeedCardProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [pressed, setPressed] = useState(false);
   const rotate = `${item.rot}deg`;
   const translate = pressed ? { x: -1, y: -2 } : { x: 0, y: 0 };
@@ -87,105 +91,107 @@ export default function FeedCard({ item, liked, onPress, onToggleLike }: FeedCar
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: {
-    position: 'relative',
-  },
-  shadow: {
-    position: 'absolute',
-    top: shadowOffsets.window.y,
-    left: shadowOffsets.window.x,
-    right: -shadowOffsets.window.x,
-    bottom: -shadowOffsets.window.y,
-    backgroundColor: colors.ink,
-    borderRadius: borders.radius.window,
-  },
-  card: {
-    backgroundColor: colors.win,
-    borderWidth: borders.width,
-    borderColor: colors.ink,
-    borderRadius: borders.radius.window,
-    overflow: 'hidden',
-  },
-  shotArea: {
-    position: 'relative',
-  },
-  sizeBadge: {
-    position: 'absolute',
-    top: 24,
-    right: 7,
-  },
-  likeBtn: {
-    position: 'absolute',
-    top: 24,
-    left: 7,
-  },
-  likeShadow: {
-    position: 'absolute',
-    top: shadowOffsets.button.y,
-    left: shadowOffsets.button.x,
-    right: -shadowOffsets.button.x,
-    bottom: -shadowOffsets.button.y,
-    backgroundColor: colors.ink,
-    borderRadius: 4,
-  },
-  likeInner: {
-    width: 30,
-    height: 28,
-    borderWidth: borders.width,
-    borderColor: colors.ink,
-    borderRadius: 4,
-    backgroundColor: colors.win,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  likeGlyph: {
-    fontSize: 15,
-    lineHeight: 16,
-  },
-  info: {
-    padding: 9,
-    paddingBottom: 10,
-    backgroundColor: colors.win,
-  },
-  name: {
-    fontFamily: fonts.title,
-    fontSize: 15,
-    lineHeight: 16,
-    color: colors.ink,
-  },
-  brand: {
-    fontFamily: fonts.chrome,
-    fontSize: 8,
-    color: colors.muted,
-    marginTop: 3,
-    letterSpacing: 0.4,
-  },
-  priceRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 7,
-    marginTop: 7,
-    flexWrap: 'wrap',
-  },
-  price: {
-    fontFamily: fonts.body,
-    fontSize: 22,
-    lineHeight: 20,
-  },
-  oldPrice: {
-    fontFamily: fonts.body,
-    fontSize: 16,
-    color: colors.muted,
-    textDecorationLine: 'line-through',
-  },
-  dropStamp: {
-    marginTop: 6,
-  },
-  fitNote: {
-    fontFamily: fonts.body,
-    fontSize: 16,
-    color: colors.mint,
-    marginTop: 5,
-  },
-});
+function createStyles(colors: ReflctPalette) {
+  return StyleSheet.create({
+    wrap: {
+      position: 'relative',
+    },
+    shadow: {
+      position: 'absolute',
+      top: shadowOffsets.window.y,
+      left: shadowOffsets.window.x,
+      right: -shadowOffsets.window.x,
+      bottom: -shadowOffsets.window.y,
+      backgroundColor: colors.ink,
+      borderRadius: borders.radius.window,
+    },
+    card: {
+      backgroundColor: colors.win,
+      borderWidth: borders.width,
+      borderColor: colors.ink,
+      borderRadius: borders.radius.window,
+      overflow: 'hidden',
+    },
+    shotArea: {
+      position: 'relative',
+    },
+    sizeBadge: {
+      position: 'absolute',
+      top: 24,
+      right: 7,
+    },
+    likeBtn: {
+      position: 'absolute',
+      top: 24,
+      left: 7,
+    },
+    likeShadow: {
+      position: 'absolute',
+      top: shadowOffsets.button.y,
+      left: shadowOffsets.button.x,
+      right: -shadowOffsets.button.x,
+      bottom: -shadowOffsets.button.y,
+      backgroundColor: colors.ink,
+      borderRadius: 4,
+    },
+    likeInner: {
+      width: 30,
+      height: 28,
+      borderWidth: borders.width,
+      borderColor: colors.ink,
+      borderRadius: 4,
+      backgroundColor: colors.win,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    likeGlyph: {
+      fontSize: 15,
+      lineHeight: 16,
+    },
+    info: {
+      padding: 9,
+      paddingBottom: 10,
+      backgroundColor: colors.win,
+    },
+    name: {
+      fontFamily: fonts.title,
+      fontSize: 15,
+      lineHeight: 16,
+      color: colors.ink,
+    },
+    brand: {
+      fontFamily: fonts.chrome,
+      fontSize: 8,
+      color: colors.muted,
+      marginTop: 3,
+      letterSpacing: 0.4,
+    },
+    priceRow: {
+      flexDirection: 'row',
+      alignItems: 'baseline',
+      gap: 7,
+      marginTop: 7,
+      flexWrap: 'wrap',
+    },
+    price: {
+      fontFamily: fonts.body,
+      fontSize: 22,
+      lineHeight: 20,
+    },
+    oldPrice: {
+      fontFamily: fonts.body,
+      fontSize: 16,
+      color: colors.muted,
+      textDecorationLine: 'line-through',
+    },
+    dropStamp: {
+      marginTop: 6,
+    },
+    fitNote: {
+      fontFamily: fonts.body,
+      fontSize: 16,
+      color: colors.mint,
+      marginTop: 5,
+    },
+  });
+}

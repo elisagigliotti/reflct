@@ -1,0 +1,43 @@
+<div class="cam">
+  @if (status() === 'unavailable') {
+    <div class="cam__msg">
+      <p>Questo browser non supporta l'accesso alla fotocamera.</p>
+      <app-btn95 (click)="onCancel()">Annulla</app-btn95>
+    </div>
+  } @else if (status() === 'denied') {
+    <div class="cam__msg">
+      <p>Permesso fotocamera negato. Consentilo dalle impostazioni del browser e riprova.</p>
+      <div class="cam__msg-actions">
+        <app-btn95 variant="cta" (click)="startStream()">Riprova</app-btn95>
+        <app-btn95 (click)="onCancel()">Annulla</app-btn95>
+      </div>
+    </div>
+  } @else {
+    <div class="cam__viewport">
+      <video #video class="cam__video" autoplay playsinline muted></video>
+      @if (guideLabel) {
+        <div class="cam__guide-badge">{{ guideLabel }}</div>
+      }
+      <div class="cam__frame"></div>
+      @if (status() === 'starting') {
+        <div class="cam__status">avvio fotocamera…</div>
+      }
+    </div>
+    <div class="cam__controls">
+      <button type="button" class="cam__flip" (click)="toggleFacing()" aria-label="Cambia fotocamera">⟲</button>
+      <button
+        type="button"
+        class="cam__shutter"
+        [class.cam__shutter--busy]="taking()"
+        [disabled]="status() !== 'ready' || taking()"
+        (click)="takePicture()"
+        aria-label="Scatta foto"
+      >
+        <span class="cam__shutter-inner"></span>
+      </button>
+      <div class="cam__flip-ghost"></div>
+    </div>
+    <app-btn95 class="cam__cancel" (click)="onCancel()">Annulla</app-btn95>
+  }
+  <canvas #canvas class="cam__canvas-hidden"></canvas>
+</div>

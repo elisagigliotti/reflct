@@ -1,7 +1,9 @@
 // .tab — linguetta filtro (usata in filter-strip Feed e nei tab pill Battle/Social).
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, Text, View, StyleSheet } from 'react-native';
-import { colors, fonts, borders, shadowOffsets } from '../theme/theme';
+import { fonts, borders, shadowOffsets } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
+import { ReflctPalette } from '../../../../packages/design-tokens/rn/theme';
 
 interface TabProps {
   label: string;
@@ -10,6 +12,8 @@ interface TabProps {
 }
 
 export default function Tab({ label, active, onPress }: TabProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <Pressable onPress={onPress} style={styles.wrap}>
       <View pointerEvents="none" style={styles.shadow} />
@@ -22,36 +26,38 @@ export default function Tab({ label, active, onPress }: TabProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: {
-    position: 'relative',
-  },
-  shadow: {
-    position: 'absolute',
-    top: shadowOffsets.button.y,
-    left: shadowOffsets.button.x,
-    right: -shadowOffsets.button.x,
-    bottom: -shadowOffsets.button.y,
-    backgroundColor: colors.ink,
-    borderRadius: borders.radius.button,
-  },
-  tab: {
-    backgroundColor: colors.winAlt,
-    borderWidth: borders.width,
-    borderColor: colors.ink,
-    borderRadius: borders.radius.button,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-  },
-  tabActive: {
-    backgroundColor: colors.pink,
-  },
-  label: {
-    fontFamily: fonts.chrome,
-    fontSize: 11,
-    color: colors.ink,
-  },
-  labelActive: {
-    color: colors.white,
-  },
-});
+function createStyles(colors: ReflctPalette) {
+  return StyleSheet.create({
+    wrap: {
+      position: 'relative',
+    },
+    shadow: {
+      position: 'absolute',
+      top: shadowOffsets.button.y,
+      left: shadowOffsets.button.x,
+      right: -shadowOffsets.button.x,
+      bottom: -shadowOffsets.button.y,
+      backgroundColor: colors.ink,
+      borderRadius: borders.radius.button,
+    },
+    tab: {
+      backgroundColor: colors.winAlt,
+      borderWidth: borders.width,
+      borderColor: colors.ink,
+      borderRadius: borders.radius.button,
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+    },
+    tabActive: {
+      backgroundColor: colors.pink,
+    },
+    label: {
+      fontFamily: fonts.chrome,
+      fontSize: 11,
+      color: colors.ink,
+    },
+    labelActive: {
+      color: colors.white,
+    },
+  });
+}

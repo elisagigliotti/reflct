@@ -5,23 +5,26 @@
 // ==========================================================================
 
 // ---------- colori ----------
-$desktop:  #9FE0CC;
-$desktop2: #7FD4BE;
-$win:      #FBDCE8;
-$win-alt:  #DCF3EC;
-$chrome:   #F49AC1;
-$chrome2:  #6FCBB6;
+// Ogni colore e' una CSS custom property con fallback = palette 'y2k' (default).
+// I temi alternativi (vedi _themes.scss) impostano queste --c-* su :root[data-theme=...],
+// cosi' ogni mixin/regola sotto continua a funzionare invariata a runtime.
+$desktop:  var(--c-desktop, #9FE0CC);
+$desktop2: var(--c-desktop2, #7FD4BE);
+$win:      var(--c-win, #FBDCE8);
+$win-alt:  var(--c-win-alt, #DCF3EC);
+$chrome:   var(--c-chrome, #F49AC1);
+$chrome2:  var(--c-chrome2, #6FCBB6);
 
-$ink:      #2A2438;
-$ink2:     #5A4E6E;
-$muted:    #8A7FA0;
+$ink:      var(--c-ink, #2A2438);
+$ink2:     var(--c-ink2, #5A4E6E);
+$muted:    var(--c-muted, #8A7FA0);
 
-$pink:     #FF5FA2;
-$cyan:     #4FD3E6;
-$mint:     #2FAF8E;
-$yellow:   #F5D14E;
-$lav:      #C6A5F2;
-$warn:     #F5A03D;
+$pink:     var(--c-pink, #FF5FA2);
+$cyan:     var(--c-cyan, #4FD3E6);
+$mint:     var(--c-mint, #2FAF8E);
+$yellow:   var(--c-yellow, #F5D14E);
+$lav:      var(--c-lav, #C6A5F2);
+$warn:     var(--c-warn, #F5A03D);
 
 // ---------- tipografia ----------
 $font-pixel:  "Press Start 2P", monospace;   // logo, username, numeri grandi

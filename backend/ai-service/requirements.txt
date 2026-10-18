@@ -7,3 +7,18 @@ mediapipe==0.10.35
 opencv-python-headless>=5.0.0
 numpy>=2.0.0
 requests==2.32.3
+Pillow>=10.3.0
+
+# Try-on fotorealistico (CatVTON, vedi app/tryon_model/ e README.md sez.
+# "Try-On"): NON installabili da questo file da soli, torch va installato
+# per PRIMO con l'indice CUDA giusto per la tua GPU, es.:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+# poi il resto:
+#   pip install diffusers==0.29.2 "transformers>=4.44,<5" "accelerate>=0.31" safetensors "huggingface_hub[hf_xet]"
+# (torch non e' elencato qui sotto apposta, per non farlo reinstallare in
+# versione CPU-only da un `pip install -r requirements.txt` generico)
+diffusers==0.29.2
+transformers>=4.44,<5
+accelerate>=0.31
+safetensors
+huggingface_hub[hf_xet]

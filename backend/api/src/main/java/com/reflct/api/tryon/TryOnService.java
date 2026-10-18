@@ -7,6 +7,8 @@ import com.reflct.api.garment.GarmentItem;
 import com.reflct.api.garment.GarmentItemRepository;
 import com.reflct.api.user.User;
 import com.reflct.api.user.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,8 @@ import java.util.UUID;
 
 @Service
 public class TryOnService {
+
+    private static final Logger log = LoggerFactory.getLogger(TryOnService.class);
 
     private final TryOnSessionRepository tryOnSessionRepository;
     private final UserRepository userRepository;
@@ -36,10 +40,18 @@ public class TryOnService {
     }
 
     /**
-     * Avvia una sessione try-on: crea il job di rendering su ai-service (POST
-     * /tryon/render) e ne fa subito il polling (GET /tryon/render/{jobId}) — nello
-     * scaffold attuale ai-service segna il job "done" immediatamente, in produzione
-     * questo secondo passo sarebbe asincrono (coda GPU, notifica via WebSocket).
+     * Avvia una sessione try-on: crea il job di rendering fotorealistico su
+     * ai-service (POST /tryon/render, CatVTON) usando la foto dell'utente
+     * (request.fotoUrl(), tipicamente lo scatto fatto con la fotocamera o
+     * l'ultimo body-scan) e la foto del capo. Il rendering e' sincrono lato
+     * ai-service (vedi ai-service/app/routers/tryon.py), quindi al ritorno di
+     * questa chiamata il job e' gia' "done" o "failed".
+     *
+     * Se il rendering fallisce (AI non raggiungibile, foto non valida, ecc.)
+     * la sessione viene comunque creata con status FAILED invece di far
+     * fallire l'intera richiesta: Share/Social hanno bisogno solo che la
+     * sessione esista per generare un link, indipendentemente dal fatto che
+     * il render fotorealistico sia riuscito.
      *
      * La taglia consigliata / fit score NON vengono da questa chiamata (ai-service
      * tratta rendering visivo e size-advisor come due concern separati, vedi
@@ -64,9 +76,14 @@ public class TryOnService {
 
         publishStatus(session);
 
+        String garmentImageUrl = "RETRO".equalsIgnoreCase(session.getVista()) && garment.getFotoBackUrl() != null
+                ? garment.getFotoBackUrl()
+                : garment.getFotoFrontUrl();
+
         try {
             Map<String, Object> job = aiServiceClient.createTryOnRenderJob(
-                    session.getId().toString(), garment.getId().toString(), toAiVista(session.getVista()));
+                    session.getId().toString(), garment.getId().toString(), toAiVista(session.getVista()),
+                    request.fotoUrl(), garmentImageUrl, garment.getCategoria());
 
             Object jobId = job.get("job_id");
             Map<String, Object> result = jobId != null
@@ -74,17 +91,19 @@ public class TryOnService {
                     : job;
 
             Object outputUrl = result.get("output_url");
+            Object status = result.get("status");
             session.setVideoUrl(outputUrl != null ? outputUrl.toString() : null);
-            session.setStatus("COMPLETED");
+            session.setStatus("done".equals(status) ? "COMPLETED" : "FAILED");
             tryOnSessionRepository.save(session);
             publishStatus(session);
 
             return TryOnSessionResponse.from(session);
         } catch (UpstreamServiceException ex) {
+            log.warn("Rendering try-on fallito per sessione {}: {}", session.getId(), ex.getMessage());
             session.setStatus("FAILED");
             tryOnSessionRepository.save(session);
             publishStatus(session);
-            throw ex;
+            return TryOnSessionResponse.from(session);
         }
     }
 

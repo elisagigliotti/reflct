@@ -1,8 +1,9 @@
 // .win — finestra base (chrome + body). Simula box-shadow offset-solido con
 // una View assoluta dietro (niente shadowOpacity/elevation sfumata).
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors, borders, shadowOffsets } from '../theme/theme';
+import { borders, shadowOffsets } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
 
 interface UiWindowProps {
   children: React.ReactNode;
@@ -12,6 +13,8 @@ interface UiWindowProps {
 }
 
 export default function UiWindow({ children, variant = 'default', style, noShadow }: UiWindowProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={[styles.wrap, style]}>
       {!noShadow && <View pointerEvents="none" style={styles.shadow} />}
@@ -27,29 +30,31 @@ export default function UiWindow({ children, variant = 'default', style, noShado
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: {
-    position: 'relative',
-  },
-  shadow: {
-    position: 'absolute',
-    top: shadowOffsets.window.y,
-    left: shadowOffsets.window.x,
-    right: -shadowOffsets.window.x,
-    bottom: -shadowOffsets.window.y,
-    backgroundColor: colors.ink,
-    borderRadius: borders.radius.window,
-  },
-  win: {
-    borderWidth: borders.width,
-    borderColor: colors.ink,
-    borderRadius: borders.radius.window,
-    overflow: 'hidden',
-  },
-  winDefault: {
-    backgroundColor: colors.win,
-  },
-  winMint: {
-    backgroundColor: colors.winAlt,
-  },
-});
+function createStyles(colors: { ink: string; win: string; winAlt: string }) {
+  return StyleSheet.create({
+    wrap: {
+      position: 'relative',
+    },
+    shadow: {
+      position: 'absolute',
+      top: shadowOffsets.window.y,
+      left: shadowOffsets.window.x,
+      right: -shadowOffsets.window.x,
+      bottom: -shadowOffsets.window.y,
+      backgroundColor: colors.ink,
+      borderRadius: borders.radius.window,
+    },
+    win: {
+      borderWidth: borders.width,
+      borderColor: colors.ink,
+      borderRadius: borders.radius.window,
+      overflow: 'hidden',
+    },
+    winDefault: {
+      backgroundColor: colors.win,
+    },
+    winMint: {
+      backgroundColor: colors.winAlt,
+    },
+  });
+}

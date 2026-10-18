@@ -65,6 +65,35 @@
   }
 }
 
+.scan-win__manual-toggle {
+  align-self: center;
+  background: none;
+  border: none;
+  font-family: t.$font-chrome;
+  font-size: 10px;
+  color: t.$muted;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.scan-win__preview {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: t.$border-width solid t.$ink;
+  border-radius: t.$radius-window;
+  background: t.$win-alt;
+}
+
+.scan-win__preview-actions {
+  display: flex;
+  gap: 8px;
+
+  app-btn95 {
+    flex: 1;
+  }
+}
+
 .result-box {
   padding: 10px 12px;
   display: flex;

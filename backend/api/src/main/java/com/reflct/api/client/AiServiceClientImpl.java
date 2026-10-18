@@ -42,11 +42,16 @@ public class AiServiceClientImpl implements AiServiceClient {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, Object> createTryOnRenderJob(String sessionId, String garmentId, String vista) {
+    public Map<String, Object> createTryOnRenderJob(
+            String sessionId, String garmentId, String vista,
+            String personImageUrl, String garmentImageUrl, String garmentCategoria) {
         Map<String, Object> payload = new HashMap<>();
         payload.put("session_id", sessionId);
         payload.put("garment_id", garmentId);
         payload.put("vista", vista);
+        payload.put("person_image_url", personImageUrl);
+        payload.put("garment_image_url", garmentImageUrl);
+        payload.put("garment_categoria", garmentCategoria);
 
         try {
             return aiServiceRestClient.post()

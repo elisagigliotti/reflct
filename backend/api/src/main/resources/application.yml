@@ -37,6 +37,14 @@ reflct:
   http-client:
     connect-timeout-ms: 3000
     read-timeout-ms: 10000
+  media:
+    # Directory locale dove finiscono le foto caricate (body-scan, try-on). In
+    # produzione da sostituire con MinIO (gia' previsto in infra/docker-compose.yml,
+    # non usabile qui perche' Docker non e' disponibile in questo ambiente).
+    upload-dir: ${MEDIA_UPLOAD_DIR:./uploads}
+    # Deve essere raggiungibile da ai-service (processo separato) per scaricare
+    # le foto via HTTP: in locale coincide con l'host di questo stesso servizio.
+    public-base-url: ${MEDIA_PUBLIC_BASE_URL:http://localhost:8080}
 
 springdoc:
   swagger-ui:

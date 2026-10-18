@@ -1,7 +1,9 @@
 // .win-title (+ --teal) — barra del titolo con pulsantini finestra (_ □ ×).
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { colors, fonts, borders } from '../theme/theme';
+import { fonts, borders } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
+import { ReflctPalette } from '../../../../packages/design-tokens/rn/theme';
 
 interface WinTitleProps {
   label: string;
@@ -12,6 +14,8 @@ interface WinTitleProps {
 }
 
 export default function WinTitle({ label, variant = 'default', icon, compact, style }: WinTitleProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View
       style={[
@@ -48,72 +52,74 @@ export default function WinTitle({ label, variant = 'default', icon, compact, st
   );
 }
 
-const styles = StyleSheet.create({
-  bar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    borderBottomWidth: borders.width,
-    borderBottomColor: colors.ink,
-    borderTopLeftRadius: borders.radius.titleBar,
-    borderTopRightRadius: borders.radius.titleBar,
-    paddingVertical: 3,
-    paddingHorizontal: 5,
-  },
-  barDefault: {
-    backgroundColor: colors.chrome,
-  },
-  barTeal: {
-    backgroundColor: colors.chrome2,
-  },
-  barCompact: {
-    paddingVertical: 2,
-    paddingHorizontal: 4,
-  },
-  icon: {
-    fontSize: 8,
-    color: colors.ink,
-  },
-  iconCompact: {
-    fontSize: 7,
-  },
-  label: {
-    flex: 1,
-    fontFamily: fonts.pixel,
-    fontSize: 8,
-    color: colors.ink,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  labelCompact: {
-    fontSize: 7,
-  },
-  btns: {
-    flexDirection: 'row',
-    gap: 3,
-    flexShrink: 0,
-  },
-  sq: {
-    width: 13,
-    height: 12,
-    backgroundColor: colors.win,
-    borderWidth: borders.width,
-    borderColor: colors.ink,
-    borderRadius: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sqCompact: {
-    width: 11,
-    height: 10,
-  },
-  sqText: {
-    fontSize: 8,
-    lineHeight: 8,
-    color: colors.ink,
-  },
-  sqTextCompact: {
-    fontSize: 7,
-    lineHeight: 7,
-  },
-});
+function createStyles(colors: ReflctPalette) {
+  return StyleSheet.create({
+    bar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      borderBottomWidth: borders.width,
+      borderBottomColor: colors.ink,
+      borderTopLeftRadius: borders.radius.titleBar,
+      borderTopRightRadius: borders.radius.titleBar,
+      paddingVertical: 3,
+      paddingHorizontal: 5,
+    },
+    barDefault: {
+      backgroundColor: colors.chrome,
+    },
+    barTeal: {
+      backgroundColor: colors.chrome2,
+    },
+    barCompact: {
+      paddingVertical: 2,
+      paddingHorizontal: 4,
+    },
+    icon: {
+      fontSize: 8,
+      color: colors.ink,
+    },
+    iconCompact: {
+      fontSize: 7,
+    },
+    label: {
+      flex: 1,
+      fontFamily: fonts.pixel,
+      fontSize: 8,
+      color: colors.ink,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    labelCompact: {
+      fontSize: 7,
+    },
+    btns: {
+      flexDirection: 'row',
+      gap: 3,
+      flexShrink: 0,
+    },
+    sq: {
+      width: 13,
+      height: 12,
+      backgroundColor: colors.win,
+      borderWidth: borders.width,
+      borderColor: colors.ink,
+      borderRadius: 2,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    sqCompact: {
+      width: 11,
+      height: 10,
+    },
+    sqText: {
+      fontSize: 8,
+      lineHeight: 8,
+      color: colors.ink,
+    },
+    sqTextCompact: {
+      fontSize: 7,
+      lineHeight: 7,
+    },
+  });
+}

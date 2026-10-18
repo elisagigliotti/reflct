@@ -22,11 +22,17 @@ public interface AiServiceClient {
     Map<String, Object> estimateBodyMeasurements(String userId, String fotoFrontUrl, String fotoSideUrl, String videoUrl, Double altezzaCm);
 
     /**
-     * Crea un job di rendering try-on. Corrisponde a POST /tryon/render su ai-service.
-     * Risposta attesa: { job_id, status } con status iniziale "processing".
+     * Crea un job di rendering try-on fotorealistico (CatVTON). Corrisponde a
+     * POST /tryon/render su ai-service. Risposta attesa: { job_id, status } —
+     * il rendering e' sincrono lato ai-service, quindi status e' gia'
+     * "done"/"failed" quando questa chiamata ritorna (vedi ai-service/app/routers/tryon.py).
      * `vista` deve essere "front" o "back" (non "FRONTE"/"RETRO" come nell'entita' TryOnSession).
+     * `personImageUrl`/`garmentImageUrl` devono essere URL immagine reali e raggiungibili
+     * da ai-service: vengono scaricati e usati come input del modello di diffusione.
      */
-    Map<String, Object> createTryOnRenderJob(String sessionId, String garmentId, String vista);
+    Map<String, Object> createTryOnRenderJob(
+            String sessionId, String garmentId, String vista,
+            String personImageUrl, String garmentImageUrl, String garmentCategoria);
 
     /**
      * Interroga lo stato del job di rendering. Corrisponde a GET /tryon/render/{jobId}.

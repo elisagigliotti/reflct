@@ -6,10 +6,20 @@ import { firstValueFrom } from 'rxjs';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { AuthService } from './core/auth/auth.service';
+import { ThemeService } from './core/theme/theme.service';
 import { isDevMode } from '@angular/core';
 
 function restoreSessionInitializer(auth: AuthService) {
   return () => firstValueFrom(auth.restoreSession());
+}
+
+// L'iniezione da sola basta a innescare l'effect() del costruttore di
+// ThemeService, che applica subito l'attributo data-theme salvato
+// (evita un flash del tema y2k prima che l'utente visiti il profilo).
+function themeInitializer(theme: ThemeService) {
+  return () => {
+    void theme;
+  };
 }
 
 export const appConfig: ApplicationConfig = {
@@ -31,6 +41,12 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: restoreSessionInitializer,
       deps: [AuthService],
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: themeInitializer,
+      deps: [ThemeService],
       multi: true,
     },
   ],
