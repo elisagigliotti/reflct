@@ -5,6 +5,15 @@
 }
 
 // ---------- url bar ----------
+.import-win__intro {
+  font-family: t.$font-body;
+  font-size: calc(18px * var(--f-scale-body, 1));
+  line-height: 1.15;
+  color: t.$ink2;
+  margin-bottom: 12px;
+  max-width: 36ch;
+}
+
 .url-bar {
   display: flex;
   gap: 8px;
@@ -19,9 +28,9 @@
   box-shadow: t.$shadow-button;
   padding: 7px 10px;
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$ink;
-  background: #fff;
+  background: t.$win-alt;
 
   &::placeholder {
     color: t.$muted;
@@ -29,7 +38,7 @@
 
   &:focus {
     outline: none;
-    transform: translate(-1px, -1px);
+    transform: t.$hover-btn;
     box-shadow: t.$shadow-button-hover;
   }
 }
@@ -39,7 +48,7 @@
   border-radius: t.$radius-button;
   padding: 8px 10px;
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(15px * var(--f-scale-body, 1));
   color: t.$ink2;
   margin-bottom: 12px;
   text-align: center;
@@ -63,7 +72,7 @@
 .selector__label {
   display: block;
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink2;
   margin-bottom: 6px;
   text-transform: uppercase;
@@ -84,7 +93,7 @@
 
 .fit-box__text {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
 }
 
 .fit-box__text--mint {
@@ -99,9 +108,9 @@
 .import-win__section-title {
   font-family: t.$font-title;
   font-weight: 600;
-  font-size: 15px;
+  font-size: calc(16px * var(--f-scale-title, 1));
   color: t.$ink;
-  margin: 16px 0 8px;
+  margin: 20px 0 8px;
 }
 
 .shop-list {

@@ -5,6 +5,7 @@
 // ==========================================================================
 @use 'tokens' as t;
 @use 'themes';
+@use 'theme-structure';
 
 html,
 body {
@@ -45,6 +46,16 @@ h2,
 h3,
 p {
   margin: 0;
+}
+
+// testo solo per screen reader (label di campi con placeholder esplicativo)
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 // scrollbar nascosta stile filter-strip anche altrove, se serve
@@ -112,7 +123,7 @@ p {
   display: block;
   background: t.$win;
   border: t.$border-width solid t.$ink;
-  border-radius: 2px;
+  border-radius: t.$radius-small;
   font-style: normal;
   font-size: 8px;
   line-height: 8px;
@@ -137,7 +148,7 @@ p {
 
 .btn-95--cta {
   background: t.$pink;
-  color: #fff;
+  color: var(--c-on-accent, #fff);
 }
 
 .btn-95--cyan {
@@ -172,7 +183,7 @@ p {
   background: rgba(251, 220, 232, 0.9);
   border: 1px solid t.$ink;
   padding: 1px 4px;
-  border-radius: 2px;
+  border-radius: t.$radius-small;
 }
 
 .masonry-2 {
@@ -199,12 +210,12 @@ p {
     box-shadow 0.12s ease;
 
   &:hover {
-    transform: translate(-1px, -1px);
+    transform: t.$hover-btn;
     box-shadow: t.$shadow-button-hover;
   }
 
   &:active {
-    transform: translate(2px, 2px);
+    transform: t.$press-btn;
     box-shadow: t.$shadow-button-active;
   }
 }
@@ -216,14 +227,14 @@ p {
 
 .folder__name {
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink;
   letter-spacing: 0.02em;
 }
 
 .folder__count {
   font-family: t.$font-body;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-body, 1));
   color: t.$muted;
   line-height: 1;
 }

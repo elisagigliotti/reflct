@@ -20,14 +20,14 @@
 
     <h1 class="onboarding__headline">Prova vestiti prima di comprarli.</h1>
 
-    <div class="onboarding__stamps">
-      <app-stamp color="#4FD3E6">AR</app-stamp>
-      <app-stamp color="#2FAF8E">IMPORT</app-stamp>
-      <app-stamp color="#C6A5F2">SIZE</app-stamp>
-    </div>
+    <ul class="onboarding__features">
+      <li><app-pixel-icon name="prova" [size]="24"></app-pixel-icon> Provi i capi sul tuo avatar</li>
+      <li><app-pixel-icon name="import" [size]="24"></app-pixel-icon> Importi da qualsiasi shop online</li>
+      <li><app-pixel-icon name="scan" [size]="24"></app-pixel-icon> Scopri che taglia ti sta meglio</li>
+    </ul>
 
-    <app-btn95 variant="cta" [block]="true" (click)="start()">INIZIA →</app-btn95>
+    <app-btn95 variant="cta" [block]="true" (click)="start()">Crea il tuo account</app-btn95>
 
-    <p class="onboarding__note">nessuna carta richiesta</p>
+    <p class="onboarding__note">Hai già un account? <a routerLink="/login">Accedi</a></p>
   </div>
 </div>

@@ -2,16 +2,16 @@
   <app-win-title label="scan.exe — crea il tuo avatar 3D" icon="✦"></app-win-title>
   <div class="scan-win__body">
     @if (state.checkingExisting()) {
-      <p class="scan-win__status">verifico se hai già uno scan…</p>
+      <p class="scan-win__status">Controllo se hai già uno scan…</p>
     } @else {
       @if (state.lastScan(); as scan) {
         <div class="win win--mint result-box">
-          <div class="result-box__status">
-            SCAN {{ scan.status === 'COMPLETED' ? 'COMPLETATO ✓' : scan.status === 'FAILED' ? 'FALLITO ✕' : 'IN CORSO…' }}
+          <div class="result-box__status" [attr.data-status]="scan.status">
+            {{ scan.status === 'COMPLETED' ? 'Scan completato' : scan.status === 'FAILED' ? 'Scan non riuscito' : 'Scan in corso…' }}
           </div>
-          @if (measureEntries().length > 0) {
+          @if (state.measureEntries().length > 0) {
             <div class="result-box__measures">
-              @for (m of measureEntries(); track m[0]) {
+              @for (m of state.measureEntries(); track m[0]) {
                 <div class="result-box__row">
                   <span class="result-box__k">{{ m[0] }}</span>
                   <span class="result-box__v">{{ m[1] }} cm</span>
@@ -20,8 +20,8 @@
             </div>
           }
         </div>
-        <app-btn95 variant="cta" [block]="true" (click)="goToFeed()">VAI AL FEED</app-btn95>
-        <p class="scan-win__hint">Vuoi rifare lo scan? Incolla una nuova foto qui sotto.</p>
+        <app-btn95 variant="cta" [block]="true" (click)="goToFeed()">Vai al feed</app-btn95>
+        <p class="scan-win__hint">Vuoi rifarlo? Scatta una nuova foto qui sotto.</p>
       }
 
       <div class="url-field">
@@ -48,16 +48,18 @@
       } @else if (capturedPreviewUrl()) {
         <img class="scan-win__preview" [src]="capturedPreviewUrl()" alt="Foto scattata" />
         <div class="scan-win__preview-actions">
-          <app-btn95 (click)="retake()">↺ Rifai</app-btn95>
+          <app-btn95 (click)="retake()"><app-pixel-icon name="rotate" [size]="18"></app-pixel-icon> Scatta di nuovo</app-btn95>
           <app-btn95 variant="cta" [disabled]="state.loading()" (click)="confirmAndAnalyze()">
-            {{ state.uploading() ? 'CARICO FOTO…' : state.loading() ? 'ANALISI…' : '✓ Analizza' }}
+            {{ state.uploading() ? 'Carico la foto…' : state.loading() ? 'Analizzo…' : 'Analizza la foto' }}
           </app-btn95>
         </div>
       } @else {
-        <app-btn95 variant="cta" [block]="true" (click)="openCamera()">📷 Scatta con la fotocamera</app-btn95>
+        <app-btn95 variant="cta" [block]="true" (click)="openCamera()">
+          <app-pixel-icon name="camera" [size]="18"></app-pixel-icon> Scatta con la fotocamera
+        </app-btn95>
 
         <button type="button" class="scan-win__manual-toggle" (click)="showManual.set(!showManual())">
-          {{ showManual() ? '▲ nascondi' : '▼' }} oppure incolla un URL foto
+          {{ showManual() ? '▲' : '▼' }} Oppure usa il link di una foto
         </button>
 
         @if (showManual()) {
@@ -84,7 +86,7 @@
           </div>
 
           <app-btn95 variant="cta" [block]="true" [disabled]="state.loading()" (click)="state.start()">
-            {{ state.loading() ? 'ANALISI IN CORSO…' : 'AVVIA SCAN' }}
+            {{ state.loading() ? 'Analizzo…' : 'Analizza la foto' }}
           </app-btn95>
         }
       }

@@ -9,8 +9,8 @@
   flex: 1;
   height: 14px;
   border: t.$border-width solid t.$ink;
-  border-radius: 2px;
-  background: #fff;
+  border-radius: t.$radius-small;
+  background: t.$win-alt;
 
   &.is-filled {
     background: t.$mint;

@@ -1,12 +1,88 @@
 // ==========================================================================
-// Reflct OS — Temi alternativi (palette colore runtime)
-// Ogni blocco sovrascrive le CSS custom properties --c-* lette da _tokens.scss.
-// Attivazione: <html data-theme="dark|sunset|mono"> (vedi ThemeService).
-// Nessun blocco per 'y2k': e' il fallback hardcoded gia' in _tokens.scss.
-// Le stesse 4 palette esistono anche in rn/theme.ts (mobile) — tenerle allineate.
+// Reflct OS — Temi (runtime)
+// Un tema non e' solo una palette: ogni blocco ridefinisce anche la "fisica"
+// dei componenti letta da _tokens.scss:
+//   --c-*        colori
+//   --s-*        forme: spessore/stile bordo, raggi, ombre, spostamenti hover/press
+//   --f-*        famiglie di font + fattore di scala per famiglia (--f-scale-*)
+//   --m-ease     curva delle micro-animazioni (steps = scatti pixel, curve = morbido)
+//   --wall-*     sfondo del desktop
+// Le regole strutturali che non si esprimono con variabili (es. nascondere i
+// pulsanti finestra nel tema doodle) stanno in _theme-structure.scss.
+// Attivazione: <html data-theme="..."> (vedi ThemeService). Il blocco 'y2k'
+// ripete i fallback di _tokens.scss per le anteprime in Io > aspetto.cfg.
+// Le palette colore esistono anche in rn/theme.ts (mobile) — tenerle allineate.
 // ==========================================================================
 
+// Valori di base (= y2k) incluse in OGNI tema prima delle sue modifiche: le
+// custom property si ereditano, quindi senza questo un'anteprima di tema
+// dentro la pagina prenderebbe le forme del tema attivo.
+@mixin theme-defaults {
+  --c-title-ink: var(--c-ink);
+  --c-on-accent: #fff;
+  --s-border: 2px;
+  --s-border-style: solid;
+  --s-r-win: 4px;
+  --s-r-btn: 3px;
+  --s-r-sm: 2px;
+  --s-shadow-win: 3px 3px 0 var(--c-ink);
+  --s-shadow-win-hover: 5px 5px 0 var(--c-ink);
+  --s-shadow-btn: 2px 2px 0 var(--c-ink);
+  --s-shadow-btn-hover: 4px 4px 0 var(--c-ink);
+  --s-shadow-btn-active: 0 0 0 var(--c-ink);
+  --s-shadow-desk: 8px 8px 0 var(--c-ink);
+  --s-inset: inset 2px 2px 0 color-mix(in srgb, var(--c-ink) 20%, transparent);
+  --s-hover-win: translate(-1px, -2px);
+  --s-hover-btn: translate(-1px, -1px);
+  --s-press-btn: translate(2px, 2px);
+  --s-shot-pattern:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.55) 0 3px, transparent 3px 6px),
+    repeating-linear-gradient(-45deg, rgba(42, 36, 56, 0.1) 0 3px, transparent 3px 6px);
+  --f-display: 'Press Start 2P', monospace;
+  --f-chrome: 'Silkscreen', monospace;
+  --f-title: 'Pixelify Sans', sans-serif;
+  --f-body: 'VT323', monospace;
+  --f-scale-display: 1;
+  --f-scale-chrome: 1;
+  --f-scale-title: 1;
+  --f-scale-body: 1;
+  --f-chrome-case: uppercase;
+  --m-ease: steps(2, end);
+  --wall-image:
+    linear-gradient(color-mix(in srgb, var(--c-ink) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--c-ink) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, color-mix(in srgb, var(--c-lav) 70%, var(--c-desktop)) 0%, var(--c-desktop) 42%);
+  --wall-size: 20px 20px, 20px 20px, 100% 100%;
+}
+
+// ---------- Y2K Dream — Windows 98 in pastello ----------
+// Bordi netti da 2px, ombre piene a offset, pulsanti che "affondano" in diagonale.
+[data-theme='y2k'] {
+  @include theme-defaults;
+
+  --c-desktop: #9fe0cc;
+  --c-desktop2: #7fd4be;
+  --c-win: #fbdce8;
+  --c-win-alt: #dcf3ec;
+  --c-chrome: #f49ac1;
+  --c-chrome2: #6fcbb6;
+  --c-ink: #2a2438;
+  --c-ink2: #5a4e6e;
+  --c-muted: #8a7fa0;
+  --c-pink: #ff5fa2;
+  --c-cyan: #4fd3e6;
+  --c-mint: #2faf8e;
+  --c-yellow: #f5d14e;
+  --c-lav: #c6a5f2;
+  --c-warn: #f5a03d;
+}
+
+// ---------- Notte Neon — insegne al neon in una citta' sintetica ----------
+// Niente ombre piene: i contorni brillano. Angoli morbidi, pulsanti a pillola,
+// font da insegna. Al passaggio la luce cambia colore invece di spostarsi.
 [data-theme='dark'] {
+  @include theme-defaults;
+
   --c-desktop: #14101f;
   --c-desktop2: #1c1730;
   --c-win: #211b33;
@@ -22,9 +98,52 @@
   --c-yellow: #ffe94e;
   --c-lav: #b79cff;
   --c-warn: #ff9f4e;
+  --c-title-ink: #14101f;
+  --c-on-accent: #14101f;
+
+  --s-border: 1.5px;
+  --s-r-win: 14px;
+  --s-r-btn: 999px;
+  --s-r-sm: 6px;
+  --s-shadow-win: 0 0 0 1px var(--c-pink), 0 0 22px -4px var(--c-pink);
+  --s-shadow-win-hover: 0 0 0 1px var(--c-cyan), 0 0 30px -2px var(--c-cyan);
+  --s-shadow-btn: 0 0 14px -4px var(--c-cyan);
+  --s-shadow-btn-hover: 0 0 20px 0 var(--c-cyan);
+  --s-shadow-btn-active: 0 0 6px 0 var(--c-cyan);
+  --s-shadow-desk: 0 0 0 1px var(--c-pink), 0 0 70px -10px var(--c-pink);
+  --s-inset: inset 0 0 12px -2px var(--c-cyan);
+  --s-hover-win: translateY(-2px);
+  --s-hover-btn: translateY(-1px);
+  --s-press-btn: scale(0.96);
+  --s-shot-pattern:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 4px),
+    radial-gradient(circle at 50% 120%, rgba(255, 255, 255, 0.35), transparent 70%);
+
+  --f-display: 'Monoton', cursive;
+  --f-chrome: 'Orbitron', sans-serif;
+  --f-title: 'Orbitron', sans-serif;
+  --f-body: 'VT323', monospace;
+  --f-scale-display: 1.15;
+  --f-scale-chrome: 1.2;
+  --f-scale-title: 0.92;
+  --f-chrome-case: uppercase;
+
+  --m-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  --wall-image:
+    linear-gradient(color-mix(in srgb, #ff3fa0 16%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, #34e4d0 12%, transparent) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 115%, color-mix(in srgb, #ff3fa0 55%, transparent), transparent 60%),
+    linear-gradient(180deg, #1d1238 0%, #14101f 65%);
+  --wall-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
 }
 
+// ---------- Sunset Arcade — cabinato anni '80 al tramonto ----------
+// Plastica spessa: bordi da 3px, angoli tondi grossi, ombra solo sotto come
+// i tasti di un cabinato. Premere un pulsante lo fa scendere fino in fondo.
 [data-theme='sunset'] {
+  @include theme-defaults;
+
   --c-desktop: #ffd9a8;
   --c-desktop2: #ffc988;
   --c-win: #fff1de;
@@ -40,22 +159,100 @@
   --c-yellow: #ffd23f;
   --c-lav: #c9a0ff;
   --c-warn: #e85d3d;
+
+  --s-border: 3px;
+  --s-r-win: 18px;
+  --s-r-btn: 12px;
+  --s-r-sm: 8px;
+  --s-shadow-win: 0 6px 0 var(--c-ink);
+  --s-shadow-win-hover: 0 9px 0 var(--c-ink);
+  --s-shadow-btn: 0 4px 0 var(--c-ink);
+  --s-shadow-btn-hover: 0 6px 0 var(--c-ink);
+  --s-shadow-btn-active: 0 0 0 var(--c-ink);
+  --s-shadow-desk: 0 14px 0 var(--c-ink);
+  --s-inset: inset 0 3px 0 color-mix(in srgb, var(--c-ink) 25%, transparent);
+  --s-hover-win: translateY(-3px);
+  --s-hover-btn: translateY(-2px);
+  --s-press-btn: translateY(4px);
+  --s-shot-pattern:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.4) 0 6px, transparent 6px 12px);
+
+  --f-display: 'Bungee', sans-serif;
+  --f-chrome: 'Bungee', sans-serif;
+  --f-title: 'Bungee', sans-serif;
+  --f-body: 'Rubik', sans-serif;
+  --f-scale-display: 1.05;
+  --f-scale-chrome: 1.1;
+  --f-scale-title: 0.86;
+  --f-scale-body: 0.84;
+
+  --m-ease: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  --wall-image:
+    radial-gradient(circle at 50% 78%, #ffe27a 0 70px, transparent 71px),
+    repeating-linear-gradient(180deg, transparent 0 18px, color-mix(in srgb, #ff7a59 22%, transparent) 18px 24px),
+    linear-gradient(180deg, #ffb15c 0%, #ffd9a8 55%, #ffc0a0 100%);
+  --wall-size: 100% 100%, 100% 100%, 100% 100%;
 }
 
-[data-theme='mono'] {
-  --c-desktop: #0c1410;
-  --c-desktop2: #0f1b14;
-  --c-win: #10241a;
-  --c-win-alt: #142e20;
-  --c-chrome: #1f4a32;
-  --c-chrome2: #245a3b;
-  --c-ink: #4cff8a;
-  --c-ink2: #38c96c;
-  --c-muted: #2a8f52;
-  --c-pink: #4cff8a;
-  --c-cyan: #6cffb0;
-  --c-mint: #4cff8a;
-  --c-yellow: #b6ff6c;
-  --c-lav: #8cffda;
-  --c-warn: #ffd25c;
+// ---------- Poster Doodle — poster illustrati disegnati a mano ----------
+// Carta crema con grana, alone spray arancio, arcobaleno e stelline.
+// Contorni d'inchiostro irregolari (raggi asimmetrici = linea tracciata a
+// mano), scritte a mano, titoli grassi da manifesto. Finestre un po' storte.
+[data-theme='doodle'] {
+  @include theme-defaults;
+
+  --c-desktop: #f3eadb;
+  --c-desktop2: #eadfcb;
+  --c-win: #fbf6ec;
+  --c-win-alt: #f9e3dc;
+  --c-chrome: #f08c8f;
+  --c-chrome2: #f6b93b;
+  --c-ink: #1e1a18;
+  --c-ink2: #4a3f38;
+  --c-muted: #8c7f72;
+  --c-pink: #ee6f80;
+  --c-cyan: #4d8fd6;
+  --c-mint: #3fae6a;
+  --c-yellow: #f6b93b;
+  --c-lav: #8e6bbf;
+  --c-warn: #f2542d;
+
+  --s-border: 2.5px;
+  --s-r-win: 22px 255px 18px 225px / 225px 18px 255px 22px;
+  --s-r-btn: 160px 14px 150px 16px / 16px 150px 14px 160px;
+  --s-r-sm: 12px 40px 10px 36px / 36px 10px 40px 12px;
+  --s-shadow-win: 4px 5px 0 var(--c-ink);
+  --s-shadow-win-hover: 6px 8px 0 var(--c-ink);
+  --s-shadow-btn: 2px 3px 0 var(--c-ink);
+  --s-shadow-btn-hover: 3px 5px 0 var(--c-ink);
+  --s-shadow-btn-active: 0 0 0 var(--c-ink);
+  --s-shadow-desk: 6px 8px 0 var(--c-ink);
+  --s-inset: inset 2px 3px 0 color-mix(in srgb, var(--c-ink) 18%, transparent);
+  --s-hover-win: rotate(-0.6deg) translateY(-2px);
+  --s-hover-btn: rotate(-1.5deg) scale(1.03);
+  --s-press-btn: rotate(1deg) scale(0.97);
+  --s-shot-pattern:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.55), transparent 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 .28 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  --f-display: 'Archivo Black', sans-serif;
+  --f-chrome: 'Gaegu', cursive;
+  --f-title: 'Gaegu', cursive;
+  --f-body: 'Patrick Hand', cursive;
+  --f-scale-display: 1.2;
+  --f-scale-chrome: 1.65;
+  --f-scale-title: 1.25;
+  --f-scale-body: 0.98;
+  --f-chrome-case: none;
+
+  --m-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --wall-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg stroke='%231e1a18' stroke-width='1.3' stroke-linejoin='round'%3E%3Cpath fill='%23f6b93b' d='M200 40C202 58 208 64 226 66C208 68 202 74 200 92C198 74 192 68 174 66C192 64 198 58 200 40Z'/%3E%3Cpath fill='%23f2542d' d='M330 250C331 262 335 266 347 267C335 268 331 272 330 284C329 272 325 268 313 267C325 266 329 262 330 250Z'/%3E%3Cpath fill='%23f6b93b' d='M380 170C381 178 383 180 391 181C383 182 381 184 380 192C379 184 377 182 369 181C377 180 379 178 380 170Z'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 100% 100%, transparent 0 170px, #ef4b2c 170px 196px, #f28c28 196px 222px, #f6c343 222px 248px, #3fae6a 248px 274px, #4d7fd6 274px 300px, #8e6bbf 300px 326px, transparent 326px),
+    radial-gradient(circle at 55% 35%, color-mix(in srgb, #f2542d 50%, transparent), transparent 55%),
+    linear-gradient(180deg, #f3eadb, #f3eadb);
+  --wall-size: 420px 420px, 160px 160px, 100% 100%, 100% 100%, 100% 100%;
 }

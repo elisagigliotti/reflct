@@ -16,7 +16,7 @@
   outline-offset: 2px;
 
   &:hover {
-    transform: translate(-1px, -1px);
+    transform: t.$hover-btn;
   }
 
   &.is-active {

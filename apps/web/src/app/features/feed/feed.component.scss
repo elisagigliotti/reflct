@@ -11,14 +11,14 @@
 
 .greet-win__hello {
   font-family: t.$font-body;
-  font-size: 17px;
+  font-size: calc(17px * var(--f-scale-body, 1));
   color: t.$ink2;
   line-height: 1;
 }
 
 .greet-win__name {
   font-family: t.$font-pixel;
-  font-size: 20px;
+  font-size: calc(20px * var(--f-scale-display, 1));
   margin: 6px 0 0;
   line-height: 1.25;
   color: t.$ink;
@@ -38,7 +38,7 @@
 
 .greet-win__tried {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$muted;
 }
 
@@ -59,7 +59,7 @@
   height: 46px;
   flex: none;
   border: t.$border-width solid t.$ink;
-  border-radius: 4px;
+  border-radius: t.$radius-window;
   background: t.$pink;
   display: flex;
   align-items: center;
@@ -76,14 +76,14 @@
 .scan-dialog__title {
   font-family: t.$font-title;
   font-weight: 700;
-  font-size: 18px;
+  font-size: calc(18px * var(--f-scale-title, 1));
   line-height: 1.15;
   color: t.$ink;
 }
 
 .scan-dialog__desc {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   margin: 3px 0 0;
   color: t.$ink2;
   line-height: 1.15;
@@ -126,7 +126,7 @@
 
 .wardrobe-win__status {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$muted;
   text-align: center;
   padding: 20px 8px;

@@ -6,33 +6,49 @@
 
 .tryon-win__status {
   font-family: t.$font-body;
-  font-size: 16px;
-  color: t.$muted;
+  font-size: calc(17px * var(--f-scale-body, 1));
+  color: t.$ink2;
   text-align: center;
-  padding: 24px 8px;
+  padding: 12px 8px;
 
   &--error {
     color: t.$warn;
   }
 }
 
-.scan-cta {
-  display: block;
+// ---------- invito/rifai body-scan ----------
+.scan-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 14px 12px;
+  border: t.$border-width dashed t.$ink;
+  border-radius: t.$radius-window;
+  background: t.$win-alt;
   text-align: center;
-  font-family: t.$font-chrome;
-  font-size: 11px;
+}
+
+.scan-hint__text {
+  font-family: t.$font-body;
+  font-size: calc(18px * var(--f-scale-body, 1));
+  line-height: 1.15;
   color: t.$ink;
-  background: t.$cyan;
-  border: t.$border-width solid t.$ink;
-  border-radius: t.$radius-button;
-  box-shadow: t.$shadow-button;
-  padding: 8px 12px;
-  margin-bottom: 12px;
-  cursor: pointer;
+  max-width: 32ch;
+}
+
+.scan-redo {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: t.$font-body;
+  font-size: calc(17px * var(--f-scale-body, 1));
+  color: t.$ink2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 
   &:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: t.$shadow-button-hover;
+    color: t.$pink;
   }
 }
 
@@ -44,10 +60,10 @@
   border-radius: t.$radius-window;
   overflow: hidden;
   margin-bottom: 12px;
-  background-color: #f7c9de;
+  background-color: color-mix(in srgb, t.$chrome 45%, t.$win);
   background-image:
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.5) 0 4px, transparent 4px 9px),
-    repeating-linear-gradient(-45deg, rgba(42, 36, 56, 0.08) 0 4px, transparent 4px 9px);
+    repeating-linear-gradient(-45deg, color-mix(in srgb, t.$ink 8%, transparent) 0 4px, transparent 4px 9px);
 }
 
 .avatar-viewport__photo {
@@ -64,7 +80,7 @@
   position: absolute;
   top: 8px;
   background: rgba(251, 220, 232, 0.9);
-  font-size: 8px;
+  font-size: calc(8px * var(--f-scale-chrome, 1));
 }
 
 .avatar-viewport__rec {
@@ -110,17 +126,45 @@
 .avatar-viewport__label {
   position: absolute;
   bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
   background: t.$win;
   border: t.$border-width solid t.$ink;
-  border-radius: 4px;
-  padding: 8px 16px;
+  border-radius: t.$radius-window;
+  box-shadow: t.$shadow-button;
+  padding: 7px 12px;
+}
+
+.avatar-viewport__name {
   font-family: t.$font-title;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: calc(16px * var(--f-scale-title, 1));
   color: t.$ink;
-  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.avatar-viewport__price {
+  flex: none;
+  font-family: t.$font-body;
+  font-size: calc(22px * var(--f-scale-body, 1));
+  line-height: 0.8;
+  color: t.$ink;
+}
+
+.avatar-viewport__view {
+  @include t.stamp;
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: t.$yellow;
+  color: t.$ink;
 }
 
 // ---------- fit score ----------
@@ -133,13 +177,13 @@
 
 .fit-score__label {
   font-family: t.$font-body;
-  font-size: 17px;
+  font-size: calc(17px * var(--f-scale-body, 1));
   color: t.$ink;
 }
 
 .fit-score__value {
   font-family: t.$font-pixel;
-  font-size: 18px;
+  font-size: calc(18px * var(--f-scale-display, 1));
   color: t.$mint;
 }
 
@@ -159,14 +203,14 @@
 
 .measures-win__k {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$ink;
 }
 
 .measures-win__v {
   font-family: t.$font-chrome;
   font-weight: 700;
-  font-size: 11px;
+  font-size: calc(11px * var(--f-scale-chrome, 1));
 }
 
 .measures-win__v--mint {
@@ -185,7 +229,7 @@
 .selector__label {
   display: block;
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink2;
   margin-bottom: 6px;
   text-transform: uppercase;
@@ -200,6 +244,17 @@
 // ---------- azioni ----------
 .actions-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 9px;
-  margin-top: 16px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: t.$border-width dashed color-mix(in srgb, t.$ink 30%, transparent);
+
+  app-btn95 {
+    flex: 1 1 auto;
+  }
+
+  ::ng-deep .btn-95 {
+    width: 100%;
+  }
 }

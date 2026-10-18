@@ -2,13 +2,13 @@
 <div class="win greet-win">
   <app-win-title label="C:\reflct\home.exe"></app-win-title>
   <div class="greet-win__body">
-    <div class="greet-win__hello">&gt; bentornata,</div>
+    <div class="greet-win__hello">&gt; ciao,</div>
     <h1 class="greet-win__name">{{ user()?.nome ?? '…' }}<span class="greet-win__underscore">_</span></h1>
     <div class="greet-win__meta">
       @if (user()?.misureJson) {
-        <app-stamp color="#4FD3E6">avatar: ON</app-stamp>
+        <app-stamp color="var(--c-cyan, #4FD3E6)">avatar: ON</app-stamp>
       } @else {
-        <app-stamp color="#8A7FA0">avatar: da creare</app-stamp>
+        <app-stamp color="var(--c-muted, #8A7FA0)">avatar: da creare</app-stamp>
       }
     </div>
   </div>

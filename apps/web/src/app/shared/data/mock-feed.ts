@@ -27,10 +27,10 @@ export const WARDROBE_FOLDERS: WardrobeFolder[] = [
 ];
 
 export const SHOP_ENTRIES: ShopEntry[] = [
-  { name: 'Zara', icon: '🅩', url: 'https://www.zara.com/...' },
-  { name: 'H&M', icon: '🅗', url: 'https://www2.hm.com/...' },
-  { name: 'ASOS', icon: '🅐', url: 'https://www.asos.com/...' },
-  { name: 'Zalando', icon: '🅩', url: 'https://www.zalando.it/...' },
+  { name: 'Zara', icon: 'Z', url: 'https://www.zara.com/it/' },
+  { name: 'H&M', icon: 'H', url: 'https://www2.hm.com/it_it/' },
+  { name: 'ASOS', icon: 'A', url: 'https://www.asos.com/it/' },
+  { name: 'Zalando', icon: 'Z', url: 'https://www.zalando.it/' },
 ];
 
 export const SHARE_LINK_OPTIONS: ShareLinkOption[] = [

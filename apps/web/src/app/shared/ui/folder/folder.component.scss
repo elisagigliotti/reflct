@@ -16,12 +16,12 @@
     box-shadow 0.12s ease;
 
   &:hover {
-    transform: translate(-1px, -1px);
+    transform: t.$hover-btn;
     box-shadow: t.$shadow-button-hover;
   }
 
   &:active {
-    transform: translate(2px, 2px);
+    transform: t.$press-btn;
     box-shadow: t.$shadow-button-active;
   }
 }
@@ -33,14 +33,14 @@
 
 .folder__name {
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink;
   letter-spacing: 0.02em;
 }
 
 .folder__count {
   font-family: t.$font-body;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-body, 1));
   color: t.$muted;
   line-height: 1;
 }

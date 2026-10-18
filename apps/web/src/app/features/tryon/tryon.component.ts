@@ -7,6 +7,7 @@ import { FeedStateService } from '../../core/state/feed-state.service';
 import { TryonStateService } from '../../core/state/tryon-state.service';
 import { TryOnService } from '../../core/tryon/tryon.service';
 import { MediaService } from '../../core/media/media.service';
+import { PixelIconComponent } from '../../shared/ui/pixel-icon/pixel-icon.component';
 import { Btn95Component } from '../../shared/ui/btn95/btn95.component';
 import { FitbarComponent } from '../../shared/ui/fitbar/fitbar.component';
 import { SwatchComponent } from '../../shared/ui/swatch/swatch.component';
@@ -36,6 +37,7 @@ const MEASURE_LABELS: Record<string, string> = {
   selector: 'app-tryon',
   standalone: true,
   imports: [
+    PixelIconComponent,
     CommonModule,
     RouterLink,
     WinTitleComponent,
@@ -175,8 +177,8 @@ export class TryonComponent {
     }
   }
 
-  addToCart(): void {
-    // Mock: nessun carrello/checkout reale in questo scaffold. In prod: POST /api/v1/tryon/{id}/purchase.
+  /** Il vecchio CTA "AGGIUNGI · prezzo" portava gia' qui: ora il bottone dice cosa fa davvero. */
+  shareLook(): void {
     const it = this.item();
     this.router.navigate(it ? ['/share', String(it.id)] : ['/share']);
   }

@@ -6,7 +6,7 @@
 
 .share-win__status {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$muted;
   text-align: center;
   padding: 20px 8px;
@@ -18,9 +18,18 @@
 
 .share-win__pin {
   font-family: t.$font-body;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-body, 1));
   color: t.$ink2;
   margin: -8px 0 16px;
+}
+
+.preview__name {
+  padding: 7px 10px;
+  font-family: t.$font-title;
+  font-weight: 600;
+  font-size: calc(16px * var(--f-scale-title, 1));
+  color: t.$ink;
+  background: t.$win;
 }
 
 .preview {
@@ -32,7 +41,7 @@
 .share-win__section-title {
   font-family: t.$font-title;
   font-weight: 600;
-  font-size: 15px;
+  font-size: calc(15px * var(--f-scale-title, 1));
   color: t.$ink;
   margin: 0 0 8px;
 }
@@ -56,30 +65,9 @@
   flex: 1;
   min-width: 0;
   font-family: t.$font-chrome;
-  font-size: 11px;
+  font-size: calc(11px * var(--f-scale-chrome, 1));
   color: t.$ink;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.social-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.social-grid__btn {
-  aspect-ratio: 1;
-  border: t.$border-width solid t.$ink;
-  border-radius: t.$radius-window;
-  box-shadow: t.$shadow-button;
-  background: t.$win;
-  font-size: 18px;
-  transition: transform 0.12s ease;
-
-  &:hover {
-    transform: rotate(-3deg) scale(1.05);
-  }
 }

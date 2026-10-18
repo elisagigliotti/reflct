@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { catchError, of, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { MediaService } from '../media/media.service';
@@ -11,6 +11,16 @@ import { BodyMeasures, BodyScanResponse } from '../bodyscan/models';
  * GET /api/v1/body-scan/me. Il flusso principale e' la fotocamera
  * (CameraCaptureComponent); l'URL manuale resta come fallback/debug.
  */
+const MEASURE_LABELS: Record<string, string> = {
+  busto_cm: 'busto',
+  vita_cm: 'vita',
+  fianchi_cm: 'fianchi',
+  spalle_cm: 'spalle',
+  torso_cm: 'torso',
+  inseam_cm: 'cavallo',
+  manica_cm: 'manica',
+};
+
 @Injectable({ providedIn: 'root' })
 export class BodyScanStateService {
   private readonly bodyScanService = inject(BodyScanService);
@@ -34,6 +44,17 @@ export class BodyScanStateService {
       this.checkingExisting.set(false);
     });
   }
+
+  /** Misure dell'ultimo scan come coppie [etichetta, cm], nell'ordine in cui le mostriamo. */
+  readonly measureEntries = computed<[string, number][]>(() => {
+    const measures = this.measures() as Record<string, number> | null;
+    if (!measures) {
+      return [];
+    }
+    return Object.entries(MEASURE_LABELS)
+      .filter(([key]) => typeof measures[key] === 'number')
+      .map(([key, label]) => [label, Math.round(measures[key])]);
+  });
 
   measures(): BodyMeasures | null {
     const scan = this.lastScan();

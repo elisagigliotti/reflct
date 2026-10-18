@@ -10,5 +10,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './stamp.component.scss',
 })
 export class StampComponent {
-  @Input() color = '#2A2438';
+  @Input() color = 'var(--c-ink, #2A2438)';
 }

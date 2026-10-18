@@ -3,8 +3,6 @@
 
   @if (item(); as it) {
     <div class="tryon-win__body">
-      <a routerLink="/scan" class="scan-cta">📷 Fai/rifai il body-scan</a>
-
       @if (renderStep() === 'camera') {
         <app-camera-capture
           guideLabel="Di fronte, a figura intera"
@@ -24,7 +22,13 @@
           <div class="avatar-viewport__corner avatar-viewport__corner--tr"></div>
           <div class="avatar-viewport__corner avatar-viewport__corner--bl"></div>
           <div class="avatar-viewport__corner avatar-viewport__corner--br"></div>
-          <div class="avatar-viewport__label">{{ it.name }}{{ tryon.rotated() ? ' · vista retro' : '' }}</div>
+          <div class="avatar-viewport__label">
+            <span class="avatar-viewport__name">{{ it.name }}</span>
+            <span class="avatar-viewport__price">{{ it.price }}</span>
+          </div>
+          @if (tryon.rotated()) {
+            <span class="avatar-viewport__view">vista retro</span>
+          }
         </div>
 
         @if (renderStep() === 'busy') {
@@ -32,8 +36,9 @@
         } @else if (renderStep() === 'error') {
           <p class="tryon-win__status tryon-win__status--error">{{ renderError() }}</p>
         }
-        <app-btn95 variant="cta" [block]="true" (click)="openRenderCamera()">
-          {{ renderedImageUrl() ? '📸 Rifai il render fotorealistico' : '📸 Genera il render fotorealistico' }}
+        <app-btn95 variant="cta" [block]="true" [disabled]="renderStep() === 'busy'" (click)="openRenderCamera()">
+          <app-pixel-icon name="camera" [size]="18"></app-pixel-icon>
+          {{ renderedImageUrl() ? 'Rifai la prova su di te' : 'Provalo su di te' }}
         </app-btn95>
       }
 
@@ -41,7 +46,12 @@
       @if (adviceLoading()) {
         <p class="tryon-win__status">calcolo il fit sul tuo corpo…</p>
       } @else if (adviceError()) {
-        <p class="tryon-win__status tryon-win__status--error">{{ adviceError() }}</p>
+        <div class="scan-hint">
+          <p class="scan-hint__text">{{ adviceError() }}</p>
+          <a routerLink="/scan" class="btn-95 btn-95--cyan scan-hint__cta">
+            <app-pixel-icon name="scan" [size]="18"></app-pixel-icon> Fai il body-scan
+          </a>
+        </div>
       } @else if (advice()) {
         <div class="fit-score">
           <span class="fit-score__label">Fit sul tuo avatar · taglia {{ advice()!.consigliata }}</span>
@@ -62,6 +72,7 @@
             </div>
           }
         </div>
+        <a routerLink="/scan" class="scan-redo">Misure cambiate? Rifai il body-scan</a>
       }
 
       <!-- selettore taglia -->
@@ -86,14 +97,17 @@
 
       <!-- azioni -->
       <div class="actions-row">
-        <app-btn95 variant="cyan" (click)="tryon.toggleRotate()">↻ RUOTA</app-btn95>
+        <app-btn95 variant="cyan" (click)="tryon.toggleRotate()">
+          <app-pixel-icon name="rotate" [size]="18"></app-pixel-icon> Ruota
+        </app-btn95>
         <app-btn95 (click)="toggleLike()">
-          <span [style.color]="liked() ? '#FF5FA2' : '#8A7FA0'">{{ liked() ? '♥' : '♡' }}</span>
-          SALVA
+          <app-pixel-icon [name]="liked() ? 'heart' : 'heartEmpty'" [size]="18"></app-pixel-icon>
+          {{ liked() ? 'Salvato' : 'Salva' }}
+        </app-btn95>
+        <app-btn95 (click)="shareLook()">
+          <app-pixel-icon name="share" [size]="18"></app-pixel-icon> Condividi
         </app-btn95>
       </div>
-
-      <app-btn95 variant="cta" [block]="true" (click)="addToCart()">AGGIUNGI · {{ it.price }}</app-btn95>
     </div>
   } @else {
     <div class="tryon-win__body">

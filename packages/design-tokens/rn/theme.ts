@@ -30,7 +30,7 @@ export type ReflctColor =
 
 export type ReflctPalette = Record<ReflctColor, string>;
 
-export type ThemeId = 'y2k' | 'dark' | 'sunset' | 'mono';
+export type ThemeId = 'y2k' | 'dark' | 'sunset';
 
 export const palettes: Record<ThemeId, ReflctPalette> = {
   // Default — handoff hifi originale (pastelli vaporwave Win9x).
@@ -90,32 +90,12 @@ export const palettes: Record<ThemeId, ReflctPalette> = {
     warn: '#E85D3D',
     white: '#FFFFFF',
   },
-  // Mono CRT — terminale fosfori verdi monocromatico.
-  mono: {
-    desktop: '#0C1410',
-    desktop2: '#0F1B14',
-    win: '#10241A',
-    winAlt: '#142E20',
-    chrome: '#1F4A32',
-    chrome2: '#245A3B',
-    ink: '#4CFF8A',
-    ink2: '#38C96C',
-    muted: '#2A8F52',
-    pink: '#4CFF8A',
-    cyan: '#6CFFB0',
-    mint: '#4CFF8A',
-    yellow: '#B6FF6C',
-    lav: '#8CFFDA',
-    warn: '#FFD25C',
-    white: '#EAFFF2',
-  },
 };
 
 export const themeMeta: { id: ThemeId; label: string; icon: string }[] = [
   { id: 'y2k', label: 'Y2K Dream', icon: '🩷' },
   { id: 'dark', label: 'Notte Neon', icon: '🌙' },
   { id: 'sunset', label: 'Sunset Arcade', icon: '🌅' },
-  { id: 'mono', label: 'Mono CRT', icon: '🟢' },
 ];
 
 export const DEFAULT_THEME: ThemeId = 'y2k';

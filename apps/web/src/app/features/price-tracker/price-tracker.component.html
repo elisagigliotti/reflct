@@ -2,17 +2,17 @@
   <app-win-title label="pricewatch.sys — capi monitorati"></app-win-title>
   <div class="price-win__body">
     @if (state.loading()) {
-      <p class="price-win__status">caricamento capi monitorati…</p>
+      <p class="price-win__status" role="status">Carico i capi che segui…</p>
     } @else if (state.error()) {
       <p class="price-win__status price-win__status--error">{{ state.error() }}</p>
     } @else if (state.items().length === 0) {
-      <p class="price-win__status">nessun capo con storico prezzo ancora — torna qui dopo un calo prezzo su un capo che segui.</p>
+      <p class="price-win__status">Qui compaiono i capi di cui seguiamo il prezzo. Per ora non ce n'è nessuno con uno storico.</p>
     }
     @for (it of state.items(); track it.id) {
       <div class="win tracked-item">
         <div class="tracked-item__main">
           <div class="tracked-item__thumb" style="--rot:-4deg">
-            <app-shot [color]="it.shotColor" [label]="it.shotLabel" [height]="72"></app-shot>
+            <app-shot [color]="it.shotColor" [height]="72"></app-shot>
           </div>
           <div class="tracked-item__info">
             <div class="tracked-item__name">{{ it.name }}</div>
@@ -24,30 +24,32 @@
               }
             </div>
             @if (it.isAllTimeLow) {
-              <app-stamp color="#2FAF8E">▼ minimo storico</app-stamp>
+              <app-stamp color="var(--c-mint, #2FAF8E)">▼ minimo storico</app-stamp>
             }
           </div>
         </div>
 
-        <!-- sparkline -->
-        <div class="sparkline">
-          @for (v of it.history; track $index) {
-            <span class="sparkline__bar" [style.height.%]="(v / maxHistory(it.history)) * 100" [style.background]="barColor($index)"></span>
+        <!-- sparkline: un solo colore, l'ultima barra (prezzo di oggi) evidenziata -->
+        <div class="sparkline" role="img" [attr.aria-label]="'Andamento del prezzo, ' + it.history.length + ' rilevazioni'">
+          @for (v of it.history; track $index; let last = $last) {
+            <span class="sparkline__bar" [class.sparkline__bar--now]="last" [style.height.%]="(v / maxHistory(it.history)) * 100"></span>
           }
         </div>
 
         <!-- alert -->
-        <div class="alert-row">
-          <span class="alert-row__label">Alert sotto</span>
+        <form class="alert-row" (submit)="$event.preventDefault(); onThresholdInput(it.id, threshold.value)">
+          <label class="alert-row__label" [attr.for]="'alert-' + it.id">Avvisami sotto €</label>
           <input
+            #threshold
+            [id]="'alert-' + it.id"
             class="alert-row__input"
             type="number"
             min="1"
+            inputmode="decimal"
             [value]="it.alertThreshold ?? ''"
-            (change)="onThresholdInput(it.id, $any($event.target).value)"
           />
-          <app-btn95 variant="yellow">IMPOSTA</app-btn95>
-        </div>
+          <app-btn95 type="submit" variant="yellow">{{ it.alertThreshold ? 'Aggiorna' : 'Imposta' }}</app-btn95>
+        </form>
       </div>
     }
   </div>

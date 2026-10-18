@@ -1,9 +1,14 @@
 <div class="auth-page">
-  <div class="win register-win">
+  <header class="auth-brand">
+    <span class="auth-brand__logo">Reflct</span>
+    <p class="auth-brand__tag">Crea il tuo account: ci vuole un minuto.</p>
+  </header>
+  <div class="win auth-win">
     <app-win-title label="register.exe — crea account"></app-win-title>
-    <form class="register-win__body" (ngSubmit)="submit()">
-      <h1 class="auth-title">benvenuta<span class="auth-title__underscore">_</span></h1>
+    <form class="auth-win__body" (ngSubmit)="submit()">
+      <h1 class="auth-title">nuovo account<span class="auth-title__underscore">_</span></h1>
 
+      <div class="field-row">
       <label class="field">
         <span class="field__label">Nome</span>
         <input class="field__input" type="text" name="nome" [(ngModel)]="nome" autocomplete="given-name" placeholder="giulia" />
@@ -13,6 +18,7 @@
         <span class="field__label">Cognome</span>
         <input class="field__input" type="text" name="cognome" [(ngModel)]="cognome" autocomplete="family-name" placeholder="rossi" />
       </label>
+      </div>
 
       <label class="field">
         <span class="field__label">Username</span>
@@ -35,16 +41,16 @@
       </label>
 
       <label class="field">
-        <span class="field__label">Altezza (cm) — opzionale</span>
+        <span class="field__label">Altezza in cm (facoltativa)</span>
         <input class="field__input" type="number" name="altezzaCm" [(ngModel)]="altezzaCm" min="1" placeholder="168" />
       </label>
 
       @if (error()) {
-        <div class="auth-error">{{ error() }}</div>
+        <div class="auth-error" role="alert">{{ error() }}</div>
       }
 
       <app-btn95 type="submit" variant="cta" [block]="true" [disabled]="loading()">
-        {{ loading() ? 'CREAZIONE IN CORSO…' : 'REGISTRATI' }}
+        {{ loading() ? "Creo l'account…" : 'Crea account' }}
       </app-btn95>
 
       <p class="auth-switch">Hai già un account? <a routerLink="/login">Accedi</a></p>

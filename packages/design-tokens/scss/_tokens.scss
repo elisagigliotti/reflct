@@ -27,25 +27,39 @@ $lav:      var(--c-lav, #C6A5F2);
 $warn:     var(--c-warn, #F5A03D);
 
 // ---------- tipografia ----------
-$font-pixel:  "Press Start 2P", monospace;   // logo, username, numeri grandi
-$font-chrome: "Silkscreen", monospace;       // chrome, tab, badge, taskbar
-$font-body:   "VT323", monospace;            // corpo, prezzi, liste
-$font-title:  "Pixelify Sans", sans-serif;   // titoli capi/dialog
+// Anche font, forme, ombre e movimento sono CSS custom properties con fallback
+// = tema y2k: ogni tema in _themes.scss ridefinisce --f-* / --s-* / --m-* e
+// cambia la "fisica" dei componenti, non solo la palette.
+$font-pixel:  var(--f-display, "Press Start 2P", monospace);   // logo, username, numeri grandi
+$font-chrome: var(--f-chrome, "Silkscreen", monospace);       // chrome, tab, badge, taskbar
+$font-body:   var(--f-body, "VT323", monospace);              // corpo, prezzi, liste
+$font-title:  var(--f-title, "Pixelify Sans", sans-serif);    // titoli capi/dialog
 
-// ---------- bordi / ombre (non derogabili: mai blur) ----------
-$border-width: 2px;
-$radius-window: 4px;
-$radius-folder: 5px;
-$radius-button: 3px;
-$radius-titlebar: 2px;
+// ---------- bordi / ombre ----------
+$border-width: var(--s-border, 2px);
+$border-style: var(--s-border-style, solid);
+$radius-window: var(--s-r-win, 4px);
+$radius-folder: var(--s-r-win, 5px);
+$radius-button: var(--s-r-btn, 3px);
+$radius-titlebar: var(--s-r-sm, 2px);
+$radius-small: var(--s-r-sm, 2px);
 
-$shadow-window: 3px 3px 0 $ink;
-$shadow-window-hover: 5px 5px 0 $ink;
-$shadow-button: 2px 2px 0 $ink;
-$shadow-button-hover: 4px 4px 0 $ink;
-$shadow-button-active: 0 0 0 $ink;
+$shadow-window: var(--s-shadow-win, 3px 3px 0 #{$ink});
+$shadow-window-hover: var(--s-shadow-win-hover, 5px 5px 0 #{$ink});
+$shadow-button: var(--s-shadow-btn, 2px 2px 0 #{$ink});
+$shadow-button-hover: var(--s-shadow-btn-hover, 4px 4px 0 #{$ink});
+$shadow-button-active: var(--s-shadow-btn-active, 0 0 0 #{$ink});
+// ombra "incassata" (orologio, tab attiva, pulsante premuto)
+$shadow-inset: var(--s-inset, inset 2px 2px 0 rgba(42, 36, 56, 0.2));
+
+// spostamento al passaggio/pressione (Win9x: su-sinistra / giu'-destra)
+$hover-win: var(--s-hover-win, translate(-1px, -2px));
+$hover-btn: var(--s-hover-btn, translate(-1px, -1px));
+$press-btn: var(--s-press-btn, translate(2px, 2px));
 
 // ---------- motion ----------
+// y2k scatta (steps), gli altri temi scorrono morbidi
+$ease-step: var(--m-ease, steps(2, end));
 $ease-fast: 0.12s ease;
 $ease-med: 0.16s ease;
 
@@ -58,7 +72,7 @@ $gap-folder-grid: 8px;
 // ---------- mixin componenti riusabili ----------
 @mixin win($mint: false) {
   background: if($mint, $win-alt, $win);
-  border: $border-width solid $ink;
+  border: $border-width $border-style $ink;
   box-shadow: $shadow-window;
   border-radius: $radius-window;
   transition: transform 0.13s ease, box-shadow 0.13s ease;
@@ -67,7 +81,7 @@ $gap-folder-grid: 8px;
 
 @mixin win-pop-hover {
   &:hover {
-    transform: translate(-1px, -2px);
+    transform: $hover-win;
     box-shadow: $shadow-window-hover;
   }
 }
@@ -81,9 +95,9 @@ $gap-folder-grid: 8px;
   border-radius: $radius-titlebar $radius-titlebar 0 0;
   padding: 3px 5px;
   font-family: $font-chrome;
-  font-size: 8px;
-  color: $ink;
-  text-transform: uppercase;
+  font-size: calc(8px * var(--f-scale-chrome, 1));
+  color: var(--c-title-ink, #{$ink});
+  text-transform: var(--f-chrome-case, uppercase);
   letter-spacing: 0.02em;
 }
 
@@ -95,7 +109,7 @@ $gap-folder-grid: 8px;
   background: $win;
   color: $ink;
   font-family: $font-chrome;
-  font-size: 11px;
+  font-size: calc(11px * var(--f-scale-chrome, 1));
   letter-spacing: 0.02em;
   border: $border-width solid $ink;
   border-radius: $radius-button;
@@ -105,20 +119,20 @@ $gap-folder-grid: 8px;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
   cursor: pointer;
 
-  @if $variant == cta { background: $pink; color: #fff; }
+  @if $variant == cta { background: $pink; color: var(--c-on-accent, #fff); }
   @if $variant == cyan { background: $cyan; }
   @if $variant == yellow { background: $yellow; }
   @if $variant == block { width: 100%; }
 
-  &:hover { transform: translate(-1px, -1px); box-shadow: $shadow-button-hover; }
-  &:active { transform: translate(2px, 2px); box-shadow: $shadow-button-active; }
+  &:hover { transform: $hover-btn; box-shadow: $shadow-button-hover; }
+  &:active { transform: $press-btn; box-shadow: $shadow-button-active; }
 }
 
 @mixin tab {
   display: inline-block;
   flex: none;
   font-family: $font-chrome;
-  font-size: 11px;
+  font-size: calc(11px * var(--f-scale-chrome, 1));
   color: $ink;
   background: $win-alt;
   border: $border-width solid $ink;
@@ -130,14 +144,14 @@ $gap-folder-grid: 8px;
   user-select: none;
   cursor: pointer;
 
-  &:hover { transform: translate(-1px, -1px); }
-  &.is-active { background: $pink; color: #fff; }
+  &:hover { transform: $hover-btn; }
+  &.is-active { background: $pink; color: var(--c-on-accent, #fff); }
 }
 
 @mixin stamp {
   display: inline-block;
   font-family: $font-chrome;
-  font-size: 9px;
+  font-size: calc(9px * var(--f-scale-chrome, 1));
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: currentColor;
@@ -149,7 +163,7 @@ $gap-folder-grid: 8px;
 @mixin size-pill {
   display: inline-block;
   font-family: $font-chrome;
-  font-size: 9px;
+  font-size: calc(9px * var(--f-scale-chrome, 1));
   font-weight: 700;
   background: $cyan;
   color: $ink;
@@ -187,9 +201,10 @@ $gap-folder-grid: 8px;
   border-bottom: $border-width solid $ink;
   color: $ink;
   font-family: $font-chrome;
-  font-size: 9px;
+  font-size: calc(9px * var(--f-scale-chrome, 1));
   padding: 6px;
   background-image:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.55) 0 3px, transparent 3px 6px),
-    repeating-linear-gradient(-45deg, rgba(42, 36, 56, 0.1) 0 3px, transparent 3px 6px);
+    var(--s-shot-pattern,
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.55) 0 3px, transparent 3px 6px),
+      repeating-linear-gradient(-45deg, rgba(42, 36, 56, 0.1) 0 3px, transparent 3px 6px));
 }

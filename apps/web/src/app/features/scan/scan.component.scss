@@ -9,7 +9,7 @@
 
 .scan-win__status {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$muted;
   text-align: center;
   padding: 8px;
@@ -21,7 +21,7 @@
 
 .scan-win__hint {
   font-family: t.$font-body;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-body, 1));
   color: t.$ink2;
   text-align: center;
   margin: 4px 0 0;
@@ -35,7 +35,7 @@
 
 .url-field__label {
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink2;
   text-transform: uppercase;
 }
@@ -46,9 +46,9 @@
   box-shadow: t.$shadow-button;
   padding: 7px 10px;
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$ink;
-  background: #fff;
+  background: t.$win-alt;
 
   &::placeholder {
     color: t.$muted;
@@ -56,7 +56,7 @@
 
   &:focus {
     outline: none;
-    transform: translate(-1px, -1px);
+    transform: t.$hover-btn;
     box-shadow: t.$shadow-button-hover;
   }
 
@@ -70,7 +70,7 @@
   background: none;
   border: none;
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$muted;
   cursor: pointer;
   text-decoration: underline;
@@ -103,9 +103,22 @@
 
 .result-box__status {
   font-family: t.$font-title;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: calc(17px * var(--f-scale-title, 1));
   color: t.$ink;
+
+  &::before {
+    content: '■ ';
+    color: t.$muted;
+  }
+
+  &[data-status='COMPLETED']::before {
+    color: t.$mint;
+  }
+
+  &[data-status='FAILED']::before {
+    color: t.$warn;
+  }
 }
 
 .result-box__measures {
@@ -121,13 +134,13 @@
 
 .result-box__k {
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(15px * var(--f-scale-body, 1));
   color: t.$ink2;
   text-transform: capitalize;
 }
 
 .result-box__v {
   font-family: t.$font-chrome;
-  font-size: 11px;
+  font-size: calc(11px * var(--f-scale-chrome, 1));
   color: t.$ink;
 }

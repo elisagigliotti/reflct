@@ -9,7 +9,7 @@
 
 .price-win__status {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$muted;
   text-align: center;
   padding: 20px 8px;
@@ -33,7 +33,7 @@
   flex: none;
   overflow: hidden;
   border: t.$border-width solid t.$ink;
-  border-radius: 4px;
+  border-radius: t.$radius-window;
   transform: rotate(var(--rot, 0deg));
 }
 
@@ -45,13 +45,13 @@
 .tracked-item__name {
   font-family: t.$font-title;
   font-weight: 600;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-title, 1));
   color: t.$ink;
 }
 
 .tracked-item__brand {
   font-family: t.$font-chrome;
-  font-size: 8px;
+  font-size: calc(8px * var(--f-scale-chrome, 1));
   color: t.$muted;
   margin-top: 2px;
 }
@@ -65,7 +65,7 @@
 
 .tracked-item__price {
   font-family: t.$font-body;
-  font-size: 20px;
+  font-size: calc(20px * var(--f-scale-body, 1));
   color: t.$ink;
 
   &--drop {
@@ -75,7 +75,7 @@
 
 .tracked-item__old-price {
   font-family: t.$font-body;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-body, 1));
   color: t.$muted;
   text-decoration: line-through;
 }
@@ -96,6 +96,11 @@
   flex: 1;
   min-height: 3px;
   border-radius: 1px;
+  background: color-mix(in srgb, t.$ink 35%, transparent);
+
+  &--now {
+    background: t.$pink;
+  }
 }
 
 // ---------- alert ----------
@@ -108,7 +113,7 @@
 
 .alert-row__label {
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(15px * var(--f-scale-body, 1));
   color: t.$ink2;
   flex: none;
 }
@@ -119,6 +124,6 @@
   border-radius: t.$radius-button;
   padding: 5px 6px;
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(15px * var(--f-scale-body, 1));
   color: t.$ink;
 }

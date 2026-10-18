@@ -1,5 +1,6 @@
 @use 'tokens' as t;
 
+// Stili condivisi da login e register (register.component.ts punta qui).
 .auth-page {
   display: flex;
   flex-direction: column;
@@ -8,11 +9,28 @@
   padding: 12px 0;
 }
 
-.login-win {
-  margin-top: 12px;
+.auth-brand {
+  text-align: center;
+  margin-bottom: 18px;
 }
 
-.login-win__body {
+.auth-brand__logo {
+  display: inline-block;
+  font-family: t.$font-pixel;
+  font-size: calc(30px * var(--f-scale-display, 1));
+  color: t.$pink;
+  text-shadow: 3px 3px 0 t.$ink;
+  -webkit-text-stroke: 1px t.$ink;
+}
+
+.auth-brand__tag {
+  margin-top: 10px;
+  font-family: t.$font-body;
+  font-size: calc(19px * var(--f-scale-body, 1));
+  color: t.$ink;
+}
+
+.auth-win__body {
   padding: 16px 14px 18px;
   display: flex;
   flex-direction: column;
@@ -21,7 +39,7 @@
 
 .auth-title {
   font-family: t.$font-pixel;
-  font-size: 18px;
+  font-size: calc(18px * var(--f-scale-display, 1));
   color: t.$ink;
   margin: 0 0 4px;
 }
@@ -34,11 +52,18 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .field__label {
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink2;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -50,9 +75,11 @@
   box-shadow: t.$shadow-button;
   padding: 8px 10px;
   font-family: t.$font-body;
-  font-size: 17px;
+  font-size: calc(17px * var(--f-scale-body, 1));
   color: t.$ink;
-  background: #fff;
+  background: t.$win-alt;
+  min-width: 0;
+  width: 100%;
 
   &::placeholder {
     color: t.$muted;
@@ -60,7 +87,7 @@
 
   &:focus {
     outline: none;
-    transform: translate(-1px, -1px);
+    transform: t.$hover-btn;
     box-shadow: t.$shadow-button-hover;
   }
 }
@@ -70,19 +97,23 @@
   border-radius: t.$radius-button;
   padding: 8px 10px;
   font-family: t.$font-body;
-  font-size: 15px;
-  color: t.$warn;
+  font-size: calc(17px * var(--f-scale-body, 1));
+  color: t.$ink;
+  background: color-mix(in srgb, t.$warn 18%, transparent);
 }
 
 .auth-switch {
   margin: 4px 0 0;
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(17px * var(--f-scale-body, 1));
   color: t.$ink2;
   text-align: center;
 
   a {
-    color: t.$cyan;
+    color: t.$ink;
     text-decoration: underline;
+    text-decoration-color: t.$pink;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
   }
 }

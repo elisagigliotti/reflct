@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SocialStateService, SocialTab } from '../../core/state/social-state.service';
 import { Btn95Component } from '../../shared/ui/btn95/btn95.component';
 import { MasonryComponent } from '../../shared/ui/masonry/masonry.component';
+import { PixelIconComponent } from '../../shared/ui/pixel-icon/pixel-icon.component';
 import { ShotComponent } from '../../shared/ui/shot/shot.component';
 import { StampComponent } from '../../shared/ui/stamp/stamp.component';
 import { TabComponent } from '../../shared/ui/tab/tab.component';
@@ -14,11 +15,13 @@ import { WinTitleComponent } from '../../shared/ui/win-title/win-title.component
  * Battle / Social (battle.net — social) — Rate My Outfit + Outfit Battle + Trending
  * (Concept v4.0 sez 5.5), dati REALI da com.reflct.api.social (vedi SocialStateService).
  */
+
 @Component({
   selector: 'app-social',
   standalone: true,
   imports: [
     CommonModule,
+    PixelIconComponent,
     WinTitleComponent,
     TabComponent,
     ShotComponent,

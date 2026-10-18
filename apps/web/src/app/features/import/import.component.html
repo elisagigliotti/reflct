@@ -1,22 +1,26 @@
 <div class="win import-win">
   <app-win-title label="import.exe — incolla link"></app-win-title>
   <div class="import-win__body">
+    <p class="import-win__intro">Incolla il link di un capo da qualsiasi shop online: lo aggiungiamo al tuo feed per provarlo.</p>
     <!-- URL bar -->
-    <div class="url-bar">
+    <form class="url-bar" (submit)="$event.preventDefault(); state.analyze()">
+      <label class="visually-hidden" for="import-url">Link del capo</label>
       <input
+        id="import-url"
         class="url-bar__input"
         type="url"
-        placeholder="https://…"
+        inputmode="url"
+        placeholder="https://shop.it/prodotto…"
         [value]="state.url()"
         (input)="onUrlChange($any($event.target).value)"
       />
-      <app-btn95 variant="cyan" (click)="state.analyze()">ANALIZZA</app-btn95>
-    </div>
+      <app-btn95 type="submit" variant="cyan" [disabled]="state.loading() || !state.url().trim()">Importa</app-btn95>
+    </form>
 
     @if (state.loading()) {
-      <div class="loading-box">analisi in corso…</div>
+      <div class="loading-box" role="status">Leggo la pagina dello shop…</div>
     } @else if (state.error()) {
-      <div class="loading-box loading-box--error">{{ state.error() }}</div>
+      <div class="loading-box loading-box--error" role="alert">{{ state.error() }}</div>
     }
 
     @if (state.imported(); as item) {
@@ -27,14 +31,14 @@
         variant="cta"
         [block]="true"
         (click)="state.addToWardrobe()"
-      >{{ state.addedToWardrobe() ? '✓ NEL GUARDAROBA' : 'AGGIUNGI AL GUARDAROBA' }}</app-btn95>
+      >{{ state.addedToWardrobe() ? "Salvato nell'armadio" : "Salva nell'armadio" }}</app-btn95>
     }
 
     <!-- shop popolari -->
-    <h2 class="import-win__section-title">Shop popolari</h2>
+    <h2 class="import-win__section-title">Cerca un capo negli shop</h2>
     <div class="shop-list win">
       @for (shop of state.shops; track shop.name) {
-        <app-row [icon]="shop.icon" [keyLabel]="shop.name" [showChevron]="true" (rowClick)="state.pickShop(shop)"></app-row>
+        <app-row [keyLabel]="shop.name" valueLabel="apri ↗" (rowClick)="state.pickShop(shop)"></app-row>
       }
     </div>
   </div>

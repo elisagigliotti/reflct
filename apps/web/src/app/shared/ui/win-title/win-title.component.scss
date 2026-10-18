@@ -32,7 +32,7 @@
   display: block;
   background: t.$win;
   border: t.$border-width solid t.$ink;
-  border-radius: 2px;
+  border-radius: t.$radius-small;
   font-style: normal;
   font-size: 8px;
   line-height: 8px;

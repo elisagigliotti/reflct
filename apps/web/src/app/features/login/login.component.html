@@ -1,8 +1,12 @@
 <div class="auth-page">
-  <div class="win login-win">
+  <header class="auth-brand">
+    <span class="auth-brand__logo">Reflct</span>
+    <p class="auth-brand__tag">Prova i vestiti prima di comprarli.</p>
+  </header>
+  <div class="win auth-win">
     <app-win-title label="login.exe — accedi"></app-win-title>
-    <form class="login-win__body" (ngSubmit)="submit()">
-      <h1 class="auth-title">bentornata<span class="auth-title__underscore">_</span></h1>
+    <form class="auth-win__body" (ngSubmit)="submit()">
+      <h1 class="auth-title">ciao di nuovo<span class="auth-title__underscore">_</span></h1>
 
       <label class="field">
         <span class="field__label">Email</span>
@@ -15,11 +19,11 @@
       </label>
 
       @if (error()) {
-        <div class="auth-error">{{ error() }}</div>
+        <div class="auth-error" role="alert">{{ error() }}</div>
       }
 
       <app-btn95 type="submit" variant="cta" [block]="true" [disabled]="loading()">
-        {{ loading() ? 'ACCESSO IN CORSO…' : 'ACCEDI' }}
+        {{ loading() ? 'Accedo…' : 'Accedi' }}
       </app-btn95>
 
       <p class="auth-switch">Non hai un account? <a routerLink="/register">Registrati</a></p>

@@ -6,6 +6,8 @@ export type Btn95Variant = 'default' | 'cta' | 'cyan' | 'yellow';
 /** Bottone beveled retro ".btn-95" (+ --cta, --cyan, --yellow, --block). */
 @Component({
   selector: 'app-btn95',
+  // [block]: anche l'host deve occupare tutta la riga, non solo il <button> interno
+  host: { '[class.is-block]': 'block' },
   standalone: true,
   imports: [CommonModule],
   templateUrl: './btn95.component.html',

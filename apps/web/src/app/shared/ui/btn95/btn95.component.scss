@@ -1,5 +1,10 @@
 @use 'tokens' as t;
 
+:host(.is-block) {
+  display: block;
+  width: 100%;
+}
+
 .btn-95 {
   @include t.btn-95;
   width: auto;
@@ -13,7 +18,7 @@
 
 .btn-95--cta {
   background: t.$pink;
-  color: #fff;
+  color: var(--c-on-accent, #fff);
 }
 
 .btn-95--cyan {

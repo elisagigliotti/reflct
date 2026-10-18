@@ -12,7 +12,7 @@
 
 .social-win__status {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$muted;
   text-align: center;
   padding: 14px 8px;
@@ -33,9 +33,18 @@
   margin-bottom: 12px;
 }
 
+.rate-card__name {
+  padding: 8px 10px 0;
+  font-family: t.$font-title;
+  font-weight: 600;
+  font-size: calc(16px * var(--f-scale-title, 1));
+  color: t.$ink;
+  background: t.$win;
+}
+
 .rate-card__actions {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   padding: 10px;
   background: t.$win;
   justify-content: center;
@@ -45,24 +54,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  width: 44px;
-  height: 44px;
+  justify-content: center;
+  gap: 3px;
+  width: 64px;
+  height: 58px;
   border: t.$border-width solid t.$ink;
   border-radius: t.$radius-window;
   box-shadow: t.$shadow-button;
-  background: #fff;
-  font-size: 16px;
-  transition: transform 0.12s ease;
+  background: t.$win-alt;
+  transition: transform 0.1s t.$ease-step;
 
-  &:hover {
+  &:hover:not(:disabled) {
     transform: rotate(-3deg) scale(1.05);
+  }
+
+  &:active:not(:disabled) {
+    transform: t.$press-btn;
+    box-shadow: t.$shadow-button-active;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.75;
+  }
+
+  &:focus-visible {
+    outline: 2px dashed t.$ink;
+    outline-offset: 2px;
   }
 }
 
 .sticker-btn__count {
   font-family: t.$font-chrome;
-  font-size: 8px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink2;
 }
 
@@ -91,18 +115,27 @@
   transform: rotate(var(--rot, 0deg));
 }
 
-.battle__card-label {
-  padding: 6px 8px;
+.battle__question {
+  font-family: t.$font-title;
+  font-weight: 700;
+  font-size: calc(18px * var(--f-scale-title, 1));
+  color: t.$ink;
   text-align: center;
-  font-family: t.$font-chrome;
-  font-size: 10px;
+}
+
+.battle__card-label {
+  padding: 7px 8px;
+  text-align: center;
+  font-family: t.$font-title;
+  font-weight: 600;
+  font-size: calc(15px * var(--f-scale-title, 1));
   color: t.$ink;
   background: t.$win;
 }
 
 .battle__vs {
   font-family: t.$font-pixel;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-display, 1));
   color: t.$pink;
   flex: none;
 }
@@ -111,7 +144,7 @@
   width: 100%;
   height: 14px;
   border: t.$border-width solid t.$ink;
-  border-radius: 3px;
+  border-radius: t.$radius-button;
   display: flex;
   overflow: hidden;
 }
@@ -129,7 +162,7 @@
   display: flex;
   justify-content: space-between;
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(17px * var(--f-scale-body, 1));
   color: t.$ink2;
 }
 
@@ -157,13 +190,13 @@
 .trending-card__name {
   font-family: t.$font-title;
   font-weight: 600;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-title, 1));
   color: t.$ink;
 }
 
 .trending-card__fire {
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(15px * var(--f-scale-body, 1));
   color: t.$warn;
   margin-top: 4px;
 }

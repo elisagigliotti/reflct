@@ -1,3 +1,4 @@
+import type { PixelIconName } from '../ui/pixel-icon/pixel-icon.component';
 // ==========================================================================
 // Modelli dati condivisi — Reflct
 // Rispecchia lo stato/dati mock descritto in docs/design-reference/README.md
@@ -31,7 +32,7 @@ export interface FeedItem {
 
 export interface NavItem {
   key: 'Feed' | 'Prova' | 'Armadio' | 'Io';
-  icon: string;
+  icon: PixelIconName;
   label: string;
   path: string;
 }

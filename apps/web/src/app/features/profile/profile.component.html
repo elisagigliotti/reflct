@@ -3,12 +3,14 @@
   <div class="win profile-win">
     <app-win-title label="profile.sys" icon="☻"></app-win-title>
     <div class="profile-win__body">
-      <div class="profile-win__avatar" aria-hidden="true"><span>☻</span></div>
+      <div class="profile-win__avatar" aria-hidden="true">
+        <app-pixel-icon name="io" [size]="48"></app-pixel-icon>
+      </div>
       <div class="profile-win__identity">
         <div class="profile-win__name-row">
           <h1 class="profile-win__name">{{ u.nome }} {{ u.cognome }}_</h1>
           @if (isPremium()) {
-            <app-stamp color="#F5D14E">{{ u.piano }}</app-stamp>
+            <app-stamp color="var(--c-yellow, #F5D14E)">{{ u.piano }}</app-stamp>
           }
         </div>
         <div class="profile-win__handle">&#64;{{ u.username }}</div>
@@ -16,7 +18,10 @@
       </div>
     </div>
     <div class="profile-win__actions">
-      <app-btn95 (click)="logout()">↩ ESCI</app-btn95>
+      <app-btn95 (click)="startEdit()" [disabled]="editing()">Modifica profilo</app-btn95>
+      <app-btn95 (click)="logout()">
+        <app-pixel-icon name="power" [size]="18"></app-pixel-icon> Esci
+      </app-btn95>
     </div>
   </div>
 
@@ -37,10 +42,19 @@
           <span class="measures-win__k">altezza</span>
           <span class="measures-win__v">{{ u.altezzaCm ? u.altezzaCm + ' cm' : 'non impostata' }}</span>
         </div>
-        <p class="measures-win__hint">
-          Le altre misure (busto, vita, taglie…) arrivano dal body-scan — ancora da collegare.
-        </p>
-        <app-btn95 variant="cyan" [block]="true" (click)="startEdit()">✎ MODIFICA PROFILO</app-btn95>
+        @for (m of scan.measureEntries(); track m[0]) {
+          <div class="measures-win__row">
+            <span class="measures-win__k">{{ m[0] }}</span>
+            <span class="measures-win__v">{{ m[1] }} cm</span>
+          </div>
+        }
+        <button type="button" class="measures-win__row measures-win__row--btn" (click)="toggleUnits()">
+          <span class="measures-win__k">unità di misura</span>
+          <span class="measures-win__v">{{ u.unitaMisura }} <span class="measures-win__swap" aria-hidden="true">⇄</span></span>
+        </button>
+        @if (scan.measureEntries().length === 0) {
+          <p class="measures-win__hint">Busto, vita e fianchi compaiono qui dopo il body-scan.</p>
+        }
       } @else {
         <label class="edit-field">
           <span class="edit-field__label">Nome</span>
@@ -66,11 +80,16 @@
           <div class="measures-win__error">{{ saveError() }}</div>
         }
         <div class="edit-actions">
-          <app-btn95 variant="cta" [disabled]="saving()" (click)="save()">{{ saving() ? 'SALVO…' : 'SALVA' }}</app-btn95>
-          <app-btn95 [disabled]="saving()" (click)="cancelEdit()">ANNULLA</app-btn95>
+          <app-btn95 variant="cta" [disabled]="saving()" (click)="save()">{{ saving() ? 'Salvo…' : 'Salva modifiche' }}</app-btn95>
+          <app-btn95 [disabled]="saving()" (click)="cancelEdit()">Annulla</app-btn95>
         </div>
       }
-      <app-btn95 variant="cyan" [block]="true" (click)="redoScan()">↻ RIFAI IL BODY-SCAN</app-btn95>
+      @if (!editing()) {
+        <app-btn95 variant="cyan" [block]="true" (click)="redoScan()">
+          <app-pixel-icon name="scan" [size]="18"></app-pixel-icon>
+          {{ scan.measureEntries().length ? 'Rifai il body-scan' : 'Fai il body-scan' }}
+        </app-btn95>
+      }
     </div>
   </div>
 
@@ -78,20 +97,24 @@
   <div class="win win--mint theme-win">
     <app-win-title label="aspetto.cfg" [teal]="true"></app-win-title>
     <div class="theme-win__body">
-      <p class="measures-win__hint">Scegli il tema grafico dell'app.</p>
       <div class="theme-grid">
         @for (opt of theme.options; track opt.id) {
           <button
             type="button"
             class="theme-card"
             [class.theme-card--active]="theme.themeId() === opt.id"
+            [attr.aria-pressed]="theme.themeId() === opt.id"
             (click)="theme.setTheme(opt.id)"
           >
-            <span class="theme-card__preview" [attr.data-theme]="opt.id === 'y2k' ? null : opt.id">
-              <span class="theme-card__dot" style="background: var(--c-chrome)"></span>
-              <span class="theme-card__dot" style="background: var(--c-chrome2)"></span>
-              <span class="theme-card__dot" style="background: var(--c-win)"></span>
-              <span class="theme-card__icon">{{ opt.icon }}</span>
+            <!-- anteprima: una mini finestra disegnata con le variabili del tema stesso -->
+            <span class="theme-card__preview" [attr.data-theme]="opt.id" aria-hidden="true">
+              <span class="theme-card__mini">
+                <span class="theme-card__mini-bar"></span>
+                <span class="theme-card__mini-body">
+                  <span class="theme-card__mini-type">Aa</span>
+                  <span class="theme-card__mini-btn"></span>
+                </span>
+              </span>
             </span>
             <span class="theme-card__label">{{ opt.label }}</span>
           </button>
@@ -100,23 +123,6 @@
     </div>
   </div>
 
-  <!-- settings.ini -->
-  <div class="win settings-win">
-    <app-win-title label="settings.ini"></app-win-title>
-    <div class="settings-win__body">
-      <app-row icon="🔔" keyLabel="Notifiche" [showChevron]="true"></app-row>
-      <app-row icon="🔒" keyLabel="Privacy & avatar" [showChevron]="true"></app-row>
-      <app-row icon="📏" keyLabel="Unità di misura" [valueLabel]="u.unitaMisura" (rowClick)="toggleUnits()"></app-row>
-      <app-row icon="❔" keyLabel="Aiuto" [showChevron]="true"></app-row>
-    </div>
-  </div>
-
-  <!-- social sticker -->
-  <div class="social-stickers">
-    @for (s of stickers; track s.label) {
-      <button class="social-stickers__btn" [style.color]="s.color" [attr.aria-label]="s.label">{{ s.glyph }}</button>
-    }
-  </div>
 } @else {
   <div class="win profile-win">
     <div class="profile-win__loading">Caricamento profilo…</div>

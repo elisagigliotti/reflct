@@ -24,11 +24,6 @@ export class PriceTrackerComponent {
     return Math.max(...history, 1);
   }
 
-  barColor(index: number): string {
-    const palette = ['#FF5FA2', '#4FD3E6', '#2FAF8E', '#F5D14E', '#C6A5F2'];
-    return palette[index % palette.length];
-  }
-
   onThresholdInput(id: string | number, value: string): void {
     const parsed = Number(value);
     this.state.setThreshold(id, Number.isFinite(parsed) && parsed > 0 ? parsed : null);

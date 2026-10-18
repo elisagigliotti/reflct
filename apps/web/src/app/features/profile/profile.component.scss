@@ -21,11 +21,10 @@
   background-color: t.$lav;
   background-image:
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.5) 0 4px, transparent 4px 8px),
-    repeating-linear-gradient(-45deg, rgba(42, 36, 56, 0.1) 0 4px, transparent 4px 8px);
+    repeating-linear-gradient(-45deg, color-mix(in srgb, t.$ink 10%, transparent) 0 4px, transparent 4px 8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
 }
 
 .profile-win__identity {
@@ -42,25 +41,28 @@
 
 .profile-win__name {
   font-family: t.$font-pixel;
-  font-size: 20px;
+  font-size: calc(20px * var(--f-scale-display, 1));
   color: t.$ink;
 }
 
 .profile-win__handle {
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(15px * var(--f-scale-body, 1));
   color: t.$muted;
   margin-top: 3px;
 }
 
 .profile-win__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
   padding: 0 13px 13px;
 }
 
 .profile-win__loading {
   padding: 24px 13px;
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$muted;
   text-align: center;
 }
@@ -81,18 +83,18 @@
   display: flex;
   justify-content: space-between;
   padding-bottom: 8px;
-  border-bottom: 1px dashed rgba(42, 36, 56, 0.2);
+  border-bottom: 1px dashed color-mix(in srgb, t.$ink 20%, transparent);
 }
 
 .measures-win__k {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(18px * var(--f-scale-body, 1));
   color: t.$ink;
 }
 
 .measures-win__v {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(18px * var(--f-scale-body, 1));
   color: t.$ink;
 
   &--cyan {
@@ -100,10 +102,35 @@
   }
 }
 
+.measures-win__row--btn {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px dashed color-mix(in srgb, t.$ink 20%, transparent);
+  padding: 0 0 8px;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover .measures-win__swap,
+  &:focus-visible .measures-win__swap {
+    color: t.$pink;
+  }
+
+  &:focus-visible {
+    outline: 2px dashed t.$ink;
+    outline-offset: 3px;
+  }
+}
+
+.measures-win__swap {
+  margin-left: 4px;
+  color: t.$muted;
+}
+
 .measures-win__hint {
   margin: -4px 0 0;
   font-family: t.$font-body;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-body, 1));
   color: t.$muted;
 }
 
@@ -112,7 +139,7 @@
   border-radius: t.$radius-button;
   padding: 6px 8px;
   font-family: t.$font-body;
-  font-size: 14px;
+  font-size: calc(14px * var(--f-scale-body, 1));
   color: t.$warn;
 }
 
@@ -124,7 +151,7 @@
 
 .edit-field__label {
   font-family: t.$font-chrome;
-  font-size: 9px;
+  font-size: calc(9px * var(--f-scale-chrome, 1));
   color: t.$ink2;
   text-transform: uppercase;
 }
@@ -135,9 +162,9 @@
   box-shadow: t.$shadow-button;
   padding: 6px 8px;
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$ink;
-  background: #fff;
+  background: t.$win-alt;
 }
 
 .edit-actions {
@@ -164,7 +191,12 @@
 .theme-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px 10px;
+}
+
+// numero dispari di temi: l'ultimo occupa tutta la riga
+.theme-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .theme-card {
@@ -180,73 +212,89 @@
 
 .theme-card__preview {
   width: 100%;
-  height: 48px;
+  height: 64px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  gap: 5px;
-  background: var(--c-desktop);
+  padding-top: 10px;
+  background-color: var(--c-desktop);
+  background-image: var(--wall-image, none);
+  background-size: var(--wall-size, auto);
   border: t.$border-width solid t.$ink;
   border-radius: t.$radius-button;
-  transition: border-color 0.12s ease, border-width 0.12s ease;
+  overflow: hidden;
+  transition: transform 0.1s t.$ease-step;
+}
+
+.theme-card:hover .theme-card__preview {
+  transform: translateY(-2px);
 }
 
 .theme-card--active .theme-card__preview {
-  border-color: t.$pink;
-  border-width: 3px;
+  outline: 3px solid t.$pink;
+  outline-offset: 2px;
 }
 
-.theme-card__dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+.theme-card:focus-visible {
+  outline: none;
+
+  .theme-card__preview {
+    outline: 2px dashed t.$ink;
+    outline-offset: 2px;
+  }
 }
 
-.theme-card__icon {
-  font-size: 16px;
-  margin-left: 4px;
+.theme-card__mini {
+  width: 72%;
+  height: 50px;
+  margin-bottom: -8px;
+  background: var(--c-win);
+  border: var(--s-border, 2px) var(--s-border-style, solid) var(--c-ink);
+  border-radius: var(--s-r-win, 4px);
+  box-shadow: var(--s-shadow-win, 3px 3px 0 var(--c-ink));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-card__mini-bar {
+  height: 8px;
+  background: var(--c-chrome);
+  border-bottom: 2px solid var(--c-ink);
+}
+
+.theme-card__mini-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 8px 10px;
+}
+
+.theme-card__mini-type {
+  font-family: var(--f-title, 'Pixelify Sans', sans-serif);
+  font-size: calc(13px * var(--f-scale-title, 1));
+  font-weight: 700;
+  line-height: 1;
+  color: var(--c-ink);
+}
+
+.theme-card__mini-btn {
+  height: 9px;
+  width: 45%;
+  background: var(--c-pink);
+  border: 1.5px solid var(--c-ink);
+  border-radius: var(--s-r-btn, 2px);
 }
 
 .theme-card__label {
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink;
   letter-spacing: 0.3px;
 }
 
 .theme-card--active .theme-card__label {
   color: t.$pink;
-}
-
-// ---------- settings.ini ----------
-.settings-win {
-  margin-bottom: t.$gap-block;
-  border-style: dashed;
-}
-
-.settings-win__body {
-  padding: 4px 0;
-}
-
-// ---------- social sticker ----------
-.social-stickers {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  padding: 4px 0 12px;
-}
-
-.social-stickers__btn {
-  width: 44px;
-  height: 44px;
-  border: t.$border-width solid t.$ink;
-  border-radius: t.$radius-window;
-  box-shadow: t.$shadow-button;
-  background: t.$win;
-  font-size: 18px;
-  transition: transform 0.12s ease;
-
-  &:hover {
-    transform: rotate(-3deg) scale(1.05);
-  }
 }

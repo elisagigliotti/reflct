@@ -3,6 +3,7 @@ import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BodyScanStateService } from '../../core/state/body-scan-state.service';
 import { Btn95Component } from '../../shared/ui/btn95/btn95.component';
+import { PixelIconComponent } from '../../shared/ui/pixel-icon/pixel-icon.component';
 import { WinTitleComponent } from '../../shared/ui/win-title/win-title.component';
 import { CameraCaptureComponent } from '../../shared/ui/camera-capture/camera-capture.component';
 
@@ -15,21 +16,11 @@ import { CameraCaptureComponent } from '../../shared/ui/camera-capture/camera-ca
 @Component({
   selector: 'app-scan',
   standalone: true,
-  imports: [CommonModule, WinTitleComponent, Btn95Component, CameraCaptureComponent],
+  imports: [CommonModule, WinTitleComponent, Btn95Component, PixelIconComponent, CameraCaptureComponent],
   templateUrl: './scan.component.html',
   styleUrl: './scan.component.scss',
 })
 export class ScanComponent {
-  readonly measureLabels: Record<string, string> = {
-    busto_cm: 'busto',
-    vita_cm: 'vita',
-    fianchi_cm: 'fianchi',
-    spalle_cm: 'spalle',
-    torso_cm: 'torso',
-    inseam_cm: 'cavallo',
-    manica_cm: 'manica',
-  };
-
   readonly showCamera = signal(false);
   readonly showManual = signal(false);
   readonly capturedPreviewUrl = signal<string | null>(null);
@@ -84,16 +75,6 @@ export class ScanComponent {
       return;
     }
     this.state.startWithBlob(this.capturedBlob);
-  }
-
-  measureEntries(): [string, number][] {
-    const measures = this.state.measures();
-    if (!measures) {
-      return [];
-    }
-    return Object.entries(this.measureLabels)
-      .filter(([key]) => key in measures)
-      .map(([key, label]) => [label, (measures as Record<string, number>)[key]]);
   }
 
   goToFeed(): void {

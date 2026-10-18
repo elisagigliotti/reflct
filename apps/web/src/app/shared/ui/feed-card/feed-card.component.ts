@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FeedItem } from '../../data/models';
 import { ShotComponent } from '../shot/shot.component';
 import { SizePillComponent } from '../size-pill/size-pill.component';
-import { StampComponent } from '../stamp/stamp.component';
+import { PixelIconComponent } from '../pixel-icon/pixel-icon.component';
 
 /**
  * Card capo riusata in Feed (masonry), Armadio (salvati.lst), Import (preview),
@@ -14,7 +14,7 @@ import { StampComponent } from '../stamp/stamp.component';
 @Component({
   selector: 'app-feed-card',
   standalone: true,
-  imports: [CommonModule, ShotComponent, SizePillComponent, StampComponent],
+  imports: [CommonModule, ShotComponent, SizePillComponent, PixelIconComponent],
   templateUrl: './feed-card.component.html',
   styleUrl: './feed-card.component.scss',
 })
@@ -30,17 +30,16 @@ export class FeedCardComponent {
     return this.item.shotLabel.toLowerCase().replace('.bmp', '');
   }
 
-  get priceColor(): string {
-    return this.showPriceDrop && this.item.old ? '#2FAF8E' : '#2A2438';
+  get isDropped(): boolean {
+    return this.showPriceDrop && !!this.item.old;
   }
 
-  get likeGlyph(): string {
-    return this.liked ? '♥' : '♡';
+  get likeLabel(): string {
+    return this.liked ? 'Rimuovi dai salvati' : "Salva nell'armadio";
   }
 
-  get likeColor(): string {
-    return this.liked ? '#FF5FA2' : '#8A7FA0';
-  }
+  /** Riavvia l'animazione "pop" del cuore solo quando l'utente mette like (non al caricamento). */
+  popTick = 0;
 
   onOpen(): void {
     this.open.emit(this.item.id);
@@ -48,6 +47,7 @@ export class FeedCardComponent {
 
   onLike(evt: Event): void {
     evt.stopPropagation();
+    if (!this.liked) this.popTick++;
     this.like.emit(this.item.id);
   }
 }

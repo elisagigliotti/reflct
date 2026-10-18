@@ -15,29 +15,30 @@
     <!-- RATE MY OUTFIT -->
     @if (state.tab() === 'Rate') {
       <app-btn95 variant="cyan" [block]="true" [disabled]="state.posting()" (click)="state.postRandomFromFeed('RATE')">
-        {{ state.posting() ? 'PUBBLICAZIONE…' : '+ POSTA UN CAPO DAL FEED' }}
+        {{ state.posting() ? 'Pubblico…' : 'Chiedi un voto su un capo' }}
       </app-btn95>
 
       @if (state.loading()) {
         <p class="social-win__status">caricamento…</p>
       } @else if (state.ratePosts().length === 0) {
-        <p class="social-win__status">nessun capo in rating al momento — pubblicane uno tu.</p>
+        <p class="social-win__status">Nessun capo da votare. Pubblicane uno e chiedi un parere.</p>
       }
 
       @for (v of state.ratePosts(); track v.post.id) {
         <div class="win win--pop rate-card">
-          <app-shot [color]="v.shotColor" [label]="v.shotLabel" [height]="220"></app-shot>
+          <app-shot [color]="v.shotColor" [height]="220"></app-shot>
+          <div class="rate-card__name">{{ v.post.garmentNome }}</div>
           <div class="rate-card__actions">
-            <button class="sticker-btn" [disabled]="state.hasVoted(v.post.id)" (click)="state.rate(v.post.id, 'fire')">
-              <span>🔥</span>
+            <button type="button" class="sticker-btn" [disabled]="state.hasVoted(v.post.id)" (click)="state.rate(v.post.id, 'fire')" aria-label="Top">
+              <app-pixel-icon name="fire" [size]="24"></app-pixel-icon>
               <span class="sticker-btn__count">{{ v.voti.fire }}</span>
             </button>
-            <button class="sticker-btn" [disabled]="state.hasVoted(v.post.id)" (click)="state.rate(v.post.id, 'meh')">
-              <span>😐</span>
+            <button type="button" class="sticker-btn" [disabled]="state.hasVoted(v.post.id)" (click)="state.rate(v.post.id, 'meh')" aria-label="Così così">
+              <app-pixel-icon name="meh" [size]="24"></app-pixel-icon>
               <span class="sticker-btn__count">{{ v.voti.meh }}</span>
             </button>
-            <button class="sticker-btn" [disabled]="state.hasVoted(v.post.id)" (click)="state.rate(v.post.id, 'skip')">
-              <span>⏭</span>
+            <button type="button" class="sticker-btn" [disabled]="state.hasVoted(v.post.id)" (click)="state.rate(v.post.id, 'skip')" aria-label="Passo">
+              <app-pixel-icon name="skip" [size]="24"></app-pixel-icon>
               <span class="sticker-btn__count">{{ v.voti.skip }}</span>
             </button>
           </div>
@@ -48,37 +49,38 @@
     <!-- OUTFIT BATTLE -->
     @if (state.tab() === 'Battle') {
       <app-btn95 variant="cyan" [block]="true" [disabled]="state.posting()" (click)="state.postRandomFromFeed('BATTLE')">
-        {{ state.posting() ? 'PUBBLICAZIONE…' : '+ POSTA UN CAPO IN BATTLE' }}
+        {{ state.posting() ? 'Pubblico…' : 'Lancia una battle su un capo' }}
       </app-btn95>
 
       @if (state.loading()) {
         <p class="social-win__status">caricamento…</p>
       } @else if (state.battlePosts().length === 0) {
-        <p class="social-win__status">nessuna battle attiva al momento — pubblicane una tu.</p>
+        <p class="social-win__status">Nessuna battle attiva. Lanciane una: gli altri votano se lo comprerebbero.</p>
       }
 
       @for (v of state.battlePosts(); track v.post.id) {
         <div class="battle">
           <div class="win win--pop battle__card">
-            <app-shot [color]="v.shotColor" [label]="v.shotLabel" [height]="180"></app-shot>
+            <app-shot [color]="v.shotColor" [height]="180"></app-shot>
             <div class="battle__card-label">{{ v.post.garmentNome }}</div>
           </div>
+          <p class="battle__question">Lo compreresti?</p>
 
           <div class="battle__bar">
             <span class="battle__bar-seg battle__bar-seg--a" [style.width.%]="v.percentA"></span>
             <span class="battle__bar-seg battle__bar-seg--b" [style.width.%]="v.percentB"></span>
           </div>
           <div class="battle__percents">
-            <span>A · {{ v.percentA }}%</span>
-            <span>B · {{ v.percentB }}%</span>
+            <span>sì {{ v.percentA }}%</span>
+            <span>no {{ v.percentB }}%</span>
           </div>
 
           <div class="battle__vote-buttons">
-            <app-btn95 [variant]="state.hasVoted(v.post.id) ? 'cta' : 'default'" [disabled]="state.hasVoted(v.post.id)" (click)="state.vote(v.post.id, 'a')">
-              {{ state.hasVoted(v.post.id) ? 'VOTATO ✓' : 'VOTA A' }}
+            <app-btn95 [disabled]="state.hasVoted(v.post.id)" (click)="state.vote(v.post.id, 'a')">
+              Sì
             </app-btn95>
-            <app-btn95 [variant]="state.hasVoted(v.post.id) ? 'cta' : 'default'" [disabled]="state.hasVoted(v.post.id)" (click)="state.vote(v.post.id, 'b')">
-              {{ state.hasVoted(v.post.id) ? 'VOTATO ✓' : 'VOTA B' }}
+            <app-btn95 [disabled]="state.hasVoted(v.post.id)" (click)="state.vote(v.post.id, 'b')">
+              No
             </app-btn95>
           </div>
         </div>
@@ -90,7 +92,7 @@
       <app-masonry>
         @for (it of state.trending(); track it.id) {
           <app-ui-window [pop]="true" class="trending-card" (click)="openItem(it.id)">
-            <app-shot [color]="it.shotColor" [label]="it.shotLabel" [height]="it.h"></app-shot>
+            <app-shot [color]="it.shotColor" [height]="it.h"></app-shot>
             <div class="trending-card__info">
               <div class="trending-card__name">{{ it.name }}</div>
             </div>

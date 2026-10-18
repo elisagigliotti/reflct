@@ -1,29 +1,20 @@
 <div class="win wardrobe-win">
   <app-win-title label="wardrobe.dat — il mio armadio"></app-win-title>
   <div class="wardrobe-win__body">
-    <!-- 3 stat card -->
-    <div class="stats">
+    <dl class="stats">
       <div class="stat-card">
-        <span class="stat-card__value stat-card__value--pink">{{ feed.savedCount() }}</span>
-        <span class="stat-card__label">SALVATI</span>
+        <dt class="stat-card__label">salvati</dt>
+        <dd class="stat-card__value stat-card__value--pink">{{ feed.savedCount() }}</dd>
       </div>
       <div class="stat-card">
-        <span class="stat-card__value stat-card__value--mint">{{ wardrobe.lookCount() }}</span>
-        <span class="stat-card__label">LOOK</span>
+        <dt class="stat-card__label">in saldo</dt>
+        <dd class="stat-card__value stat-card__value--mint">{{ onSale() }}</dd>
       </div>
       <div class="stat-card">
-        <span class="stat-card__value stat-card__value--cyan">{{ wardrobe.triedCount() }}</span>
-        <span class="stat-card__label">PROVATI</span>
+        <dt class="stat-card__label">valore</dt>
+        <dd class="stat-card__value stat-card__value--ink">€{{ total() }}</dd>
       </div>
-    </div>
-
-    <!-- cartelle -->
-    <h2 class="wardrobe-win__section-title">Cartelle</h2>
-    <div class="folders">
-      @for (f of wardrobe.folders(); track f.name) {
-        <app-folder [name]="f.name" [count]="f.count"></app-folder>
-      }
-    </div>
+    </dl>
   </div>
 </div>
 
@@ -34,11 +25,15 @@
     @if (feed.likedItems().length > 0) {
       <app-masonry>
         @for (it of feed.likedItems(); track it.id) {
-          <app-feed-card [item]="it" [liked]="true" [showPriceDrop]="false" (open)="openItem($event)" (like)="feed.toggleLike($event)"></app-feed-card>
+          <app-feed-card [item]="it" [liked]="true" [showPriceDrop]="true" (open)="openItem($event)" (like)="feed.toggleLike($event)"></app-feed-card>
         }
       </app-masonry>
     } @else {
-      <p class="saved-win__empty">nessun capo salvato — metti ♥ nel feed!</p>
+      <div class="saved-win__empty">
+        <p class="saved-win__empty-title">L'armadio è vuoto</p>
+        <p class="saved-win__empty-text">Tocca il cuore su un capo nel feed per salvarlo qui.</p>
+        <a class="btn-95 btn-95--cta" routerLink="/feed">Vai al feed</a>
+      </div>
     }
   </div>
 </div>

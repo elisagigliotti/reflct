@@ -3,7 +3,7 @@
 .card {
   @include t.win(false);
   @include t.win-pop-hover;
-  border-radius: 4px;
+  border-radius: t.$radius-window;
   overflow: hidden;
   transform: rotate(var(--rot, 0deg));
   cursor: pointer;
@@ -20,7 +20,7 @@
 
 .card__title {
   @include t.win-title(false);
-  font-size: 7px;
+  font-size: calc(7px * var(--f-scale-chrome, 1));
   padding: 2px 4px;
 }
 
@@ -44,18 +44,53 @@
   width: 30px;
   height: 28px;
   border: t.$border-width solid t.$ink;
-  border-radius: 4px;
+  border-radius: t.$radius-window;
   background: t.$win;
   box-shadow: t.$shadow-button;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
-  line-height: 1;
-  transition: transform 0.12s ease;
+  --px-ink: #{t.$muted};
+  transition: transform 0.1s t.$ease-step;
 
   &:hover {
     transform: rotate(-4deg) scale(1.08);
+  }
+
+  &:active {
+    transform: t.$press-btn;
+    box-shadow: t.$shadow-button-active;
+  }
+
+  &:focus-visible {
+    outline: 2px dashed t.$ink;
+    outline-offset: 2px;
+  }
+
+  &.is-liked {
+    --px-ink: #{t.$ink};
+  }
+}
+
+.card__heart {
+  display: inline-flex;
+
+  // Like: il cuore "salta" a scatti con un piccolo overshoot (pixel = steps,
+  // niente easing morbido). Solo su azione dell'utente, mai al caricamento.
+  &.is-popping {
+    animation: heart-pop 0.32s steps(6, end);
+  }
+}
+
+@keyframes heart-pop {
+  0% { transform: scale(0.6); }
+  50% { transform: scale(1.45) rotate(-8deg); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__heart.is-popping {
+    animation: none;
   }
 }
 
@@ -67,14 +102,14 @@
 .card__name {
   font-family: t.$font-title;
   font-weight: 600;
-  font-size: 15px;
+  font-size: calc(15px * var(--f-scale-title, 1));
   line-height: 1.05;
   color: t.$ink;
 }
 
 .card__brand {
   font-family: t.$font-chrome;
-  font-size: 8px;
+  font-size: calc(8px * var(--f-scale-chrome, 1));
   color: t.$muted;
   margin-top: 3px;
   letter-spacing: 0.03em;
@@ -90,26 +125,32 @@
 
 .card__price {
   font-family: t.$font-body;
-  font-size: 22px;
+  font-size: calc(22px * var(--f-scale-body, 1));
   line-height: 0.8;
+  color: t.$ink;
+
+  &--drop {
+    color: t.$mint;
+  }
 }
 
 .card__old-price {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$muted;
   text-decoration: line-through;
 }
 
 .card__drop-stamp {
+  color: t.$mint;
   margin-top: 6px;
-  font-size: 8px;
+  font-size: calc(8px * var(--f-scale-chrome, 1));
   display: inline-block;
 }
 
 .card__fit {
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$mint;
   margin-top: 5px;
   line-height: 1;

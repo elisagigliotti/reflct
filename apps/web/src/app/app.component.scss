@@ -1,8 +1,36 @@
 @use 'tokens' as t;
 
+$wide: 960px;
+$taskbar-h: 58px;
+
 :host {
   display: block;
   min-height: 100vh;
+}
+
+// Lo sfondo e' parte dell'identita' del tema: ognuno puo' sostituirlo con
+// --wall-image / --wall-size (vedi packages/design-tokens/scss/_themes.scss).
+@mixin desktop-wallpaper {
+  background-color: t.$desktop;
+  background-image: var(
+    --wall-image,
+    linear-gradient(color-mix(in srgb, t.$ink 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, t.$ink 6%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, color-mix(in srgb, t.$lav 70%, t.$desktop) 0%, t.$desktop 42%)
+  );
+  background-size: var(--wall-size, 20px 20px, 20px 20px, 100% 100%);
+}
+
+.screen {
+  min-height: 100vh;
+
+  // Da tablet in su lo sfondo e' un vero desktop a tutta pagina: la colonna
+  // dell'app diventa una finestra appoggiata sopra, non una striscia isolata.
+  @media (min-width: $wide) {
+    @include desktop-wallpaper;
+    background-attachment: fixed;
+    padding: 28px 24px calc(#{$taskbar-h} + 28px);
+  }
 }
 
 .desktop {
@@ -11,31 +39,93 @@
   min-height: 100vh;
   position: relative;
   padding: 10px 12px calc(88px + env(safe-area-inset-bottom));
-  background-color: t.$desktop;
-  background-image:
-    linear-gradient(rgba(42, 36, 56, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(42, 36, 56, 0.06) 1px, transparent 1px),
-    linear-gradient(180deg, #c7b8f0 0%, t.$desktop 42%);
-  background-size:
-    20px 20px,
-    20px 20px,
-    100% 100%;
+  @include desktop-wallpaper;
   border-left: t.$border-width solid t.$ink;
   border-right: t.$border-width solid t.$ink;
 
   @media (min-width: 421px) {
     box-shadow: t.$shadow-window-hover;
   }
+
+  @media (min-width: $wide) {
+    min-height: calc(100vh - #{$taskbar-h} - 56px);
+    padding: 10px 12px 24px;
+    border: t.$border-width solid t.$ink;
+    border-radius: t.$radius-window;
+    box-shadow: var(--s-shadow-desk, 8px 8px 0 #{t.$ink});
+  }
+}
+
+.screen--bare .desktop {
+  @media (min-width: $wide) {
+    min-height: calc(100vh - 56px);
+  }
 }
 
 .desktop__content {
   display: flex;
   flex-direction: column;
+  transform-origin: 50% 0;
+}
+
+// ---------- icone desktop ----------
+.desk-icons {
+  display: none;
+
+  @media (min-width: $wide) {
+    position: fixed;
+    top: 28px;
+    left: 24px;
+    display: grid;
+    grid-auto-rows: 96px;
+    gap: 6px;
+    width: 104px;
+  }
+}
+
+.desk-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 8px 4px;
+  border: t.$border-width dashed transparent;
+  border-radius: t.$radius-button;
+  text-align: center;
+  color: t.$ink;
+
+  &:hover .desk-icon__glyph {
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: t.$ink;
+  }
+
+  &.is-active .desk-icon__label {
+    background: t.$pink;
+    color: var(--c-on-accent, #fff);
+  }
+}
+
+.desk-icon__glyph {
+  transition: transform 0.1s t.$ease-step;
+}
+
+.desk-icon__label {
+  font-family: t.$font-body;
+  font-size: calc(17px * var(--f-scale-body, 1));
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: t.$radius-small;
+  background: rgba(255, 255, 255, 0.55);
 }
 
 // ---------- menubar ----------
 .menubar-wrap {
-  border-radius: 4px 4px 0 0;
+  border-radius: t.$radius-window t.$radius-window 0 0;
   box-shadow: t.$shadow-window;
   margin-bottom: t.$gap-block;
 }
@@ -46,49 +136,81 @@
   align-items: center;
   background: t.$win;
   border-bottom: t.$border-width solid t.$ink;
-  padding: 4px 8px;
+  padding: 5px 8px;
   font-family: t.$font-chrome;
-  font-size: 10px;
+  font-size: calc(10px * var(--f-scale-chrome, 1));
   color: t.$ink;
 }
 
 .menubar__logo {
   font-family: t.$font-pixel;
-  font-size: 9px;
+  font-size: calc(9px * var(--f-scale-display, 1));
   color: t.$pink;
+}
+
+.menubar__item {
+  cursor: default;
 }
 
 .menubar__date {
   margin-left: auto;
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(16px * var(--f-scale-body, 1));
   color: t.$ink2;
+}
+
+.menubar__date-glyph {
+  color: t.$ink;
 }
 
 // ---------- taskbar ----------
 .taskbar {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  pointer-events: none;
+
+  @media (min-width: $wide) {
+    background: t.$win;
+    border-top: t.$border-width solid t.$ink;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.6);
+    pointer-events: auto;
+  }
+}
+
+.taskbar__inner {
+  pointer-events: auto;
   width: 420px;
   max-width: 100%;
+  margin: 0 auto;
   background: t.$win;
   border-top: t.$border-width solid t.$ink;
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
-  z-index: 20;
+
+  @media (min-width: $wide) {
+    width: auto;
+    max-width: none;
+    border-top: none;
+    background: none;
+    min-height: $taskbar-h;
+    padding: 6px 12px;
+    gap: 12px;
+  }
 }
 
 .taskbar__start {
   flex: none;
+  padding: 6px 11px;
+  min-height: 40px;
 
-  ::ng-deep .btn-95 {
-    padding: 6px 11px;
-    min-height: 38px;
-    box-shadow: t.$shadow-button;
+  &.is-pressed {
+    transform: t.$press-btn;
+    box-shadow: t.$shadow-button-active;
   }
 }
 
@@ -100,20 +222,106 @@
   flex: 1;
   display: flex;
   justify-content: space-around;
+
+  @media (min-width: $wide) {
+    justify-content: flex-start;
+    gap: 8px;
+  }
 }
 
 .taskbar__clock {
   flex: none;
   border: t.$border-width solid t.$ink;
-  border-radius: 3px;
+  border-radius: t.$radius-button;
   background: t.$win-alt;
-  padding: 3px 6px;
+  padding: 4px 7px;
   font-family: t.$font-body;
-  font-size: 15px;
+  font-size: calc(17px * var(--f-scale-body, 1));
   color: t.$ink;
   line-height: 1;
   text-align: center;
-  box-shadow: t.$shadow-button;
+  box-shadow: t.$shadow-inset;
+}
+
+.taskbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  min-width: 52px;
+  min-height: 46px;
+  color: t.$ink2;
+  font-family: t.$font-chrome;
+  font-size: calc(9px * var(--f-scale-chrome, 1));
+
+  .ico {
+    width: 34px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: t.$border-width solid transparent;
+    border-radius: t.$radius-window;
+    filter: grayscale(0.55) opacity(0.75);
+    transition:
+      transform 0.1s t.$ease-step,
+      filter 0.1s t.$ease-step;
+  }
+
+  &:hover .ico {
+    transform: translateY(-2px);
+    filter: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    .ico {
+      border-style: dashed;
+      border-color: t.$ink;
+    }
+  }
+
+  &.is-active {
+    color: t.$ink;
+
+    .ico {
+      filter: none;
+      background: t.$win-alt;
+      border-color: t.$ink;
+      box-shadow: t.$shadow-inset;
+    }
+  }
+
+  // Su desktop i pulsanti diventano "finestre aperte" orizzontali, come la
+  // taskbar di Windows: icona + etichetta sulla stessa riga.
+  @media (min-width: $wide) {
+    flex-direction: row;
+    gap: 8px;
+    min-width: 132px;
+    min-height: 40px;
+    padding: 3px 10px 3px 4px;
+    border: t.$border-width solid t.$ink;
+    border-radius: t.$radius-button;
+    background: t.$win;
+    box-shadow: t.$shadow-button;
+    font-size: calc(10px * var(--f-scale-chrome, 1));
+
+    .ico {
+      width: 30px;
+      height: 28px;
+      box-shadow: none !important;
+      background: none !important;
+      border-color: transparent !important;
+    }
+
+    &.is-active {
+      background: t.$win-alt;
+      box-shadow: t.$shadow-inset;
+      transform: translate(1px, 1px);
+    }
+  }
 }
 
 // ---------- start menu ----------
@@ -125,53 +333,75 @@
 
 .start-menu {
   position: fixed;
-  bottom: 62px;
-  left: 50%;
-  transform: translateX(calc(-50% + 130px));
-  width: 200px;
-  max-width: calc(100% - 24px);
+  bottom: 64px;
+  left: max(12px, calc(50% - 198px));
+  width: 236px;
   z-index: 26;
   box-shadow: t.$shadow-window-hover;
+  display: flex;
+  padding: 0;
+  overflow: hidden;
+  transform-origin: 0 100%;
+  animation: start-open 0.18s steps(4, end);
+
+  @media (min-width: $wide) {
+    left: 12px;
+  }
+}
+
+// Fascia verticale laterale col nome del sistema, come il menu Start di Win9x.
+.start-menu__rail {
+  flex: none;
+  width: 28px;
+  background: linear-gradient(0deg, t.$pink, t.$lav);
+  border-right: t.$border-width solid t.$ink;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+
+  span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: t.$font-pixel;
+    font-size: calc(9px * var(--f-scale-display, 1));
+    color: #fff;
+    text-shadow: 1px 1px 0 t.$ink;
+  }
+}
+
+.start-menu__list {
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 4px;
 }
 
-.start-menu__title {
-  font-family: t.$font-chrome;
-  font-size: 9px;
-  color: t.$muted;
-  text-transform: uppercase;
-  padding: 6px 8px 4px;
-}
-
 .start-menu__item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 10px;
+  padding: 7px 8px;
   border: none;
   background: none;
-  border-radius: 4px;
+  border-radius: t.$radius-button;
   font-family: t.$font-body;
-  font-size: 16px;
+  font-size: calc(19px * var(--f-scale-body, 1));
+  line-height: 1;
   color: t.$ink;
-  text-decoration: none;
   text-align: left;
   cursor: pointer;
   width: 100%;
 
-  .ico {
-    width: 20px;
-    text-align: center;
-  }
-
-  &:hover {
-    background: t.$win-alt;
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: t.$pink;
+    color: var(--c-on-accent, #fff);
   }
 
   &--logout {
-    color: t.$warn;
+    color: t.$ink2;
   }
 }
 
@@ -179,54 +409,22 @@
   height: t.$border-width;
   background: t.$ink;
   opacity: 0.15;
-  margin: 4px 4px;
+  margin: 4px;
 }
 
-.taskbar-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  background: none;
-  border: none;
-  padding: 5px 6px;
-  min-width: 52px;
-  min-height: 46px;
-  color: t.$ink2;
-  font-family: t.$font-chrome;
-  font-size: 8px;
-  text-decoration: none;
-  transition:
-    transform 0.16s ease,
-    color 0.16s ease;
-
-  .ico {
-    width: 30px;
-    height: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: t.$border-width solid transparent;
-    border-radius: 4px;
-    font-size: 16px;
-    line-height: 1;
-    transition:
-      transform 0.16s ease,
-      background 0.16s ease,
-      border-color 0.16s ease;
+@keyframes start-open {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
   }
-
-  &:hover .ico {
-    transform: translateY(-2px);
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
+}
 
-  &.is-active {
-    color: t.$ink;
-
-    .ico {
-      background: #fff;
-      border-color: t.$ink;
-      box-shadow: t.$shadow-button;
-    }
+@media (prefers-reduced-motion: reduce) {
+  .start-menu {
+    animation: none;
   }
 }

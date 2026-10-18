@@ -1,0 +1,177 @@
+// ==========================================================================
+// Reflct OS — Differenze strutturali tra temi
+// Cio' che le variabili di _themes.scss non bastano a esprimere: come e' fatta
+// la barra del titolo, cosa succede ai pulsanti finestra, texture sopra la
+// pagina. Selettori con :root[data-theme] davanti, cosi' battono gli stili
+// incapsulati dei componenti Angular (stesse classi, specificita' maggiore).
+// ==========================================================================
+
+// ---------- Notte Neon: barre del titolo come tubi al neon ----------
+html:root[data-theme='dark'] {
+  .win-title {
+    background: transparent;
+    color: var(--c-pink);
+    border-bottom: 1px solid color-mix(in srgb, var(--c-pink) 60%, transparent);
+    text-shadow: 0 0 8px var(--c-pink);
+  }
+
+  .win-title--teal {
+    color: var(--c-cyan);
+    border-bottom-color: color-mix(in srgb, var(--c-cyan) 60%, transparent);
+    text-shadow: 0 0 8px var(--c-cyan);
+  }
+
+  // pulsanti finestra = tre spie luminose
+  .win-btns i {
+    width: 9px;
+    height: 9px;
+    border: none;
+    border-radius: 50%;
+    font-size: 0;
+    background: var(--c-pink);
+    box-shadow: 0 0 6px var(--c-pink);
+
+    &:nth-child(2) {
+      background: var(--c-yellow);
+      box-shadow: 0 0 6px var(--c-yellow);
+    }
+
+    &:last-child {
+      background: var(--c-cyan);
+      box-shadow: 0 0 6px var(--c-cyan);
+    }
+  }
+
+  .menubar__logo,
+  .auth-brand__logo {
+    text-shadow: 0 0 10px var(--c-pink);
+    -webkit-text-stroke: 0;
+  }
+}
+
+// Temi con inchiostro chiaro: sui bottoni a fondo acceso il testo va scuro.
+html:root[data-theme='dark'] {
+  .btn-95--cyan,
+  .btn-95--yellow {
+    color: var(--c-on-accent);
+  }
+}
+
+// ---------- Sunset Arcade: tasti tondi da cabinato ----------
+html:root[data-theme='sunset'] {
+  .win-btns i {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    font-size: 0;
+    background: var(--c-yellow);
+
+    &:nth-child(2) {
+      background: var(--c-cyan);
+    }
+
+    &:last-child {
+      background: var(--c-pink);
+    }
+  }
+
+  .win-title {
+    padding: 5px 8px;
+  }
+}
+
+// ---------- Poster Doodle: carta, inchiostro e stelline ----------
+html:root[data-theme='doodle'] {
+  // grana da stampa su tutta la pagina, finestre comprese
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    opacity: 0.55;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  // finestre leggermente storte, come fogli appoggiati sul tavolo
+  .win:nth-of-type(odd) {
+    rotate: -0.5deg;
+  }
+
+  .win:nth-of-type(even) {
+    rotate: 0.4deg;
+  }
+
+  // la barra del titolo diventa un'etichetta scritta a mano su nastro adesivo
+  .win-title {
+    background: transparent;
+    border-bottom: 2px dashed color-mix(in srgb, var(--c-ink) 35%, transparent);
+    padding: 6px 10px 4px;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .win-title__label {
+    display: inline-block;
+    flex: 0 1 auto;
+    background: color-mix(in srgb, var(--c-chrome) 70%, transparent);
+    padding: 0 8px;
+    rotate: -1.5deg;
+    border-radius: var(--s-r-sm);
+  }
+
+  .win-title--teal .win-title__label {
+    background: color-mix(in srgb, var(--c-chrome2) 75%, transparent);
+  }
+
+  // al posto dei pulsanti finestra una stellina disegnata
+  .win-btns {
+    margin-left: auto;
+
+    i {
+      display: none;
+    }
+
+    &::after {
+      content: '✦';
+      font-size: 16px;
+      line-height: 1;
+      color: var(--c-yellow);
+      -webkit-text-stroke: 1px var(--c-ink);
+    }
+  }
+
+  // pulsanti chiudi reali (es. dialog body-scan) restano visibili
+  .win-btns__close {
+    display: block !important;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+  }
+
+  .win-btns:has(.win-btns__close)::after {
+    content: none;
+  }
+
+  .menubar__logo,
+  .auth-brand__logo {
+    letter-spacing: -0.02em;
+  }
+
+  .auth-brand__logo {
+    -webkit-text-stroke: 0;
+    text-shadow: 3px 3px 0 var(--c-yellow);
+    color: var(--c-ink);
+  }
+
+  .shot {
+    border-bottom-style: solid;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:root[data-theme='doodle'] .win {
+    rotate: none;
+  }
+}

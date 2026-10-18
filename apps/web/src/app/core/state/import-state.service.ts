@@ -27,8 +27,13 @@ export class ImportStateService {
     this.url.set(url);
   }
 
+  /**
+   * Apre lo shop in una nuova scheda: l'utente sceglie il capo e torna qui con
+   * il link della pagina prodotto. (Prima metteva nel campo un URL finto con
+   * "..." che lo scraping non poteva analizzare.)
+   */
   pickShop(shop: ShopEntry): void {
-    this.url.set(shop.url);
+    window.open(shop.url, '_blank', 'noopener');
   }
 
   analyze(): void {

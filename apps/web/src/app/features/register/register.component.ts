@@ -14,7 +14,7 @@ import { WinTitleComponent } from '../../shared/ui/win-title/win-title.component
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, WinTitleComponent, Btn95Component],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
+  styleUrl: '../login/login.component.scss',
 })
 export class RegisterComponent {
   nome = '';
