@@ -16,19 +16,18 @@ from pathlib import Path
 import cv2
 import mediapipe as mp
 import numpy as np
-import requests
 from fastapi import APIRouter, HTTPException
 from mediapipe.tasks import python as mp_python
 from mediapipe.tasks.python import vision as mp_vision
 
 from app.models import BodyScanEstimate, BodyScanRequest
+from app.safe_fetch import fetch_image_bytes
 
 router = APIRouter(prefix="/bodyscan", tags=["bodyscan"])
 
 logger = logging.getLogger(__name__)
 
 _MODEL_PATH = Path(__file__).resolve().parent.parent / "models_bin" / "pose_landmarker.task"
-_DOWNLOAD_TIMEOUT_SECONDS = 15
 
 # Indici landmark BlazePose (33 punti) usati per la stima.
 _NOSE = 0
@@ -82,13 +81,8 @@ def _get_detector() -> mp_vision.PoseLandmarker:
 
 
 def _download_image(url: str) -> np.ndarray:
-    try:
-        response = requests.get(url, timeout=_DOWNLOAD_TIMEOUT_SECONDS)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as exc:
-        raise HTTPException(status_code=422, detail=f"impossibile scaricare la foto da {url}: {exc}") from exc
-
-    array = np.frombuffer(response.content, dtype=np.uint8)
+    content = fetch_image_bytes(url)
+    array = np.frombuffer(content, dtype=np.uint8)
     image = cv2.imdecode(array, cv2.IMREAD_COLOR)
     if image is None:
         raise HTTPException(status_code=422, detail="il contenuto scaricato non e' un'immagine valida")

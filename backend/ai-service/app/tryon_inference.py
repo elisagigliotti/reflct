@@ -16,11 +16,11 @@ from pathlib import Path
 from typing import Optional
 
 import numpy as np
-import requests
 import torch
 from fastapi import HTTPException
 from PIL import Image
 
+from app.safe_fetch import fetch_image_bytes
 from app.tryon_mask import build_agnostic_mask
 from app.tryon_model.pipeline import CatVTONPipeline
 
@@ -32,7 +32,6 @@ _WIDTH = int(os.environ.get("TRYON_WIDTH", "384"))
 _HEIGHT = int(os.environ.get("TRYON_HEIGHT", "512"))
 _STEPS = int(os.environ.get("TRYON_STEPS", "30"))
 _GUIDANCE_SCALE = float(os.environ.get("TRYON_GUIDANCE_SCALE", "2.5"))
-_DOWNLOAD_TIMEOUT_SECONDS = 20
 
 _pipeline: Optional[CatVTONPipeline] = None
 # Un'unica GPU da 8GB: serializza sia il caricamento (evita doppio load se due
@@ -61,13 +60,9 @@ def _get_pipeline() -> CatVTONPipeline:
 
 
 def _download_pil_image(url: str) -> Image.Image:
+    content = fetch_image_bytes(url)
     try:
-        response = requests.get(url, timeout=_DOWNLOAD_TIMEOUT_SECONDS)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as exc:
-        raise HTTPException(status_code=422, detail=f"impossibile scaricare l'immagine da {url}: {exc}") from exc
-    try:
-        return Image.open(io.BytesIO(response.content)).convert("RGB")
+        return Image.open(io.BytesIO(content)).convert("RGB")
     except Exception as exc:
         raise HTTPException(status_code=422, detail="il contenuto scaricato non e' un'immagine valida") from exc
 

@@ -80,13 +80,7 @@ def test_bodyscan_estimate_endpoint_detects_real_person_in_fixture_photo():
     contenuto della foto viene davvero analizzato."""
     photo_bytes = (FIXTURE_DIR / "person_front.jpg").read_bytes()
 
-    class FakeResponse:
-        content = photo_bytes
-
-        def raise_for_status(self):
-            pass
-
-    with patch("app.routers.bodyscan.requests.get", return_value=FakeResponse()):
+    with patch("app.routers.bodyscan.fetch_image_bytes", return_value=photo_bytes):
         payload = {
             "user_id": "user-abc",
             "altezza_cm": 168,
@@ -108,13 +102,7 @@ def test_bodyscan_estimate_endpoint_rejects_photo_without_a_person():
     della versione mock, ora viene rifiutata invece di restituire numeri finti."""
     blank = cv2.imencode(".jpg", cv2.UMat(400, 300, cv2.CV_8UC3).get())[1].tobytes()
 
-    class FakeResponse:
-        content = blank
-
-        def raise_for_status(self):
-            pass
-
-    with patch("app.routers.bodyscan.requests.get", return_value=FakeResponse()):
+    with patch("app.routers.bodyscan.fetch_image_bytes", return_value=blank):
         payload = {
             "user_id": "user-abc",
             "altezza_cm": 168,
@@ -126,7 +114,8 @@ def test_bodyscan_estimate_endpoint_rejects_photo_without_a_person():
 
 
 def test_bodyscan_estimate_endpoint_rejects_unreachable_url():
-    with patch("app.routers.bodyscan.requests.get", side_effect=__import__("requests").exceptions.ConnectionError):
+    unreachable = HTTPException(status_code=422, detail="impossibile scaricare l'immagine")
+    with patch("app.routers.bodyscan.fetch_image_bytes", side_effect=unreachable):
         payload = {
             "user_id": "user-bad",
             "altezza_cm": 168,

@@ -2,6 +2,13 @@ spring:
   application:
     name: reflct-api
 
+  # Il default di Spring e' 1MB: le foto da fotocamera (3-6MB) venivano
+  # rifiutate prima ancora del controllo a 10MB di MediaStorageService.
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
+
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:reflct}
     username: ${DB_USER:reflct}
